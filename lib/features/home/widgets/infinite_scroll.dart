@@ -2,14 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class InfiniteScrollColumn extends StatefulWidget {
-  // CHANGED: Now accepts a list of Widgets (Cards), not just image strings
-  final List<Widget> children; 
+  // We changed this from List<String> images to List<Widget> items
+  // This allows us to scroll Cards, Text, or Images!
+  final List<Widget> items; 
   final double speed;
   final bool reverse;
 
   const InfiniteScrollColumn({
     super.key,
-    required this.children,
+    required this.items, // This was missing in your file
     this.speed = 1.0,
     this.reverse = false,
   });
@@ -26,7 +27,9 @@ class _InfiniteScrollColumnState extends State<InfiniteScrollColumn> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startScrolling();
+    });
   }
 
   void _startScrolling() {
@@ -55,28 +58,25 @@ class _InfiniteScrollColumnState extends State<InfiniteScrollColumn> {
 
   @override
   Widget build(BuildContext context) {
-    // Made width flexible (null) so it fills the parent container
     return SizedBox(
-      height: 600, 
+      width: double.infinity, 
       child: Stack(
         children: [
           ListView.builder(
             controller: _scrollController,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: 1000, // Infinite loop illusion
+            itemCount: 1000, 
             itemBuilder: (context, index) {
-              // Get the widget from the list based on index
-              final child = widget.children[index % widget.children.length];
+              final item = widget.items[index % widget.items.length];
               return Padding(
-                padding: const EdgeInsets.only(bottom: 24), // Gap between cards
-                child: child,
+                padding: const EdgeInsets.only(bottom: 20),
+                child: item,
               );
             },
           ),
-          
           // Top Fog
           Positioned(
-            top: 0, left: 0, right: 0, height: 100,
+            top: 0, left: 0, right: 0, height: 80,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -87,10 +87,9 @@ class _InfiniteScrollColumnState extends State<InfiniteScrollColumn> {
               ),
             ),
           ),
-          
           // Bottom Fog
           Positioned(
-            bottom: 0, left: 0, right: 0, height: 150,
+            bottom: 0, left: 0, right: 0, height: 80,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(

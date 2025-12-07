@@ -12,40 +12,35 @@ class LogoMarquee extends StatefulWidget {
 class _LogoMarqueeState extends State<LogoMarquee> {
   late ScrollController _scrollController;
   late Timer _timer;
+  bool _isHoveringArea = false; // To pause scrolling when user interacts
 
-  // List of Logo URLs (Placeholders for now)
-  // In production, replace these with your actual partner logo assets
-  final List<String> _logos = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2560px-Google_2015_logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/2560px-IBM_logo.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Tata_Consultancy_Services_Logo.svg/2560px-Tata_Consultancy_Services_Logo.svg.png",
+ 
+  final List<String> _partnerLogos = [
+    "assets/images/stanbic.png",
+    "assets/images/flexi.png",
+    "assets/images/airtel.png",
+    "assets/images/partner1.png",
   ];
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    
-    // Wait for build to finish, then start scrolling
     WidgetsBinding.instance.addPostFrameCallback((_) => _startAutoScroll());
   }
 
   void _startAutoScroll() {
-    // 30ms timer for smooth 60fps animation
     _timer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
       if (!_scrollController.hasClients) return;
+      
+      // Feature: Pause scrolling if the user is hovering over the area
+      if (_isHoveringArea) return; 
 
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.offset;
-      
-      // Speed: 1.5 pixels per tick
-      double nextScroll = currentScroll + 1.5; 
+      double nextScroll = currentScroll + 1.0; // Slower speed for better visibility
 
       if (nextScroll >= maxScroll) {
-        // If we hit the end, jump back to 0 instantly (Infinite loop illusion)
         _scrollController.jumpTo(0);
       } else {
         _scrollController.jumpTo(nextScroll);
@@ -64,10 +59,10 @@ class _LogoMarqueeState extends State<LogoMarquee> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 60),
+      padding: const EdgeInsets.symmetric(vertical: 30),
       child: Column(
         children: [
-          // 1. Section Header
+          // 1. Header Text
           Text(
             "Trusted by leading companies in Uganda",
             style: TextStyle(
@@ -79,46 +74,30 @@ class _LogoMarqueeState extends State<LogoMarquee> {
           
           const SizedBox(height: 40),
 
-          // 2. The Scrolling List
-          SizedBox(
-            height: 60, // Height of the logo strip
-            child: ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              // We simulate infinite items by returning a huge number
-              // The logic in _startAutoScroll handles the looping
-              itemCount: 1000, 
-              itemBuilder: (context, index) {
-                // Use modulo to cycle through the logo list repeatedly
-                final logoUrl = _logos[index % _logos.length];
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Opacity(
-                    opacity: 0.6, // Make logos slightly faded like the screenshot
-                    child: ColorFiltered(
-                      // Turn logos to Grayscale (Black & White)
-                      colorFilter: const ColorFilter.mode(
-                        Colors.grey,
-                        BlendMode.srcIn, 
-                      ),
-                      child: Image.network(
-                        logoUrl,
-                        height: 40,
-                        fit: BoxFit.contain,
-                        // Loading handler to prevent crashes
-                        errorBuilder: (c, o, s) => const Icon(Icons.business, color: Colors.grey, size: 40),
-                      ),
-                    ),
-                  ),
-                );
-              },
+          // 2. The Interactive Marquee
+          MouseRegion(
+            // When mouse enters the marquee area, we pause the scrolling
+            onEnter: (_) => setState(() => _isHoveringArea = true),
+            onExit: (_) => setState(() => _isHoveringArea = false),
+            child: SizedBox(
+              height: 80, // Increased height for the "Pop" effect clearance
+              child: ListView.builder(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                itemCount: 1000, 
+                itemBuilder: (context, index) {
+                  final logoPath = _partnerLogos[index % _partnerLogos.length];
+                  
+                  // Use the helper widget for the animation
+                  return _MarqueeItem(imagePath: logoPath);
+                },
+              ),
             ),
           ),
 
-          const SizedBox(height: 80),
+          const SizedBox(height: 60),
 
-          // 3. The "Tag" (The little pill at the bottom of your screenshot)
+          // 3. The Tag
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
@@ -136,6 +115,43 @@ class _LogoMarqueeState extends State<LogoMarquee> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// --- NEW WIDGET: ANIMATED LOGO ITEM ---
+class _MarqueeItem extends StatefulWidget {
+  final String imagePath;
+  const _MarqueeItem({required this.imagePath});
+
+  @override
+  State<_MarqueeItem> createState() => _MarqueeItemState();
+}
+
+class _MarqueeItemState extends State<_MarqueeItem> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedScale(
+        scale: isHovered ? 1.2 : 1.0, // Scale up to 120%
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutBack, // Bouncy pop effect
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 40),
+          // We removed ColorFiltered, so images show original colors
+          child: Image.asset(
+            widget.imagePath,
+            height: 50, // Base height
+            fit: BoxFit.contain,
+            // Fallback if image isn't found yet
+            errorBuilder: (c, o, s) => const Icon(Icons.broken_image, color: Colors.grey),
+          ),
+        ),
       ),
     );
   }

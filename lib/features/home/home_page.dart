@@ -3,6 +3,12 @@ import '../../shared/layout/navbar.dart';
 import 'widgets/hero_section.dart';
 import 'widgets/logo_marquee.dart';
 import 'widgets/agents_sec.dart';
+import 'widgets/bento_grid.dart';
+import 'widgets/target.dart';
+import 'widgets/socialtrend.dart';
+import 'widgets/product.dart';
+import 'widgets/packages.dart';
+import '../../shared/layout/footer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -20,7 +26,12 @@ class HomePage extends StatelessWidget {
                 const HeroSection(), // Includes the scrolling images
                 const LogoMarquee(),
                 const AgentsSection(),
-                SizedBox(height: 1000), // Temp spacer to prove scrolling works
+                const BentoGridSection(),
+                const TargetAudienceSection(),
+                const SocialTrendSection(),
+                const ProductivitySection(),
+                const PricingSection(),
+                const Footer(), // Temp spacer to prove scrolling works
               ],
             ),
           ),

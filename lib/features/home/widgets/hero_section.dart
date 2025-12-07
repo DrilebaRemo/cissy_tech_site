@@ -1,126 +1,215 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import 'infinite_scroll.dart';
+import '../../../shared/layout/responsive.dart';
+import 'infinite_scroll.dart'; 
 
 class HeroSection extends StatelessWidget {
   const HeroSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Determine screen width to adjust layout (Basic responsiveness)
-    final screenWidth = MediaQuery.of(context).size.width;
-    
+    return Responsive(
+      // --- DESKTOP LAYOUT ---
+      desktop: Container(
+        color: AppColors.background,
+        padding: const EdgeInsets.fromLTRB(60, 140, 60, 0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // LEFT SIDE (Text): Give it more space (Flex 7)
+            Expanded(flex: 7, child: _buildTextContent(context)),
+            
+            const SizedBox(width: 40),
+            
+            // RIGHT SIDE (Cards): Make it smaller (Flex 5)
+            Expanded(
+              flex: 5, 
+              child: SizedBox(
+                height: 700,
+                // Alignment TopCenter ensures it aligns with the text top
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  // CONSTRAINT: Lock width to 360px so cards look like phone widgets
+                  child: SizedBox(
+                    width: 480, 
+                    child: _buildScrollingCards(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      
+      // --- MOBILE LAYOUT ---
+      mobile: Container(
+        color: AppColors.background,
+        padding: const EdgeInsets.fromLTRB(20, 120, 20, 60),
+        child: Column(
+          children: [
+            _buildTextContent(context, isCentered: true),
+            const SizedBox(height: 60),
+            // Mobile: Shorter scroll area
+            SizedBox(
+              height: 500,
+              width: 340, // Slightly smaller for mobile screens
+              child: _buildScrollingCards(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- THE SCROLLING CARDS LIST ---
+  Widget _buildScrollingCards() {
+    return InfiniteScrollColumn(
+      speed: 0.8, 
+      items: [
+        _buildImageCard1(),
+        _buildTestimonialCard1(),
+        _buildImageCard2(),
+        _buildTestimonialCard2(),
+        _buildStatusCard(),
+      ],
+    );
+  }
+
+  // --- CARD 1: Digital Leader (Smaller Height) ---
+  Widget _buildImageCard1() {
     return Container(
-      color: AppColors.background,
-      padding: const EdgeInsets.fromLTRB(60, 140, 60, 80),
+      height: 340, // Reduced from 300
+      width: double.infinity,
+      padding: const EdgeInsets.all(40), // Reduced from 40
+      decoration: BoxDecoration(
+        color: AppColors.textMain, 
+        borderRadius: BorderRadius.circular(24),
+        image: const DecorationImage(
+          image: NetworkImage("https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"), 
+          fit: BoxFit.cover,
+          opacity: 0.6,
+        ),
+      ),
+      alignment: Alignment.bottomLeft,
+      child: const Text(
+        "Transform your company into a digital leader.",
+        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold), // Font 24 -> 20
+      ),
+    );
+  }
+
+  // --- CARD 2: Benjamin Testimonial (Tighter Padding) ---
+  Widget _buildTestimonialCard1() {
+    return Container(
+      padding: const EdgeInsets.all(24), // Reduced from 30
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+        ],
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // --- LEFT COLUMN (Text & Actions) ---
+          const CircleAvatar(
+            radius: 24, // Smaller Avatar
+            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=11"),
+          ),
+          const SizedBox(width: 16),
           Expanded(
-            flex: 5,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 1. Headline
-                RichText(
-                  text: const TextSpan(
-                    style: TextStyle(
-                      fontSize: 64, // Big Headline
-                      height: 1.1,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textMain,
-                      letterSpacing: -2.0,
-                      fontFamily: 'Inter', // Ensure Inter is in pubspec
-                    ),
-                    children: [
-                      TextSpan(text: "Software that\n"),
-                      TextSpan(
-                        text: "means business.",
-                        style: TextStyle(color: AppColors.primary), // Cissy Blue
-                      ),
-                    ],
-                  ),
-                ),
-                
-                const SizedBox(height: 24),
-                
-                // 2. Subtitle
-                const Text(
-                  "Don't hire an expensive agency. Automate your workflow, host securely, and manage your team with CissyTech's all-in-one ecosystem.",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: AppColors.textBody,
-                    height: 1.5,
-                  ),
-                ),
-
-                const SizedBox(height: 60),
-
-                // 4. Trusted By (Logos)
-                Row(
-                  children: [
-                    const _HoverAvatar(imagePath: 'assets/images/bulk_sms.png'),
-                    const _HoverAvatar(imagePath: 'assets/images/cissy_cloud.png'),
-                    const _HoverAvatar(imagePath: 'assets/images/collecto.png'),
-                    const _HoverAvatar(imagePath: 'assets/images/eworker.png'),
-                    const SizedBox(width: 20),
-                    const Text(
-                      "Trusted by 500+ companies\nin Uganda",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textBody,
-                        height: 1.5,
-                      ),
-                    ),
-                  ],
-                ),
+              children: const [
+                Text("Benjamin Austin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text("CTO, Stanbic Bank", style: TextStyle(color: AppColors.textBody, fontSize: 13)),
               ],
             ),
           ),
+          const Icon(Icons.star, color: AppColors.accent, size: 20),
+        ],
+      ),
+    );
+  }
 
-          const SizedBox(width: 60),
+  // --- CARD 3: Data/Analytics (Smaller Height) ---
+  Widget _buildImageCard2() {
+    return Container(
+      height: 320, // Reduced from 280
+      width: double.infinity,
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E1E2D),
+        borderRadius: BorderRadius.circular(24),
+        image: const DecorationImage(
+          image: NetworkImage("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"),
+          fit: BoxFit.cover,
+          opacity: 0.4,
+        ),
+      ),
+      alignment: Alignment.bottomLeft,
+      child: const Text(
+        "Data-driven decisions made easy.",
+        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
 
-         Expanded(
-            flex: 6,
-            child: SizedBox(
-              height: 700,
-              // CENTER + WIDTH CONSTRAINT: This makes the cards look like a sleek mobile feed
-              child: Center(
-                child: SizedBox(
-                  width: 420, // <--- This restricts the width (Makes them smaller)
-                  child: InfiniteScrollColumn(
-                    speed: 0.8,
-                    children: [
-                      // CARD 1
-                      _buildTestimonialCard(
-                        name: "Benjamin Austin",
-                        role: "Account Executive, Uber Eats",
-                        avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
-                        text: "The AI-driven workflows do a solid job and saves an incredible amount of time.",
-                      ),
+  // --- CARD 4: Sarah Testimonial ---
+  Widget _buildTestimonialCard2() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: Row(
+        children: [
+          const CircleAvatar(
+            radius: 32,
+            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=5"),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text("Sarah Jenkins", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text("Marketing Lead, Airtel", style: TextStyle(color: AppColors.textBody, fontSize: 13)),
+              ],
+            ),
+          ),
+          const Icon(Icons.star, color: AppColors.accent, size: 20),
+        ],
+      ),
+    );
+  }
 
-                      // CARD 2
-                      _buildImageCard(
-                        "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80",
-                      ),
-
-                      // CARD 3
-                      _buildTestimonialCard(
-                        name: "Sarah Jenkins",
-                        role: "Marketing Director, Netflix",
-                        avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
-                        text: "CissyTech transformed how we handle our server deployment. It's simply seamless.",
-                      ),
-
-                      // CARD 4
-                      _buildImageCard(
-                        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+  // --- CARD 5: Status Card ---
+  Widget _buildStatusCard() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0FDF4),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.green.shade100),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+            child: const Icon(Icons.check_circle, color: Colors.green, size: 24),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Text(
+              "System Operational\n99.9% Uptime Verified",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.green),
             ),
           ),
         ],
@@ -128,119 +217,92 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- HELPER 1: TESTIMONIAL CARD (Smaller Text) ---
-  Widget _buildTestimonialCard({
-    required String name,
-    required String role,
-    required String avatarUrl,
-    required String text,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24), // Reduced padding
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+
+
+  // --- TEXT CONTENT (Same as before) ---
+  Widget _buildTextContent(BuildContext context, {bool isCentered = false}) {
+    return Column(
+      crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        RichText(
+          textAlign: isCentered ? TextAlign.center : TextAlign.start,
+          text: const TextSpan(
+            style: TextStyle(
+              fontSize: 48,
+              height: 1.1,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textMain,
+              letterSpacing: -1.5,
+              fontFamily: 'Inter',
+            ),
             children: [
-              CircleAvatar(
-                radius: 24, // Smaller Avatar
-                backgroundImage: NetworkImage(avatarUrl),
-              ),
-              const SizedBox(width: 14),
-              Expanded( // Prevents text overflow
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
-                    ),
-                    Text(
-                      role,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: AppColors.textBody, fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-              // Stars
-              const Row(
-                children: [
-                  Icon(Icons.star_rounded, color: AppColors.accent, size: 20),
-                  Icon(Icons.star_rounded, color: AppColors.accent, size: 20),
-                  Icon(Icons.star_rounded, color: AppColors.accent, size: 20),
-                  Icon(Icons.star_rounded, color: AppColors.accent, size: 20),
-                  Icon(Icons.star_rounded, color: AppColors.accent, size: 20),
-                ],
+              TextSpan(text: "Software that\n"),
+              TextSpan(
+                text: "means business.",
+                style: TextStyle(color: AppColors.primary),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 15, // Smaller body text
-              height: 1.5,
-              color: AppColors.textBody,
+        ),
+        const SizedBox(height: 24),
+        Text(
+          "Don't hire an expensive agency. Automate your workflow with CissyTech.",
+          textAlign: isCentered ? TextAlign.center : TextAlign.start,
+          style: const TextStyle(fontSize: 18, color: AppColors.textBody, height: 1.5),
+        ),
+        const SizedBox(height: 40),
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
+          children: [
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.textMain,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text("Start Free Trial", style: TextStyle(color: Colors.white, fontSize: 16)),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // --- HELPER 2: IMAGE CARD (Smaller Height) ---
-  Widget _buildImageCard(String imageUrl) {
-    return Container(
-      width: double.infinity,
-      height: 260, // Reduced height to fit better with the width
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border),
-        image: DecorationImage(
-          image: NetworkImage(imageUrl),
-          fit: BoxFit.cover,
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: const Icon(Icons.play_arrow_rounded, color: AppColors.textMain),
+              label: const Text("Watch Demo", style: TextStyle(color: AppColors.textMain, fontSize: 16)),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+                side: const BorderSide(color: AppColors.border),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-    );
-  }
-  // Helper for the circular logos
-  Widget _circleLogo(Color color) {
-    return Align(
-      widthFactor: 0.7, // This tells Flutter: "Only take up 70% of the space", causing the next item to overlap.
-      child: Container(
-        width: 45,
-        height: 45,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 3),
-        ),
-      ),
+        const SizedBox(height: 60),
+        Wrap(
+          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 20,
+          children: [
+             Row(
+               mainAxisSize: MainAxisSize.min,
+               children: const [
+                _HoverAvatar(imagePath: "assets/images/bulk_sms.png"),
+                _HoverAvatar(imagePath: "assets/images/cissy_cloud.png"),
+                _HoverAvatar(imagePath: "assets/images/collecto.png"),
+                _HoverAvatar(imagePath: "assets/images/eworker.png"),
+               ],
+             ),
+             const Text(
+               "Trusted by 500+\ncompanies",
+               style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.textBody),
+             ),
+          ],
+        )
+      ],
     );
   }
 }
+
 class _HoverAvatar extends StatefulWidget {
   final String imagePath;
   const _HoverAvatar({required this.imagePath});
@@ -255,36 +317,30 @@ class _HoverAvatarState extends State<_HoverAvatar> {
   @override
   Widget build(BuildContext context) {
     return Align(
-      widthFactor: 0.7, // Keeps them overlapped
+      widthFactor: 0.7,
       child: MouseRegion(
-        onEnter: (_) => setState(() => isHovered = true), // Mouse goes in
-        onExit: (_) => setState(() => isHovered = false), // Mouse leaves
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
         child: AnimatedScale(
-          scale: isHovered ? 1.2 : 1.0, // Scale up to 120%
-          duration: const Duration(milliseconds: 200), // Smooth 0.2s animation
-          curve: Curves.easeOutBack, // Bouncy effect
+          scale: isHovered ? 1.2 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutBack,
           child: Container(
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: Colors.white, // Background in case image has transparency
+              color: Colors.white,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3), // White border
+              border: Border.all(color: Colors.white, width: 3),
               boxShadow: [
-                if (isHovered) // Only show shadow when hovered for "Pop" effect
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  )
+                if (isHovered)
+                  BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))
               ],
             ),
-            // The Image
             child: ClipOval(
               child: Image.asset(
                 widget.imagePath,
-                fit: BoxFit.cover, // Fill the circle
-                // If asset not found, show a grey fallback
+                fit: BoxFit.cover,
                 errorBuilder: (c, o, s) => Container(color: Colors.grey.shade300),
               ),
             ),

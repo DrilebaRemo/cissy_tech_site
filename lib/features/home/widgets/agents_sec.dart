@@ -11,7 +11,6 @@ class AgentsSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       child: Column(
         children: [
-          // 1. HEADLINE
           const Text(
             "CissyTech Solutions ready to go.", // Adapted for your brand
             style: TextStyle(
