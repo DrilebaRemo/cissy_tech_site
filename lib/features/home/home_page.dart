@@ -9,6 +9,7 @@ import 'widgets/socialtrend.dart';
 import 'widgets/product.dart';
 import 'widgets/packages.dart';
 import '../../shared/layout/footer.dart';
+import 'widgets/cta_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,7 +31,8 @@ class HomePage extends StatelessWidget {
                 const SocialTrendSection(),
                 const ProductivitySection(),
                 const PricingSection(),
-                const Footer(), // Temp spacer to prove scrolling works
+                const CallToActionSection(),
+                const Footer(), 
               ],
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/layout/responsive.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'infinite_scroll.dart'; 
 
 class HeroSection extends StatelessWidget {
@@ -14,7 +16,7 @@ class HeroSection extends StatelessWidget {
     return Responsive(
       // --- DESKTOP LAYOUT ---
       desktop: Container(
-        color: bgColor, // Dynamic Background
+        color: bgColor,
         padding: const EdgeInsets.fromLTRB(60, 185, 60, 0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,7 +26,7 @@ class HeroSection extends StatelessWidget {
             
             const SizedBox(width: 40),
             
-            // RIGHT SIDE
+            // RIGHT SIDE (Added Entrance Animation)
             Expanded(
               flex: 5, 
               child: SizedBox(
@@ -36,7 +38,9 @@ class HeroSection extends StatelessWidget {
                     child: _buildScrollingCards(context),
                   ),
                 ),
-              ),
+              ).animate()
+               .fade(duration: 800.ms)
+               .slideX(begin: 0.1, end: 0, curve: Curves.easeOut), // Slides in from right
             ),
           ],
         ),
@@ -44,7 +48,7 @@ class HeroSection extends StatelessWidget {
       
       // --- MOBILE LAYOUT ---
       mobile: Container(
-        color: bgColor, // Dynamic Background
+        color: bgColor,
         padding: const EdgeInsets.fromLTRB(20, 180, 20, 60),
         child: Column(
           children: [
@@ -54,7 +58,9 @@ class HeroSection extends StatelessWidget {
               height: 300,
               width: 340, 
               child: _buildScrollingCards(context),
-            ),
+            ).animate()
+             .fade(duration: 800.ms)
+             .slideY(begin: 0.1, end: 0), // Slides up on mobile
           ],
         ),
       ),
@@ -75,14 +81,141 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- CARD 1: Digital Leader ---
+  // --- TEXT CONTENT (ANIMATED) ---
+  Widget _buildTextContent(BuildContext context, {bool isCentered = false}) {
+    // Capture colors
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        
+        // 1. TYPEWRITER HEADLINE
+        DefaultTextStyle(
+          textAlign: isCentered ? TextAlign.center : TextAlign.start,
+          style: TextStyle(
+            fontSize: 48,
+            height: 1.1,
+            fontWeight: FontWeight.w800,
+            color: textColor, // Preserves Dynamic Theme
+            letterSpacing: -1.5,
+            fontFamily: 'Inter',
+          ),
+          child: AnimatedTextKit(
+            repeatForever: true,
+            pause: const Duration(seconds: 3),
+            animatedTexts: [
+              TypewriterAnimatedText(
+                'Software that\nmeans business.',
+                speed: const Duration(milliseconds: 100),
+                cursor: '|',
+              ),
+              TypewriterAnimatedText(
+                'Software that\nscales effortlessly.',
+                speed: const Duration(milliseconds: 100),
+                cursor: '|',
+              ),
+              TypewriterAnimatedText(
+                'Software that\nis secure.',
+                speed: const Duration(milliseconds: 100),
+                cursor: '|',
+              ),
+            ],
+            onTap: () {},
+          ),
+        ).animate() // Entrance
+         .fade(duration: 600.ms)
+         .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+
+        const SizedBox(height: 24),
+        
+        // 2. SUBTITLE (Staggered)
+        Text(
+          "Don't hire an expensive agency. Automate your workflow with CissyTech.",
+          textAlign: isCentered ? TextAlign.center : TextAlign.start,
+          style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5),
+        ).animate()
+         .fade(delay: 200.ms, duration: 600.ms)
+         .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+
+        const SizedBox(height: 40),
+        
+        // 3. BUTTONS (Staggered + Shimmer)
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
+          children: [
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isDark ? AppColors.primary : AppColors.textMain,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text("Start Free Trial", style: TextStyle(color: Colors.white, fontSize: 16)),
+            )
+            .animate(onPlay: (c) => c.repeat()) // Loop the shimmer
+            .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3)) // The Shine Effect
+            .animate() // Reset for entrance
+            .fade(delay: 400.ms, duration: 600.ms)
+            .slideY(begin: 0.2, end: 0),
+
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.play_arrow_rounded, color: textColor),
+              label: Text("Watch Demo", style: TextStyle(color: textColor, fontSize: 16)),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+                side: BorderSide(color: borderColor),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ).animate()
+             .fade(delay: 400.ms, duration: 600.ms)
+             .slideY(begin: 0.2, end: 0),
+          ],
+        ),
+
+        const SizedBox(height: 60),
+        
+        // 4. TRUSTED LOGOS (Staggered)
+        Wrap(
+          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 20,
+          children: [
+             Row(
+               mainAxisSize: MainAxisSize.min,
+               children: const [
+                _HoverAvatar(imagePath: "assets/images/bulk_sms.png"),
+                _HoverAvatar(imagePath: "assets/images/cissy_cloud.png"),
+                _HoverAvatar(imagePath: "assets/images/collecto.png"),
+                _HoverAvatar(imagePath: "assets/images/eworker.png"),
+               ],
+             ),
+             Text(
+               "Trusted by 500+\ncompanies",
+               style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor),
+             ),
+          ],
+        ).animate()
+         .fade(delay: 600.ms, duration: 600.ms)
+         .slideY(begin: 0.2, end: 0),
+      ],
+    );
+  }
+
+  // --- (KEEP EXISTING CARD HELPERS BELOW - NO CHANGES NEEDED) ---
   Widget _buildImageCard1(BuildContext context) {
     return Container(
       height: 340,
       width: double.infinity,
       padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: Colors.black, // Keep this dark for contrast with white text, or use cardColor
+        color: Colors.black,
         borderRadius: BorderRadius.circular(24),
         image: const DecorationImage(
           image: NetworkImage("https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"), 
@@ -98,7 +231,6 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- CARD 2: Benjamin Testimonial ---
   Widget _buildTestimonialCard1(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
@@ -108,9 +240,9 @@ class HeroSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: cardColor, // Dynamic
+        color: cardColor,
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: borderColor), // Dynamic
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
         ],
@@ -137,7 +269,6 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- CARD 3: Data/Analytics ---
   Widget _buildImageCard2(BuildContext context) {
     return Container(
       height: 320,
@@ -160,7 +291,6 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- CARD 4: Sarah Testimonial ---
   Widget _buildTestimonialCard2(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
@@ -170,9 +300,9 @@ class HeroSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: cardColor, // Dynamic
+        color: cardColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: borderColor), // Dynamic
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
         ],
@@ -199,14 +329,11 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- CARD 5: Status Card ---
   Widget _buildStatusCard(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
-    // In Dark Mode, make the green background darker/transparent so it's not blinding
     final cardBg = isDark ? Colors.green.withOpacity(0.1) : const Color(0xFFF0FDF4);
     final borderColor = isDark ? Colors.green.withOpacity(0.3) : Colors.green.shade100;
-    // In Dark Mode, the inner circle needs to be dark grey/black
     final innerCircleColor = isDark ? const Color(0xFF1E1E2D) : Colors.white;
 
     return Container(
@@ -234,100 +361,9 @@ class HeroSection extends StatelessWidget {
       ),
     );
   }
-
-
-
-  // --- TEXT CONTENT ---
-  Widget _buildTextContent(BuildContext context, {bool isCentered = false}) {
-    // Capture colors
-    final textColor = Theme.of(context).textTheme.displayLarge?.color;
-    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
-    final borderColor = Theme.of(context).dividerColor;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Column(
-      crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-      children: [
-        RichText(
-          textAlign: isCentered ? TextAlign.center : TextAlign.start,
-          text: TextSpan(
-            style: TextStyle(
-              fontSize: 48,
-              height: 1.1,
-              fontWeight: FontWeight.w800,
-              color: textColor, // Dynamic Headline
-              letterSpacing: -1.5,
-              fontFamily: 'Inter',
-            ),
-            children: const [
-              TextSpan(text: "Software that\n"),
-              TextSpan(
-                text: "means business.",
-                style: TextStyle(color: AppColors.primary),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          "Don't hire an expensive agency. Automate your workflow with CissyTech.",
-          textAlign: isCentered ? TextAlign.center : TextAlign.start,
-          style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5), // Dynamic Body
-        ),
-        const SizedBox(height: 40),
-        Wrap(
-          spacing: 16,
-          runSpacing: 16,
-          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
-          children: [
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                // Dark Mode: Primary Color, Light Mode: Dark Grey
-                backgroundColor: isDark ? AppColors.primary : AppColors.textMain,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text("Start Free Trial", style: TextStyle(color: Colors.white, fontSize: 16)),
-            ),
-            OutlinedButton.icon(
-              onPressed: () {},
-              icon: Icon(Icons.play_arrow_rounded, color: textColor), // Dynamic
-              label: Text("Watch Demo", style: TextStyle(color: textColor, fontSize: 16)), // Dynamic
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
-                side: BorderSide(color: borderColor), // Dynamic
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 60),
-        Wrap(
-          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 20,
-          children: [
-             Row(
-               mainAxisSize: MainAxisSize.min,
-               children: const [
-                _HoverAvatar(imagePath: "assets/images/bulk_sms.png"),
-                _HoverAvatar(imagePath: "assets/images/cissy_cloud.png"),
-                _HoverAvatar(imagePath: "assets/images/collecto.png"),
-                _HoverAvatar(imagePath: "assets/images/eworker.png"),
-               ],
-             ),
-             Text(
-               "Trusted by 500+\ncompanies",
-               style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor), // Dynamic
-             ),
-          ],
-        )
-      ],
-    );
-  }
 }
 
+// --- KEEP _HoverAvatar EXACTLY AS IS ---
 class _HoverAvatar extends StatefulWidget {
   final String imagePath;
   const _HoverAvatar({required this.imagePath});
@@ -341,7 +377,7 @@ class _HoverAvatarState extends State<_HoverAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    // The border color must match the background color to create the "cutout" effect
+    // Dynamic border to match background for the cutout effect
     final borderColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Align(
@@ -357,9 +393,9 @@ class _HoverAvatarState extends State<_HoverAvatar> {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: Colors.white, // Keep inner white or match cardColor depending on logo transparency
+              color: Colors.white,
               shape: BoxShape.circle,
-              border: Border.all(color: borderColor, width: 3), // Dynamic Border Match
+              border: Border.all(color: borderColor, width: 3), 
               boxShadow: [
                 if (isHovered)
                   BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))

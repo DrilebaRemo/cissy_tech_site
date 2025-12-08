@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
 import '../../core/theme/app_colors.dart';
 
 class Footer extends StatelessWidget {
@@ -6,15 +7,15 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Capture Theme Colors
+    // 1. Capture Theme Colors (Exact preservation of your logic)
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = Theme.of(context).textTheme.displayLarge?.color; // Titles
-    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;    // Paragraphs
-    final bgColor = Theme.of(context).scaffoldBackgroundColor;         // Background
+    final textColor = Theme.of(context).textTheme.displayLarge?.color; 
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;    
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;         
     final dividerColor = Theme.of(context).dividerColor;
 
     return Container(
-      color: bgColor, // Dynamic Background
+      color: bgColor,
       padding: const EdgeInsets.only(top: 80, bottom: 40, left: 40, right: 40),
       child: Center(
         child: ConstrainedBox(
@@ -37,12 +38,8 @@ class Footer extends StatelessWidget {
                         Row(
                           children: [
                             Image.asset(
-                              'assets/images/logo.png', // Ensure filename matches exactly
+                              'assets/images/cissy_logo.png', 
                               height: 32,
-                              // OPTIONAL: This tints the logo white in dark mode if it's a transparent PNG
-                              // Remove this line if your logo has specific brand colors you want to keep
-                              color: textColor, 
-                              errorBuilder: (c, o, s) => Icon(Icons.layers, size: 32, color: textColor),
                             ),
                             const SizedBox(width: 10),
                             Text(
@@ -50,7 +47,7 @@ class Footer extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 24, 
                                 fontWeight: FontWeight.bold,
-                                color: textColor, // Dynamic Color
+                                color: textColor,
                               ),
                             ),
                           ],
@@ -58,18 +55,18 @@ class Footer extends StatelessWidget {
                         const SizedBox(height: 20),
                         Text(
                           "Social media management. Using AI.",
-                          style: TextStyle(color: bodyColor, fontSize: 16), // Dynamic Color
+                          style: TextStyle(color: bodyColor, fontSize: 16),
                         ),
                         const SizedBox(height: 24),
-                        // Social Icons
+                        // Social Icons (Now Animated)
                         Row(
                           children: const [
-                            _SocialIcon(Icons.facebook),
-                            _SocialIcon(Icons.camera_alt),
-                            _SocialIcon(Icons.close),
-                            _SocialIcon(Icons.business),
-                            _SocialIcon(Icons.music_note),
-                            _SocialIcon(Icons.play_circle),
+                            _AnimatedSocialIcon(Icons.facebook),
+                            _AnimatedSocialIcon(Icons.camera_alt),
+                            _AnimatedSocialIcon(Icons.close),
+                            _AnimatedSocialIcon(Icons.business),
+                            _AnimatedSocialIcon(Icons.music_note),
+                            _AnimatedSocialIcon(Icons.play_circle),
                           ],
                         ),
                       ],
@@ -107,17 +104,10 @@ class Footer extends StatelessWidget {
                           style: TextStyle(color: bodyColor, fontSize: 15, height: 1.5),
                         ),
                         const SizedBox(height: 24),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            // In Dark mode, make button White text on Primary Color
-                            // In Light mode, make button White text on Dark Grey (Ocoya style)
-                            backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: const Text("Join Community Group"),
+                        // Animated Button
+                        _AnimatedButton(
+                          isDark: isDark, 
+                          text: "Join Community Group"
                         ),
                       ],
                     ),
@@ -143,7 +133,9 @@ class Footer extends StatelessWidget {
                 ],
               ),
             ],
-          ),
+          ).animate() // Main Entrance Animation
+           .fade(duration: 800.ms)
+           .slideY(begin: 0.1, end: 0, curve: Curves.easeOut),
         ),
       ),
     );
@@ -160,7 +152,6 @@ class _FooterColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access Theme Data inside the helper
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
 
@@ -173,13 +164,8 @@ class _FooterColumn extends StatelessWidget {
           const SizedBox(height: 20),
           ...links.map((link) => Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Text(
-                link,
-                style: TextStyle(color: bodyColor, fontSize: 15),
-              ),
-            ),
+            // Replaced static Text with Animated Link Widget
+            child: _HoverLink(text: link, baseColor: bodyColor),
           )),
         ],
       ),
@@ -187,18 +173,116 @@ class _FooterColumn extends StatelessWidget {
   }
 }
 
-class _SocialIcon extends StatelessWidget {
-  final IconData icon;
-  const _SocialIcon(this.icon);
+// --- NEW ANIMATED LINK WIDGET ---
+class _HoverLink extends StatefulWidget {
+  final String text;
+  final Color? baseColor;
+
+  const _HoverLink({required this.text, required this.baseColor});
+
+  @override
+  State<_HoverLink> createState() => _HoverLinkState();
+}
+
+class _HoverLinkState extends State<_HoverLink> {
+  bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    // Icon color adapts to theme (Black in Light Mode, White in Dark Mode)
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        // Slide right by 5px on hover
+        transform: isHovered ? Matrix4.translationValues(5, 0, 0) : Matrix4.identity(),
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 200),
+          style: TextStyle(
+            // Change color to Primary Blue on hover, otherwise use baseColor
+            color: isHovered ? AppColors.primary : widget.baseColor,
+            fontSize: 15,
+            fontWeight: isHovered ? FontWeight.w500 : FontWeight.normal,
+          ),
+          child: Text(widget.text),
+        ),
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED SOCIAL ICON ---
+class _AnimatedSocialIcon extends StatefulWidget {
+  final IconData icon;
+  const _AnimatedSocialIcon(this.icon);
+
+  @override
+  State<_AnimatedSocialIcon> createState() => _AnimatedSocialIconState();
+}
+
+class _AnimatedSocialIconState extends State<_AnimatedSocialIcon> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
     final iconColor = Theme.of(context).iconTheme.color;
 
-    return Padding(
-      padding: const EdgeInsets.only(right: 16),
-      child: Icon(icon, size: 24, color: iconColor),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.only(right: 16),
+        // Lift up by 3px on hover
+        transform: isHovered ? Matrix4.translationValues(0, -3, 0) : Matrix4.identity(),
+        child: Icon(
+          widget.icon, 
+          size: 24, 
+          // Turn Blue on hover
+          color: isHovered ? AppColors.primary : iconColor
+        ),
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED BUTTON ---
+class _AnimatedButton extends StatefulWidget {
+  final bool isDark;
+  final String text;
+
+  const _AnimatedButton({required this.isDark, required this.text});
+
+  @override
+  State<_AnimatedButton> createState() => _AnimatedButtonState();
+}
+
+class _AnimatedButtonState extends State<_AnimatedButton> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedScale(
+        scale: isHovered ? 1.05 : 1.0, // Scale up 5% on hover
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: widget.isDark ? AppColors.primary : const Color(0xFF1F2937),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: isHovered ? 5 : 0, // Add shadow on hover
+          ),
+          child: Text(widget.text),
+        ),
+      ),
     );
   }
 }
