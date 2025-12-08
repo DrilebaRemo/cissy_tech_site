@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-// 1. IMPORT RESPONSIVE
 import '../../../shared/layout/responsive.dart';
 
 class ProductivitySection extends StatelessWidget {
@@ -8,11 +7,15 @@ class ProductivitySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 2. DEFINE THE VARIABLE
     bool isMobile = Responsive.isMobile(context);
+    
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
 
     return Container(
-      color: Colors.white,
+      color: bgColor, // <--- Dynamic Background
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       child: Center(
         child: ConstrainedBox(
@@ -20,20 +23,21 @@ class ProductivitySection extends StatelessWidget {
           child: Column(
             children: [
               // HEADER
-              const Text(
+              Text(
                 "Maximum Productivity",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -1.0,
+                  color: textColor, // <--- Dynamic Text
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 "Everything you need to scale your operations without the headache.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: AppColors.textBody),
+                style: TextStyle(fontSize: 18, color: bodyColor), // <--- Dynamic Text
               ),
               const SizedBox(height: 60),
 
@@ -44,12 +48,12 @@ class ProductivitySection extends StatelessWidget {
                     _BentoCard(
                       height: 320,
                       padding: EdgeInsets.zero,
-                      child: _buildAnalyticsContent(),
+                      child: _buildAnalyticsContent(context),
                     ),
                     const SizedBox(height: 20),
                     _BentoCard(
                       height: 320,
-                      child: _buildStatusContent(),
+                      child: _buildStatusContent(context),
                     ),
                   ],
                 )
@@ -62,7 +66,7 @@ class ProductivitySection extends StatelessWidget {
                       child: _BentoCard(
                         height: 320,
                         padding: EdgeInsets.zero,
-                        child: _buildAnalyticsContent(),
+                        child: _buildAnalyticsContent(context),
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -70,7 +74,7 @@ class ProductivitySection extends StatelessWidget {
                       flex: 1,
                       child: _BentoCard(
                         height: 320,
-                        child: _buildStatusContent(),
+                        child: _buildStatusContent(context),
                       ),
                     ),
                   ],
@@ -82,21 +86,21 @@ class ProductivitySection extends StatelessWidget {
               if (isMobile)
                 Column(
                   children: [
-                    _buildSmallFeature("99.9% Uptime", Icons.cloud_done, Colors.green),
+                    _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green),
                     const SizedBox(height: 20),
-                    _buildSmallFeature("24/7 Support", Icons.headset_mic, Colors.blue),
+                    _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue),
                     const SizedBox(height: 20),
-                    _buildSmallFeature("Open API", Icons.code, Colors.orange),
+                    _buildSmallFeature(context, "Open API", Icons.code, Colors.orange),
                   ],
                 )
               else
                 Row(
                   children: [
-                    Expanded(child: _buildSmallFeature("99.9% Uptime", Icons.cloud_done, Colors.green)),
+                    Expanded(child: _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green)),
                     const SizedBox(width: 20),
-                    Expanded(child: _buildSmallFeature("24/7 Support", Icons.headset_mic, Colors.blue)),
+                    Expanded(child: _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue)),
                     const SizedBox(width: 20),
-                    Expanded(child: _buildSmallFeature("Open API", Icons.code, Colors.orange)),
+                    Expanded(child: _buildSmallFeature(context, "Open API", Icons.code, Colors.orange)),
                   ],
                 ),
 
@@ -108,7 +112,7 @@ class ProductivitySection extends StatelessWidget {
                   children: [
                     _BentoCard(
                       height: 320,
-                      child: _buildTaskListContent(),
+                      child: _buildTaskListContent(context),
                     ),
                     const SizedBox(height: 20),
                     _BentoCard(
@@ -126,7 +130,7 @@ class ProductivitySection extends StatelessWidget {
                       flex: 1,
                       child: _BentoCard(
                         height: 320,
-                        child: _buildTaskListContent(),
+                        child: _buildTaskListContent(context),
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -147,9 +151,12 @@ class ProductivitySection extends StatelessWidget {
     );
   }
 
-  // --- CONTENT BUILDERS (Same as before) ---
+  // --- CONTENT BUILDERS ---
 
-  Widget _buildAnalyticsContent() {
+  Widget _buildAnalyticsContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
     return Stack(
       children: [
         Padding(
@@ -157,9 +164,9 @@ class ProductivitySection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Real-time Analytics", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text("Real-time Analytics", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
               const SizedBox(height: 8),
-              const Text("Track performance across all nodes.", style: TextStyle(color: AppColors.textBody)),
+              Text("Track performance across all nodes.", style: TextStyle(color: bodyColor)),
             ],
           ),
         ),
@@ -176,27 +183,33 @@ class ProductivitySection extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusContent() {
+  Widget _buildStatusContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           width: 80, height: 80,
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.1),
+            color: isDark ? Colors.green.withOpacity(0.2) : Colors.green.withOpacity(0.1),
             shape: BoxShape.circle,
           ),
           child: const Icon(Icons.check_circle, color: Colors.green, size: 40),
         ),
         const SizedBox(height: 20),
-        const Text("All Systems Operational", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        Text("All Systems Operational", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
         const SizedBox(height: 8),
-        const Text("Last check: 2m ago", style: TextStyle(color: AppColors.textBody, fontSize: 14)),
+        Text("Last check: 2m ago", style: TextStyle(color: bodyColor, fontSize: 14)),
       ],
     );
   }
 
-  Widget _buildSmallFeature(String title, IconData icon, Color color) {
+  Widget _buildSmallFeature(BuildContext context, String title, IconData icon, Color color) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+
     return _BentoCard(
       height: 160,
       child: Column(
@@ -204,38 +217,46 @@ class ProductivitySection extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 32),
           const SizedBox(height: 12),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
         ],
       ),
     );
   }
 
-  Widget _buildTaskListContent() {
+  Widget _buildTaskListContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Optimization", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        Text("Optimization", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
         const SizedBox(height: 20),
-        _checkItem("Cache cleared", true),
-        _checkItem("Database optimized", true),
-        _checkItem("CDN synced", true),
-        _checkItem("Backups completed", false),
+        _checkItem(context, "Cache cleared", true),
+        _checkItem(context, "Database optimized", true),
+        _checkItem(context, "CDN synced", true),
+        _checkItem(context, "Backups completed", false),
       ],
     );
   }
 
-  Widget _checkItem(String text, bool checked) {
+  Widget _checkItem(BuildContext context, String text, bool checked) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final disabledColor = Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
           Icon(
             checked ? Icons.check_circle : Icons.circle_outlined, 
-            color: checked ? AppColors.primary : Colors.grey, 
+            color: checked ? AppColors.primary : disabledColor, 
             size: 20
           ),
           const SizedBox(width: 10),
-          Text(text, style: TextStyle(color: checked ? Colors.black : Colors.grey, fontWeight: FontWeight.w500)),
+          Text(text, style: TextStyle(
+            color: checked ? textColor : disabledColor, 
+            fontWeight: FontWeight.w500)
+          ),
         ],
       ),
     );
@@ -290,13 +311,17 @@ class _BentoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 2. Capture Card Colors
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+
     return Container(
       height: height,
       padding: padding ?? const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
+        color: cardColor, // <--- Dynamic Card Background
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: borderColor), // <--- Dynamic Border
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),

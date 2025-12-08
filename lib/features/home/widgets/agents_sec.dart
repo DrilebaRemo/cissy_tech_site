@@ -6,17 +6,24 @@ class AgentsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Capture Dynamic Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
     return Container(
-      color: Colors.white,
+      width: double.infinity,
+      color: bgColor, // <--- CHANGED: Dynamic Background
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       child: Column(
         children: [
-          const Text(
-            "CissyTech Solutions ready to go.", // Adapted for your brand
+          // 1. HEADLINE
+          Text(
+            "CissyTech Solutions ready to go.",
             style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.w800,
-              color: Colors.black,
+              color: textColor, // <--- CHANGED: Dynamic Text
               letterSpacing: -1.5,
             ),
             textAlign: TextAlign.center,
@@ -25,11 +32,11 @@ class AgentsSection extends StatelessWidget {
           const SizedBox(height: 16),
 
           // 2. SUBTITLE
-          const Text(
+          Text(
             "Templates designed to automate your workflow, manage data, \nand boost engagement. Or build your own custom solution!",
             style: TextStyle(
               fontSize: 18,
-              color: AppColors.textBody,
+              color: bodyColor, // <--- CHANGED: Dynamic Text
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -38,26 +45,28 @@ class AgentsSection extends StatelessWidget {
           const SizedBox(height: 60),
 
           // 3. THE CARDS
-          // We use Wrap so if the screen is too small, they stack automatically
           Wrap(
-            spacing: 24, // Gap between cards horizontally
-            runSpacing: 24, // Gap between cards vertically
+            spacing: 24,
+            runSpacing: 24,
             alignment: WrapAlignment.center,
             children: [
               _buildCard(
+                context, // Pass context
                 title: "Social Poster",
                 description: "Multi-channel posting with automatic post creation.",
-                image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80", // Social media placeholder
+                image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80", 
               ),
               _buildCard(
+                context, // Pass context
                 title: "DM Chatbot",
                 description: "Smart replies and support through DMs via chatbots.",
-                image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80", // Chat placeholder
+                image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80", 
               ),
               _buildCard(
+                context, // Pass context
                 title: "Comment-to-DM",
                 description: "Keyword-based link promotions for discounts or courses.",
-                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80", // Mobile notification placeholder
+                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80", 
               ),
             ],
           ),
@@ -66,82 +75,78 @@ class AgentsSection extends StatelessWidget {
     );
   }
 
-  // A helper method to build the individual cards
-  Widget _buildCard({required String title, required String description, required String image}) {
+  Widget _buildCard(BuildContext context, {required String title, required String description, required String image}) {
+    // Capture colors inside the widget
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      width: 350, // Fixed width for desktop consistency
-      height: 480,
-      padding: const EdgeInsets.all(32),
+      width: 350,
+      height: 480, 
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB), // Very light grey (almost white)
+        color: cardColor, // <--- CHANGED: Dynamic Card Background
         borderRadius: BorderRadius.circular(24),
-        // No border, just subtle background color contrast
+        border: Border.all(color: borderColor), // <--- Added Border for definition
       ),
       child: Column(
         children: [
-          // Title
           Padding(
-            padding: const EdgeInsets.fromLTRB(32, 32, 32,0),
-            child:Column(
+            padding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+            child: Column(
               children: [
                 Text(
-                    title,
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        letterSpacing: -0.5,
-                    ),
+                  title,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: textColor, // <--- CHANGED: Dynamic Text
+                    letterSpacing: -0.5,
+                  ),
                 ),
                 const SizedBox(height: 12),
-          
-          // Description
                 Text(
-                description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                color: AppColors.textBody,
-                fontSize: 16,
-                height: 1.5,
+                  description,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: bodyColor, // <--- CHANGED: Dynamic Text
+                    fontSize: 16,
+                    height: 1.5,
+                  ),
                 ),
-            ),
-            const SizedBox(height: 24),
-          
-          // "See pricing" Link
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                const Text(
-                    "See pricing",
-                    style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "See pricing",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: textColor, // <--- CHANGED
+                      ),
                     ),
+                    const SizedBox(width: 4),
+                    Icon(Icons.chevron_right, size: 16, color: bodyColor),
+                  ],
                 ),
-                const SizedBox(width: 4),
-                Icon(Icons.chevron_right, size: 16, color: Colors.black.withOpacity(0.7)),
-                ],
+              ],
             ),
-        ],
-    ),
-),
-
+          ),
 
           const Spacer(),
 
-          // Bottom Image (Mockup)
+          // The Image Container
           Container(
-            height: 180,
+            height: 180, 
             width: double.infinity,
-            margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            margin: const EdgeInsets.fromLTRB(24, 0, 24, 24), 
             decoration: BoxDecoration(
-                color: Colors.white,
-              borderRadius:  BorderRadius.circular(16),
-              image: DecorationImage(
-                image: NetworkImage(image),
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
-              ),
+              // In Dark Mode, make the inner box Black. In Light Mode, make it White.
+              color: isDark ? Colors.black : Colors.white, 
+              borderRadius: BorderRadius.circular(16), 
+              border: Border.all(color: borderColor),
               boxShadow: [
                  BoxShadow(
                   color: Colors.black.withOpacity(0.08),
@@ -149,6 +154,11 @@ class AgentsSection extends StatelessWidget {
                   offset: const Offset(0, 5),
                 ),
               ],
+              image: DecorationImage(
+                image: NetworkImage(image),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter, 
+              ),
             ),
           ),
         ],

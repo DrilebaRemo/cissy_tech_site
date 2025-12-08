@@ -6,8 +6,15 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Capture Theme Colors
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color; // Titles
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;    // Paragraphs
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;         // Background
+    final dividerColor = Theme.of(context).dividerColor;
+
     return Container(
-      color: Colors.white,
+      color: bgColor, // Dynamic Background
       padding: const EdgeInsets.only(top: 80, bottom: 40, left: 40, right: 40),
       child: Center(
         child: ConstrainedBox(
@@ -15,10 +22,9 @@ class Footer extends StatelessWidget {
           child: Column(
             children: [
               // --- TOP SECTION (Links & Logo) ---
-              // We use Wrap so it automatically stacks on smaller screens
               Wrap(
-                spacing: 40, // Horizontal gap
-                runSpacing: 40, // Vertical gap when wrapped
+                spacing: 40,
+                runSpacing: 40,
                 alignment: WrapAlignment.spaceBetween,
                 children: [
                   // COLUMN 1: Brand & Socials
@@ -27,36 +33,43 @@ class Footer extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Logo (Reusing your asset)
+                        // Logo & Brand Name
                         Row(
                           children: [
                             Image.asset(
-                              'assets/images/cissy_logo.png',
+                              'assets/images/logo.png', // Ensure filename matches exactly
                               height: 32,
-                              errorBuilder: (c, o, s) => const Icon(Icons.layers, size: 32),
+                              // OPTIONAL: This tints the logo white in dark mode if it's a transparent PNG
+                              // Remove this line if your logo has specific brand colors you want to keep
+                              color: textColor, 
+                              errorBuilder: (c, o, s) => Icon(Icons.layers, size: 32, color: textColor),
                             ),
                             const SizedBox(width: 10),
-                            const Text(
+                            Text(
                               "CissyTech",
-                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 24, 
+                                fontWeight: FontWeight.bold,
+                                color: textColor, // Dynamic Color
+                              ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 20),
-                        const Text(
+                        Text(
                           "Social media management. Using AI.",
-                          style: TextStyle(color: AppColors.textBody, fontSize: 16),
+                          style: TextStyle(color: bodyColor, fontSize: 16), // Dynamic Color
                         ),
                         const SizedBox(height: 24),
                         // Social Icons
                         Row(
-                          children: [
+                          children: const [
                             _SocialIcon(Icons.facebook),
-                            _SocialIcon(Icons.camera_alt), // Instagram
-                            _SocialIcon(Icons.close),      // X (Twitter)
-                            _SocialIcon(Icons.business),   // LinkedIn
-                            _SocialIcon(Icons.music_note), // TikTok
-                            _SocialIcon(Icons.play_circle),// YouTube
+                            _SocialIcon(Icons.camera_alt),
+                            _SocialIcon(Icons.close),
+                            _SocialIcon(Icons.business),
+                            _SocialIcon(Icons.music_note),
+                            _SocialIcon(Icons.play_circle),
                           ],
                         ),
                       ],
@@ -64,21 +77,21 @@ class Footer extends StatelessWidget {
                   ),
 
                   // COLUMN 2: Links
-                  _FooterColumn(
+                  const _FooterColumn(
                     title: "Links",
-                    links: const ["Pricing", "Integrations", "Features", "Login"],
+                    links: ["Pricing", "Integrations", "Features", "Login"],
                   ),
 
                   // COLUMN 3: Support
-                  _FooterColumn(
+                  const _FooterColumn(
                     title: "Support",
-                    links: const ["Help Center", "Service status", "Terms of service", "Privacy policy", "Cookie policy", "GDPR"],
+                    links: ["Help Center", "Service status", "Terms of service", "Privacy policy", "Cookie policy", "GDPR"],
                   ),
 
                   // COLUMN 4: Resources
-                  _FooterColumn(
+                  const _FooterColumn(
                     title: "Resources",
-                    links: const ["Blog", "Affiliates", "Roadmap"],
+                    links: ["Blog", "Affiliates", "Roadmap"],
                   ),
 
                   // COLUMN 5: Community
@@ -87,17 +100,19 @@ class Footer extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Community", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text("Community", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
                         const SizedBox(height: 20),
-                        const Text(
+                        Text(
                           "Join our community to learn how to use all of our tools faster and better.",
-                          style: TextStyle(color: AppColors.textBody, fontSize: 15, height: 1.5),
+                          style: TextStyle(color: bodyColor, fontSize: 15, height: 1.5),
                         ),
                         const SizedBox(height: 24),
                         ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1F2937),
+                            // In Dark mode, make button White text on Primary Color
+                            // In Light mode, make button White text on Dark Grey (Ocoya style)
+                            backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -113,7 +128,7 @@ class Footer extends StatelessWidget {
               const SizedBox(height: 80),
               
               // --- DIVIDER ---
-              Divider(color: Colors.grey.shade200),
+              Divider(color: dividerColor),
               
               const SizedBox(height: 30),
 
@@ -123,7 +138,7 @@ class Footer extends StatelessWidget {
                 children: [
                   Text(
                     "© Copyright CissyTech Ltd. All Rights Reserved.",
-                    style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                    style: TextStyle(color: bodyColor?.withOpacity(0.7), fontSize: 14),
                   ),
                 ],
               ),
@@ -145,12 +160,16 @@ class _FooterColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Access Theme Data inside the helper
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
     return SizedBox(
-      width: 140, // Fixed width for alignment
+      width: 140, 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
           const SizedBox(height: 20),
           ...links.map((link) => Padding(
             padding: const EdgeInsets.only(bottom: 12),
@@ -158,7 +177,7 @@ class _FooterColumn extends StatelessWidget {
               cursor: SystemMouseCursors.click,
               child: Text(
                 link,
-                style: const TextStyle(color: AppColors.textBody, fontSize: 15),
+                style: TextStyle(color: bodyColor, fontSize: 15),
               ),
             ),
           )),
@@ -174,9 +193,12 @@ class _SocialIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Icon color adapts to theme (Black in Light Mode, White in Dark Mode)
+    final iconColor = Theme.of(context).iconTheme.color;
+
     return Padding(
       padding: const EdgeInsets.only(right: 16),
-      child: Icon(icon, size: 24, color: Colors.black),
+      child: Icon(icon, size: 24, color: iconColor),
     );
   }
 }

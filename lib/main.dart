@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'features/home/home_page.dart';
-import 'core/theme/app_colors.dart';
+import 'core/theme/app_theme.dart';
+import 'core/theme/theme_controller.dart'; // Import the controller
 
 void main() {
   runApp(const CissyTechApp());
@@ -11,19 +12,24 @@ class CissyTechApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Cissy Technologies Limited',
-      debugShowCheckedModeBanner: false,
-      // We set the global theme color to your Brand Blue
-      theme: ThemeData(
-        primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: AppColors.background,
-        useMaterial3: true,
-        // This ensures the font looks good by default
-        fontFamily: 'Inter', 
-      ),
-      // This tells Flutter: "Start the app here"
-      home: const HomePage(),
+    // Listen to the ThemeController
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeController.instance,
+      builder: (context, currentMode, child) {
+        return MaterialApp(
+          title: 'Cissy Technologies Limited',
+          debugShowCheckedModeBanner: false,
+          
+          // Define both themes
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          
+          // Use the current mode from the controller
+          themeMode: currentMode, 
+          
+          home: const HomePage(),
+        );
+      },
     );
   }
 }

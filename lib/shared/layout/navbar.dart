@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/theme_controller.dart';
 
 class Navbar extends StatelessWidget {
   const Navbar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 1. Check if we are on mobile
     final bool isMobile = MediaQuery.of(context).size.width < 800;
+    
+    // 1. Get Dynamic Colors
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    final iconColor = Theme.of(context).iconTheme.color;
 
     return Center(
       child: Container(
         height: 70,
-        // Responsive margins: Smaller on mobile so it looks wider
         margin: EdgeInsets.only(
           top: 20, 
           left: isMobile ? 16 : 24, 
           right: isMobile ? 16 : 24
         ),
-        constraints: const BoxConstraints(maxWidth: 1200), // Max width constraint
+        constraints: const BoxConstraints(maxWidth: 1200),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -36,27 +42,37 @@ class Navbar extends StatelessWidget {
           children: [
             // --- LEFT: LOGO ---
             Image.asset(
-              'assets/images/cissy_logo.png', 
+              'assets/images/cissy_logo.png', // Ensure this matches your file name
               height: 28, 
-              errorBuilder: (c,o,s) => const Icon(Icons.layers)
             ),
             const SizedBox(width: 8),
-            const Text(
+            Text(
               "CissyTech", 
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)
             ),
 
-            // --- SPACER 1 ---
-            // This pushes everything after the logo to the right
+            // --- SPACER ---
             const Spacer(),
 
+            // --- THEME TOGGLE (Visible on Desktop, moved to menu on Mobile) ---
+            if (!isMobile) ...[
+               IconButton(
+                onPressed: () {
+                  ThemeController.instance.toggleTheme();
+                },
+                icon: Icon(
+                  isDark ? Icons.light_mode : Icons.dark_mode_outlined,
+                  color: iconColor,
+                ),
+              ),
+              const SizedBox(width: 10),
+            ],
+
             // --- CENTER & RIGHT CONTENT ---
-            
             if (isMobile) ...[
-              // MOBILE LAYOUT: Logo - Spacer - Icon
-              // Because there is only 1 spacer, this icon gets pushed to the far right
+              // MOBILE LAYOUT
               IconButton(
-                icon: const Icon(Icons.menu, color: Colors.black),
+                icon: Icon(Icons.menu, color: iconColor),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -65,27 +81,23 @@ class Navbar extends StatelessWidget {
                 },
               ),
             ] else ...[
-              // DESKTOP LAYOUT: Logo - Spacer - Links - Spacer - Buttons
-              
-              // 1. Navigation Links
-              _navLink("Features"),
-              _navLink("Products"),
-              _navLink("Pricing"),
-              _navLink("Contact"),
+              // DESKTOP LAYOUT
+              _navLink("Features", textColor),
+              _navLink("Products", textColor),
+              _navLink("Pricing", textColor),
+              _navLink("Contact", textColor),
 
-              // 2. Second Spacer to push buttons to the end
-              const Spacer(),
+              const SizedBox(width: 20),
 
-              // 3. Action Buttons
               TextButton(
                 onPressed: () {}, 
-                child: const Text("Login", style: TextStyle(color: Colors.black))
+                child: Text("Login", style: TextStyle(color: textColor)),
               ),
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1F2937),
+                  backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
                   foregroundColor: Colors.white,
                 ),
                 child: const Text("Get Started"),
@@ -97,20 +109,23 @@ class Navbar extends StatelessWidget {
     );
   }
 
-  Widget _navLink(String text) {
+  Widget _navLink(String text, Color? color) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(text, style: const TextStyle(fontWeight: FontWeight.w500)),
+      child: Text(text, style: TextStyle(fontWeight: FontWeight.w500, color: color)),
     );
   }
 }
 
-// (Keep your _MobileMenuDialog class exactly as it was before)
 class _MobileMenuDialog extends StatelessWidget {
   const _MobileMenuDialog();
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final iconColor = Theme.of(context).iconTheme.color;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(20),
@@ -118,8 +133,9 @@ class _MobileMenuDialog extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: bgColor,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Theme.of(context).dividerColor),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -128,19 +144,40 @@ class _MobileMenuDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Menu", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close)),
+                Text("Menu", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+                // FIX 1: Removed 'const' because textColor is dynamic
+                IconButton(
+                  onPressed: () => Navigator.pop(context), 
+                  icon: Icon(Icons.close, color: textColor)
+                ),
               ],
             ),
             const Divider(),
-            _mobileLink("Features"),
-            _mobileLink("Products"),
-            _mobileLink("Pricing"),
-            _mobileLink("Contact"),
+            // Pass the color to the helper function
+            _mobileLink("Features", textColor),
+            _mobileLink("Products", textColor),
+            _mobileLink("Pricing", textColor),
+            _mobileLink("Contact", textColor),
+            
             const SizedBox(height: 20),
+            
+            ListTile(
+              leading: Icon(Icons.brightness_6, color: iconColor),
+              title: Text("Switch Theme", style: TextStyle(color: textColor)),
+              onTap: () {
+                ThemeController.instance.toggleTheme();
+                Navigator.pop(context);
+              },
+            ),
+            
+            const SizedBox(height: 10),
+            
             ElevatedButton(
               onPressed: () {},
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary, 
+                foregroundColor: Colors.white
+              ),
               child: const Text("Get Started"),
             ),
           ],
@@ -149,10 +186,11 @@ class _MobileMenuDialog extends StatelessWidget {
     );
   }
 
-  Widget _mobileLink(String text) {
+  // FIX 2: Added 'color' parameter here
+  Widget _mobileLink(String text, Color? color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Text(text, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+      child: Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: color)),
     );
   }
 }

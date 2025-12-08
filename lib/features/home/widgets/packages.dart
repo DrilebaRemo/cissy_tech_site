@@ -13,41 +13,52 @@ class _PricingSectionState extends State<PricingSection> {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Toggle Background: Light Grey vs Dark Grey
+    final toggleBg = isDark ? const Color(0xFF1F2937) : Colors.grey.shade100;
+
     return Container(
-      color: Colors.white,
+      width: double.infinity,
+      color: bgColor, // Dynamic Background
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       child: Column(
         children: [
           // 1. HEADLINE
-          const Text(
+          Text(
             "Flexible Plans",
             style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w800,
               letterSpacing: -1.0,
+              color: textColor, // Dynamic
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             "Choose a plan that scales with your business needs.",
-            style: TextStyle(fontSize: 18, color: AppColors.textBody),
+            style: TextStyle(fontSize: 18, color: bodyColor), // Dynamic
             textAlign: TextAlign.center,
           ),
           
           const SizedBox(height: 40),
 
-          // 2. TOGGLE SWITCH (Monthly / Yearly)
+          // 2. TOGGLE SWITCH
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color: toggleBg, // Dynamic
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildOption("Monthly", !isYearly),
-                _buildOption("Yearly (save 20%)", isYearly),
+                _buildOption("Monthly", !isYearly, context),
+                _buildOption("Yearly (save 20%)", isYearly, context),
               ],
             ),
           ),
@@ -55,7 +66,6 @@ class _PricingSectionState extends State<PricingSection> {
           const SizedBox(height: 60),
 
           // 3. PRICING CARDS
-          // We use Wrap to ensure responsiveness (stacks on mobile, row on desktop)
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1200),
@@ -127,14 +137,21 @@ class _PricingSectionState extends State<PricingSection> {
   }
 
   // --- HELPER FOR TOGGLE ---
-  Widget _buildOption(String text, bool isSelected) {
+  Widget _buildOption(String text, bool isSelected, BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Selected Tab Color: White (Light) or Dark Grey Card (Dark)
+    final selectedColor = isDark ? const Color(0xFF374151) : Colors.white;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final unselectedTextColor = Theme.of(context).textTheme.bodyLarge?.color;
+
     return GestureDetector(
       onTap: () => setState(() => isYearly = text.contains("Yearly")),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: isSelected ? selectedColor : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           boxShadow: isSelected
               ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
@@ -144,7 +161,7 @@ class _PricingSectionState extends State<PricingSection> {
           text,
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: isSelected ? Colors.black : Colors.grey.shade600,
+            color: isSelected ? textColor : unselectedTextColor,
           ),
         ),
       ),
@@ -172,13 +189,19 @@ class _PricingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
     return Container(
-      width: 280, // Fixed width to match the columns look
+      width: 280,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor, // Dynamic
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: borderColor), // Dynamic
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -197,24 +220,30 @@ class _PricingCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(color: borderColor),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   title,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor),
                 ),
               ),
               if (isPopular)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFDCFCE7), // Light green
+                    // Adaptive Green Badge: Darker green bg in dark mode
+                    color: isDark ? const Color(0xFF064E3B) : const Color(0xFFDCFCE7),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Most popular",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFF166534)),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold, 
+                      fontSize: 12, 
+                      // Lighter green text in dark mode
+                      color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF166534),
+                    ),
                   ),
                 ),
             ],
@@ -229,12 +258,12 @@ class _PricingCard extends StatelessWidget {
             children: [
               Text(
                 "\$$price",
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold, letterSpacing: -2.0),
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, letterSpacing: -2.0, color: textColor),
               ),
               const SizedBox(width: 4),
               Text(
                 isYearly ? "/month (billed yearly)" : "/month",
-                style: const TextStyle(color: AppColors.textBody, fontSize: 14),
+                style: TextStyle(color: bodyColor, fontSize: 14),
               ),
             ],
           ),
@@ -244,15 +273,15 @@ class _PricingCard extends StatelessWidget {
           // 3. Description
           Text(
             description,
-            style: const TextStyle(color: AppColors.textBody, height: 1.5),
+            style: TextStyle(color: bodyColor, height: 1.5),
           ),
 
           const SizedBox(height: 32),
-          const Divider(height: 1),
+          Divider(height: 1, color: borderColor),
           const SizedBox(height: 32),
 
           // 4. Features List
-          ...features.entries.map((entry) => _buildFeatureRow(entry.key, entry.value)),
+          ...features.entries.map((entry) => _buildFeatureRow(context, entry.key, entry.value)),
 
           const SizedBox(height: 32),
 
@@ -262,7 +291,8 @@ class _PricingCard extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF1F2937), // Dark button
+                // Dark Mode: Primary Blue. Light Mode: Dark Grey.
+                backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -275,24 +305,27 @@ class _PricingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureRow(String key, String value) {
+  Widget _buildFeatureRow(BuildContext context, String key, String value) {
     IconData icon;
-    // Simple logic to choose icon based on text key
     if (key.contains("Workspace")) icon = Icons.folder_outlined;
     else if (key.contains("User")) icon = Icons.person_outline;
     else if (key.contains("Social")) icon = Icons.camera_alt_outlined;
     else if (key.contains("AI")) icon = Icons.auto_awesome;
-    else icon = Icons.cached; // Automation
+    else icon = Icons.cached;
+
+    final iconColor = Theme.of(context).iconTheme.color;
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final valueColor = Theme.of(context).textTheme.displayLarge?.color;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.grey.shade600),
+          Icon(icon, size: 20, color: iconColor?.withOpacity(0.7)),
           const SizedBox(width: 12),
-          Text(key, style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.w500)),
+          Text(key, style: TextStyle(color: textColor, fontWeight: FontWeight.w500)),
           const Spacer(),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(value, style: TextStyle(fontWeight: FontWeight.bold, color: valueColor)),
         ],
       ),
     );

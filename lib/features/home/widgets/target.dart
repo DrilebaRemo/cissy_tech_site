@@ -6,18 +6,23 @@ class TargetAudienceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
     return Container(
-      color: Colors.white,
+      color: bgColor, // <--- Dynamic Background
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       child: Column(
         children: [
           // 1. HEADLINE
-          const Text(
+          Text(
             "Built for every stage",
             style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.w800,
-              color: Colors.black,
+              color: textColor, // <--- Dynamic Text
               letterSpacing: -1.5,
             ),
             textAlign: TextAlign.center,
@@ -26,11 +31,11 @@ class TargetAudienceSection extends StatelessWidget {
           const SizedBox(height: 16),
 
           // 2. SUBTITLE
-          const Text(
+          Text(
             "Create AI agents and automations tailored to run your business.\nCollaborate with teams or clients and plan campaigns together.",
             style: TextStyle(
               fontSize: 18,
-              color: AppColors.textBody,
+              color: bodyColor, // <--- Dynamic Text
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -45,19 +50,22 @@ class TargetAudienceSection extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: [
               _buildAudienceCard(
+                context,
                 title: "For Startups",
                 description: "Centralized planning across multiple channels using CissyTech automations.",
-                image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80", // Planner/Checklist vibe
+                image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80", 
               ),
               _buildAudienceCard(
+                context,
                 title: "For Enterprises",
                 description: "Content creation powered by AI, brand kits and customizable templates.",
-                image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80", // Analytics/Dashboard vibe
+                image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80", 
               ),
               _buildAudienceCard(
+                context,
                 title: "For Teams",
                 description: "Comprehensive team management and approval flows with member roles.",
-                image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80", // Team collaboration vibe
+                image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80", 
               ),
             ],
           ),
@@ -67,13 +75,24 @@ class TargetAudienceSection extends StatelessWidget {
   }
 
   // Helper method for the cards
-  Widget _buildAudienceCard({required String title, required String description, required String image}) {
+  Widget _buildAudienceCard(BuildContext context, {required String title, required String description, required String image}) {
+    // Capture colors for the card context
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    // For the inner mockup: White in light mode, Black in dark mode
+    final innerMockupColor = Theme.of(context).brightness == Brightness.dark 
+        ? Colors.black 
+        : Colors.white;
+
     return Container(
       width: 350,
-      height: 480, // Same height as previous section for consistency
+      height: 480, 
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB), // Light grey
+        color: cardColor, // <--- Dynamic Card Background
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor), // <--- Dynamic Border (Subtle)
       ),
       child: Column(
         children: [
@@ -84,10 +103,10 @@ class TargetAudienceSection extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: textColor, // <--- Dynamic Text
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -95,8 +114,8 @@ class TargetAudienceSection extends StatelessWidget {
                 Text(
                   description,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.textBody,
+                  style: TextStyle(
+                    color: bodyColor, // <--- Dynamic Text
                     fontSize: 16,
                     height: 1.5,
                   ),
@@ -107,15 +126,15 @@ class TargetAudienceSection extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "See pricing",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        color: textColor, // <--- Dynamic Text
                       ),
                     ),
                     const SizedBox(width: 4),
-                    Icon(Icons.chevron_right, size: 16, color: Colors.black.withOpacity(0.7)),
+                    Icon(Icons.chevron_right, size: 16, color: bodyColor?.withOpacity(0.7)),
                   ],
                 ),
               ],
@@ -128,10 +147,9 @@ class TargetAudienceSection extends StatelessWidget {
           Container(
             height: 180, 
             width: double.infinity,
-            // These margins create the "Floating" effect inside the card
             margin: const EdgeInsets.fromLTRB(32, 0, 32, 32), 
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: innerMockupColor, // <--- Dynamic Inner Background
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                  BoxShadow(
@@ -146,11 +164,10 @@ class TargetAudienceSection extends StatelessWidget {
                 alignment: Alignment.topCenter,
               ),
             ),
-            // Optional: Add an inner overlay to make it look more like a UI
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade100),
+                border: Border.all(color: borderColor), // <--- Dynamic Inner Border
               ),
             ),
           ),

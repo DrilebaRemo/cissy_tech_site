@@ -7,18 +7,24 @@ class SocialTrendSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final iconColor = Theme.of(context).iconTheme.color;
+
     return Container(
-      color: Colors.white,
+      color: bgColor, // <--- Dynamic Background
       padding: const EdgeInsets.symmetric(vertical: 80),
       child: Column(
         children: [
           // 1. HEADLINE
-          const Text(
+          Text(
             "Keep your socials on-trend.",
             style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.w800,
-              color: Colors.black,
+              color: textColor, // <--- Dynamic Text
               letterSpacing: -1.5,
             ),
             textAlign: TextAlign.center,
@@ -27,13 +33,13 @@ class SocialTrendSection extends StatelessWidget {
           const SizedBox(height: 16),
 
           // 2. SUBTITLE
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               "Consistency is key. With our intuitive calendar, you'll never\nmiss a chance to stay active and engaging.",
               style: TextStyle(
                 fontSize: 18,
-                color: AppColors.textBody,
+                color: bodyColor, // <--- Dynamic Text
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -46,16 +52,16 @@ class SocialTrendSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 "Try calendar",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  color: textColor, // <--- Dynamic Text
                   fontSize: 16,
                 ),
               ),
               const SizedBox(width: 4),
-              Icon(Icons.chevron_right, size: 18, color: Colors.black.withOpacity(0.7)),
+              Icon(Icons.chevron_right, size: 18, color: iconColor?.withOpacity(0.7)),
             ],
           ),
 
@@ -63,7 +69,7 @@ class SocialTrendSection extends StatelessWidget {
 
           // 4. THE HORIZONTAL SCROLL AREA
           const SizedBox(
-            height: 450, // Height of the card + shadows
+            height: 450, 
             child: _InfiniteHorizontalList(),
           ),
         ],
@@ -84,16 +90,15 @@ class _InfiniteHorizontalListState extends State<_InfiniteHorizontalList> {
   late ScrollController _scrollController;
   late Timer _timer;
   
-  // Fake Data for the cards
   final List<Map<String, dynamic>> _posts = [
     {
       "name": "The Modern Gamer",
       "handle": "X.com",
       "avatar": "https://i.pravatar.cc/150?img=11",
-      "icon": Icons.close, // Representing X
+      "icon": Icons.close, 
       "text": "Activision has taken its Call of Duty game down from the Microsoft Store, reportedly due to security concerns.",
       "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&q=80",
-      "iconColor": Colors.black,
+      "iconColor": Colors.black, // Will handle dynamic check later
     },
     {
       "name": "AI News Daily",
@@ -134,10 +139,8 @@ class _InfiniteHorizontalListState extends State<_InfiniteHorizontalList> {
   void _startScrolling() {
     _timer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
       if (!_scrollController.hasClients) return;
-      
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.offset;
-      // Scroll speed (1.0 is slow and smooth)
       double nextScroll = currentScroll + 1.0; 
 
       if (nextScroll >= maxScroll) {
@@ -157,21 +160,24 @@ class _InfiniteHorizontalListState extends State<_InfiniteHorizontalList> {
 
   @override
   Widget build(BuildContext context) {
+    // Capture the background color for the gradient fade
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Stack(
       children: [
         // A. The List
         ListView.builder(
           controller: _scrollController,
           scrollDirection: Axis.horizontal,
-          physics: const NeverScrollableScrollPhysics(), // Disable manual scroll
-          itemCount: 1000, // Infinite illusion
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 1000, 
           itemBuilder: (context, index) {
             final post = _posts[index % _posts.length];
             return _SocialCard(post: post);
           },
         ),
 
-        // B. Left Gradient (The White Blur)
+        // B. Left Gradient (Fade)
         Positioned(
           left: 0, top: 0, bottom: 0,
           width: 150,
@@ -180,13 +186,16 @@ class _InfiniteHorizontalListState extends State<_InfiniteHorizontalList> {
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Colors.white, Colors.white.withOpacity(0.0)],
+                colors: [
+                  bgColor, // Solid color
+                  bgColor.withOpacity(0.0) // Transparent
+                ],
               ),
             ),
           ),
         ),
 
-        // C. Right Gradient (The White Blur)
+        // C. Right Gradient (Fade)
         Positioned(
           right: 0, top: 0, bottom: 0,
           width: 150,
@@ -195,7 +204,10 @@ class _InfiniteHorizontalListState extends State<_InfiniteHorizontalList> {
               gradient: LinearGradient(
                 begin: Alignment.centerRight,
                 end: Alignment.centerLeft,
-                colors: [Colors.white, Colors.white.withOpacity(0.0)],
+                colors: [
+                  bgColor, // Solid color
+                  bgColor.withOpacity(0.0) // Transparent
+                ],
               ),
             ),
           ),
@@ -212,14 +224,27 @@ class _SocialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Capture Theme Colors for the Card
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Handle Icon Color: If it's the Black X icon, turn it White in Dark Mode
+    Color iconColor = post['iconColor'];
+    if (iconColor == Colors.black && isDark) {
+      iconColor = Colors.white;
+    }
+
     return Container(
       width: 350,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor, // <--- Dynamic Card Background
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: borderColor), // <--- Dynamic Border
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -242,18 +267,19 @@ class _SocialCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(post['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  Text(post['handle'], style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                  Text(post['name'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
+                  Text(post['handle'], style: TextStyle(color: bodyColor, fontSize: 12)),
                 ],
               ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
+                  // Slightly lighter/darker circle for the icon
+                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade50,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(post['icon'], size: 20, color: post['iconColor']),
+                child: Icon(post['icon'], size: 20, color: iconColor),
               )
             ],
           ),
@@ -265,7 +291,7 @@ class _SocialCard extends StatelessWidget {
             post['text'],
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: AppColors.textBody, fontSize: 15, height: 1.5),
+            style: TextStyle(color: bodyColor, fontSize: 15, height: 1.5), // <--- Dynamic Text
           ),
 
           const SizedBox(height: 20),

@@ -8,31 +8,32 @@ class HeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. CAPTURE THEME COLORS
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    
     return Responsive(
       // --- DESKTOP LAYOUT ---
       desktop: Container(
-        color: AppColors.background,
+        color: bgColor, // Dynamic Background
         padding: const EdgeInsets.fromLTRB(60, 185, 60, 0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LEFT SIDE (Text): Give it more space (Flex 7)
+            // LEFT SIDE
             Expanded(flex: 7, child: _buildTextContent(context)),
             
             const SizedBox(width: 40),
             
-            // RIGHT SIDE (Cards): Make it smaller (Flex 5)
+            // RIGHT SIDE
             Expanded(
               flex: 5, 
               child: SizedBox(
                 height: 700,
-                // Alignment TopCenter ensures it aligns with the text top
                 child: Align(
                   alignment: Alignment.topCenter,
-                  // CONSTRAINT: Lock width to 360px so cards look like phone widgets
                   child: SizedBox(
                     width: 450, 
-                    child: _buildScrollingCards(),
+                    child: _buildScrollingCards(context),
                   ),
                 ),
               ),
@@ -43,17 +44,16 @@ class HeroSection extends StatelessWidget {
       
       // --- MOBILE LAYOUT ---
       mobile: Container(
-        color: AppColors.background,
+        color: bgColor, // Dynamic Background
         padding: const EdgeInsets.fromLTRB(20, 180, 20, 60),
         child: Column(
           children: [
             _buildTextContent(context, isCentered: true),
             const SizedBox(height: 60),
-            // Mobile: Shorter scroll area
             SizedBox(
               height: 300,
-              width: 340, // Slightly smaller for mobile screens
-              child: _buildScrollingCards(),
+              width: 340, 
+              child: _buildScrollingCards(context),
             ),
           ],
         ),
@@ -62,27 +62,27 @@ class HeroSection extends StatelessWidget {
   }
 
   // --- THE SCROLLING CARDS LIST ---
-  Widget _buildScrollingCards() {
+  Widget _buildScrollingCards(BuildContext context) {
     return InfiniteScrollColumn(
       speed: 0.8, 
       items: [
-        _buildImageCard1(),
-        _buildTestimonialCard1(),
-        _buildImageCard2(),
-        _buildTestimonialCard2(),
-        _buildStatusCard(),
+        _buildImageCard1(context),
+        _buildTestimonialCard1(context),
+        _buildImageCard2(context),
+        _buildTestimonialCard2(context),
+        _buildStatusCard(context),
       ],
     );
   }
 
-  // --- CARD 1: Digital Leader (Smaller Height) ---
-  Widget _buildImageCard1() {
+  // --- CARD 1: Digital Leader ---
+  Widget _buildImageCard1(BuildContext context) {
     return Container(
-      height: 340, // Reduced from 300
+      height: 340,
       width: double.infinity,
-      padding: const EdgeInsets.all(40), // Reduced from 40
+      padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: AppColors.textMain, 
+        color: Colors.black, // Keep this dark for contrast with white text, or use cardColor
         borderRadius: BorderRadius.circular(24),
         image: const DecorationImage(
           image: NetworkImage("https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"), 
@@ -93,19 +93,24 @@ class HeroSection extends StatelessWidget {
       alignment: Alignment.bottomLeft,
       child: const Text(
         "Transform your company into a digital leader.",
-        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold), // Font 24 -> 20
+        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
       ),
     );
   }
 
-  // --- CARD 2: Benjamin Testimonial (Tighter Padding) ---
-  Widget _buildTestimonialCard1() {
+  // --- CARD 2: Benjamin Testimonial ---
+  Widget _buildTestimonialCard1(BuildContext context) {
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+
     return Container(
-      padding: const EdgeInsets.all(24), // Reduced from 30
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor, // Dynamic
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: borderColor), // Dynamic
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
         ],
@@ -113,16 +118,16 @@ class HeroSection extends StatelessWidget {
       child: Row(
         children: [
           const CircleAvatar(
-            radius: 24, // Smaller Avatar
+            radius: 24,
             backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=11"),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text("Benjamin Austin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text("CTO, Stanbic Bank", style: TextStyle(color: AppColors.textBody, fontSize: 13)),
+              children: [
+                Text("Benjamin Austin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
+                Text("CTO, Stanbic Bank", style: TextStyle(color: bodyColor, fontSize: 13)),
               ],
             ),
           ),
@@ -132,10 +137,10 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- CARD 3: Data/Analytics (Smaller Height) ---
-  Widget _buildImageCard2() {
+  // --- CARD 3: Data/Analytics ---
+  Widget _buildImageCard2(BuildContext context) {
     return Container(
-      height: 320, // Reduced from 280
+      height: 320,
       width: double.infinity,
       padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
@@ -156,13 +161,18 @@ class HeroSection extends StatelessWidget {
   }
 
   // --- CARD 4: Sarah Testimonial ---
-  Widget _buildTestimonialCard2() {
+  Widget _buildTestimonialCard2(BuildContext context) {
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor, // Dynamic
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: borderColor), // Dynamic
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
         ],
@@ -177,9 +187,9 @@ class HeroSection extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text("Sarah Jenkins", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text("Marketing Lead, Airtel", style: TextStyle(color: AppColors.textBody, fontSize: 13)),
+              children: [
+                Text("Sarah Jenkins", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
+                Text("Marketing Lead, Airtel", style: TextStyle(color: bodyColor, fontSize: 13)),
               ],
             ),
           ),
@@ -190,19 +200,27 @@ class HeroSection extends StatelessWidget {
   }
 
   // --- CARD 5: Status Card ---
-  Widget _buildStatusCard() {
+  Widget _buildStatusCard(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // In Dark Mode, make the green background darker/transparent so it's not blinding
+    final cardBg = isDark ? Colors.green.withOpacity(0.1) : const Color(0xFFF0FDF4);
+    final borderColor = isDark ? Colors.green.withOpacity(0.3) : Colors.green.shade100;
+    // In Dark Mode, the inner circle needs to be dark grey/black
+    final innerCircleColor = isDark ? const Color(0xFF1E1E2D) : Colors.white;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0FDF4),
+        color: cardBg, 
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.green.shade100),
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+            decoration: BoxDecoration(color: innerCircleColor, shape: BoxShape.circle),
             child: const Icon(Icons.check_circle, color: Colors.green, size: 24),
           ),
           const SizedBox(width: 16),
@@ -219,23 +237,29 @@ class HeroSection extends StatelessWidget {
 
 
 
-  // --- TEXT CONTENT (Same as before) ---
+  // --- TEXT CONTENT ---
   Widget _buildTextContent(BuildContext context, {bool isCentered = false}) {
+    // Capture colors
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         RichText(
           textAlign: isCentered ? TextAlign.center : TextAlign.start,
-          text: const TextSpan(
+          text: TextSpan(
             style: TextStyle(
               fontSize: 48,
               height: 1.1,
               fontWeight: FontWeight.w800,
-              color: AppColors.textMain,
+              color: textColor, // Dynamic Headline
               letterSpacing: -1.5,
               fontFamily: 'Inter',
             ),
-            children: [
+            children: const [
               TextSpan(text: "Software that\n"),
               TextSpan(
                 text: "means business.",
@@ -248,7 +272,7 @@ class HeroSection extends StatelessWidget {
         Text(
           "Don't hire an expensive agency. Automate your workflow with CissyTech.",
           textAlign: isCentered ? TextAlign.center : TextAlign.start,
-          style: const TextStyle(fontSize: 18, color: AppColors.textBody, height: 1.5),
+          style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5), // Dynamic Body
         ),
         const SizedBox(height: 40),
         Wrap(
@@ -259,7 +283,8 @@ class HeroSection extends StatelessWidget {
             ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.textMain,
+                // Dark Mode: Primary Color, Light Mode: Dark Grey
+                backgroundColor: isDark ? AppColors.primary : AppColors.textMain,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -267,11 +292,11 @@ class HeroSection extends StatelessWidget {
             ),
             OutlinedButton.icon(
               onPressed: () {},
-              icon: const Icon(Icons.play_arrow_rounded, color: AppColors.textMain),
-              label: const Text("Watch Demo", style: TextStyle(color: AppColors.textMain, fontSize: 16)),
+              icon: Icon(Icons.play_arrow_rounded, color: textColor), // Dynamic
+              label: Text("Watch Demo", style: TextStyle(color: textColor, fontSize: 16)), // Dynamic
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
-                side: const BorderSide(color: AppColors.border),
+                side: BorderSide(color: borderColor), // Dynamic
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
@@ -292,9 +317,9 @@ class HeroSection extends StatelessWidget {
                 _HoverAvatar(imagePath: "assets/images/eworker.png"),
                ],
              ),
-             const Text(
+             Text(
                "Trusted by 500+\ncompanies",
-               style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.textBody),
+               style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor), // Dynamic
              ),
           ],
         )
@@ -316,6 +341,9 @@ class _HoverAvatarState extends State<_HoverAvatar> {
 
   @override
   Widget build(BuildContext context) {
+    // The border color must match the background color to create the "cutout" effect
+    final borderColor = Theme.of(context).scaffoldBackgroundColor;
+
     return Align(
       widthFactor: 0.7,
       child: MouseRegion(
@@ -329,9 +357,9 @@ class _HoverAvatarState extends State<_HoverAvatar> {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Keep inner white or match cardColor depending on logo transparency
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3),
+              border: Border.all(color: borderColor, width: 3), // Dynamic Border Match
               boxShadow: [
                 if (isHovered)
                   BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))
