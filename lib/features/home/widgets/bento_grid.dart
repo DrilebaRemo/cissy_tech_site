@@ -8,24 +8,27 @@ class BentoGridSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40), // Reduced vertical padding
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20), // Adjusted horizontal padding for mobile
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1000), // Reduced max width to keep it tighter
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // --- LEFT COLUMN ---
-              Expanded(
-                child: Column(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          // 1. LISTEN TO SCREEN SIZE
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // If width is less than 900, we are on Mobile/Tablet
+              bool isMobile = constraints.maxWidth < 900;
+
+              if (isMobile) {
+                // --- MOBILE LAYOUT (Stacked) ---
+                return Column(
                   children: [
-                    // Card 1: Video (Reduced height 500 -> 380)
-                    _BentoCard(
-                      height: 380,
-                      child: _buildVideoContent(),
-                    ),
+                    // Stack them one by one
+                    _BentoCard(height: 380, child: _buildVideoContent()),
                     const SizedBox(height: 20),
-                    // Card 2: Features (Reduced height 300 -> 220)
+                    _BentoCard(height: 220, child: _buildIntegrationContent()),
+                    const SizedBox(height: 20),
+                    _BentoCard(height: 380, child: _buildApprovalContent()),
+                    const SizedBox(height: 20),
                     _BentoCard(
                       height: 220,
                       child: _buildFeatureContent(
@@ -35,37 +38,51 @@ class BentoGridSection extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-              ),
-
-              const SizedBox(width: 20), // Tighter gap
-
-              // --- RIGHT COLUMN ---
-              Expanded(
-                child: Column(
+                );
+              } else {
+                // --- DESKTOP LAYOUT (Your original Side-by-Side) ---
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Card 3: Integrations (Reduced height 300 -> 220)
-                    _BentoCard(
-                      height: 220,
-                      child: _buildIntegrationContent(),
+                    // LEFT COLUMN
+                    Expanded(
+                      child: Column(
+                        children: [
+                          _BentoCard(height: 380, child: _buildVideoContent()),
+                          const SizedBox(height: 20),
+                          _BentoCard(
+                            height: 220,
+                            child: _buildFeatureContent(
+                              "Powerful Plugins",
+                              "Design assets instantly with our built-in tools.",
+                              Icons.brush_outlined,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    // Card 4: Approvals (Reduced height 500 -> 380)
-                    _BentoCard(
-                      height: 380,
-                      child: _buildApprovalContent(),
+                    const SizedBox(width: 20),
+                    // RIGHT COLUMN
+                    Expanded(
+                      child: Column(
+                        children: [
+                          _BentoCard(height: 220, child: _buildIntegrationContent()),
+                          const SizedBox(height: 20),
+                          _BentoCard(height: 380, child: _buildApprovalContent()),
+                        ],
+                      ),
                     ),
                   ],
-                ),
-              ),
-            ],
+                );
+              }
+            },
           ),
         ),
       ),
     );
   }
 
-  // --- CONTENT BUILDERS ---
+  // --- ALL YOUR ORIGINAL BUILDERS REMAIN UNCHANGED ---
 
   Widget _buildVideoContent() {
     return Stack(
@@ -88,7 +105,6 @@ class BentoGridSection extends StatelessWidget {
           ),
         ),
         Center(
-          // Made play button smaller (80 -> 60)
           child: Container(
             width: 60,
             height: 60,
@@ -126,7 +142,7 @@ class BentoGridSection extends StatelessWidget {
 
   Widget _buildFeatureContent(String title, String desc, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.all(24), // Reduced padding inside card
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -270,7 +286,7 @@ class _BentoCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(20), // Slightly reduced radius
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.border),
       ),
       child: ClipRRect(

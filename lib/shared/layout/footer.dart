@@ -125,15 +125,6 @@ class Footer extends StatelessWidget {
                     "© Copyright CissyTech Ltd. All Rights Reserved.",
                     style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                   ),
-                  
-                  // "Made with Love"
-                  Row(
-                    children: [
-                      Text("Made with ", style: TextStyle(color: Colors.grey.shade500, fontSize: 14)),
-                      const Icon(Icons.favorite, color: Color(0xFFE9D5FF), size: 16), // Light purple heart
-                      Text(" in Uganda", style: TextStyle(color: Colors.grey.shade500, fontSize: 14)),
-                    ],
-                  )
                 ],
               ),
             ],

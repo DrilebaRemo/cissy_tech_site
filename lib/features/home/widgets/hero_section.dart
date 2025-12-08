@@ -12,7 +12,7 @@ class HeroSection extends StatelessWidget {
       // --- DESKTOP LAYOUT ---
       desktop: Container(
         color: AppColors.background,
-        padding: const EdgeInsets.fromLTRB(60, 140, 60, 0),
+        padding: const EdgeInsets.fromLTRB(60, 185, 60, 0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,7 +31,7 @@ class HeroSection extends StatelessWidget {
                   alignment: Alignment.topCenter,
                   // CONSTRAINT: Lock width to 360px so cards look like phone widgets
                   child: SizedBox(
-                    width: 480, 
+                    width: 450, 
                     child: _buildScrollingCards(),
                   ),
                 ),
@@ -44,14 +44,14 @@ class HeroSection extends StatelessWidget {
       // --- MOBILE LAYOUT ---
       mobile: Container(
         color: AppColors.background,
-        padding: const EdgeInsets.fromLTRB(20, 120, 20, 60),
+        padding: const EdgeInsets.fromLTRB(20, 180, 20, 60),
         child: Column(
           children: [
             _buildTextContent(context, isCentered: true),
             const SizedBox(height: 60),
             // Mobile: Shorter scroll area
             SizedBox(
-              height: 500,
+              height: 300,
               width: 340, // Slightly smaller for mobile screens
               child: _buildScrollingCards(),
             ),
