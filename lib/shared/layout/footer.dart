@@ -278,7 +278,7 @@ class _AnimatedButtonState extends State<_AnimatedButton> {
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            elevation: isHovered ? 5 : 0, // Add shadow on hover
+            elevation: isHovered ? 5 : 0, 
           ),
           child: Text(widget.text),
         ),

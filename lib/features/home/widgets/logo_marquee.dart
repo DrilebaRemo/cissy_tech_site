@@ -20,6 +20,7 @@ class _LogoMarqueeState extends State<LogoMarquee> {
     "assets/images/flexi.png",
     "assets/images/airtel.png",
     "assets/images/partner1.png",
+    "assets/images/hepsia.png",
   ];
 
   @override

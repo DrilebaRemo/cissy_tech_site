@@ -148,10 +148,10 @@ class _NavbarState extends State<Navbar> {
                   
                   // --- DESKTOP LAYOUT ---
                   else ...[
-                    _navLink("Products", textColor),
-                    _navLink("Services", textColor),
-                    _navLink("Company info", textColor),
-                    _navLink("Contacts", textColor),
+                      _HoverNavLink(text: "Products", color: textColor),
+                      _HoverNavLink(text: "Services", color: textColor),
+                      _HoverNavLink(text: "Company info", color: textColor),
+                      _HoverNavLink(text: "Contacts", color: textColor),
 
                     const SizedBox(width: 20),
 
@@ -179,11 +179,44 @@ class _NavbarState extends State<Navbar> {
       ),
     );
   }
+}
+class _HoverNavLink extends StatefulWidget {
+  final String text;
+  final Color? color;
 
-  Widget _navLink(String text, Color? color) {
+  const _HoverNavLink({required this.text, required this.color});
+
+  @override
+  State<_HoverNavLink> createState() => _HoverNavLinkState();
+}
+
+class _HoverNavLinkState extends State<_HoverNavLink> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(text, style: TextStyle(fontWeight: FontWeight.w500, color: color)),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          // Slight vertical lift (-2px) on hover to match the dynamic feel
+          transform: isHovered ? Matrix4.translationValues(0, -2, 0) : Matrix4.identity(),
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16, // Ensure font size matches original
+              // Change to Primary Blue on hover
+              color: isHovered ? AppColors.primary : widget.color,
+            ),
+            child: Text(widget.text),
+          ),
+        ),
+      ),
     );
   }
 }
