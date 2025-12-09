@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // --- BRAND COLORS ---
-  static const Color primary = Color(0xFF0056B3);
+  static const Color primary = Color(0xFF00A3FF);
   static const Color accent = Color(0xFFFF9900);
   
   // --- FIX: RESTORE MISSING VARIABLES (The Aliases) ---
@@ -11,7 +11,7 @@ class AppColors {
   static const Color border = lightBorder;
   static const Color textMain = lightTextMain;
   static const Color textBody = lightTextBody;
-  static const Color primaryLight = Color(0xFFE0F2FE); // Restored this missing color
+  static const Color primaryLight = Color(0xFFE0F5FF); // Restored this missing color
 
   // --- LIGHT MODE PALETTE ---
   static const Color lightBackground = Color(0xFFFFFFFF);

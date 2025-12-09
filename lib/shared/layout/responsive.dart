@@ -11,8 +11,6 @@ class Responsive extends StatelessWidget {
     this.tablet,
     required this.desktop,
   });
-
-  // This static method helps us check screen size anywhere
   static bool isMobile(BuildContext context) =>
       MediaQuery.of(context).size.width < 650;
 

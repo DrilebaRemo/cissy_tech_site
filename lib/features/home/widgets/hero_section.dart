@@ -17,36 +17,55 @@ class HeroSection extends StatelessWidget {
       // --- DESKTOP LAYOUT ---
       desktop: Container(
         color: bgColor,
-        padding: const EdgeInsets.fromLTRB(60, 185, 60, 0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // LEFT SIDE
-            Expanded(flex: 7, child: _buildTextContent(context)),
-            
-            const SizedBox(width: 40),
-            
-            // RIGHT SIDE (Added Entrance Animation)
-            Expanded(
-              flex: 5, 
-              child: SizedBox(
-                height: 700,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: SizedBox(
-                    width: 450, 
-                    child: _buildScrollingCards(context),
+        // CHANGED: Use alignment to center the constrained content
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          // CHANGED: Constrain max width to 1200 to match Navbar
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Padding(
+            // CHANGED: Match Navbar's internal horizontal padding (24) so alignment is perfect
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // LEFT SIDE (Text Content)
+                Expanded(
+                  flex: 7, 
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 185),
+                    child: _buildTextContent(context),
+                  )
+                ),
+                
+                const SizedBox(width: 40),
+                
+                // RIGHT SIDE (Scrolling Cards)
+                // This column now sits nicely under the right side of the Navbar
+                Expanded(
+                  flex: 5, 
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 90),
+                    child: SizedBox(
+                      height: 700,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: SizedBox(
+                          width: 450, 
+                          child: _buildScrollingCards(context),
+                        ),
+                      ),
+                    ).animate()
+                     .fade(duration: 800.ms)
+                     .slideX(begin: 0.1, end: 0, curve: Curves.easeOut),
                   ),
                 ),
-              ).animate()
-               .fade(duration: 800.ms)
-               .slideX(begin: 0.1, end: 0, curve: Curves.easeOut), // Slides in from right
+              ],
             ),
-          ],
+          ),
         ),
       ),
       
-      // --- MOBILE LAYOUT ---
+      // --- MOBILE LAYOUT (Unchanged) ---
       mobile: Container(
         color: bgColor,
         padding: const EdgeInsets.fromLTRB(20, 180, 20, 60),
@@ -60,14 +79,14 @@ class HeroSection extends StatelessWidget {
               child: _buildScrollingCards(context),
             ).animate()
              .fade(duration: 800.ms)
-             .slideY(begin: 0.1, end: 0), // Slides up on mobile
+             .slideY(begin: 0.1, end: 0),
           ],
         ),
       ),
     );
   }
 
-  // --- THE SCROLLING CARDS LIST ---
+  // --- THE SCROLLING CARDS LIST (Unchanged) ---
   Widget _buildScrollingCards(BuildContext context) {
     return InfiniteScrollColumn(
       speed: 0.8, 
@@ -81,9 +100,8 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- TEXT CONTENT (ANIMATED) ---
+  // --- TEXT CONTENT (Unchanged) ---
   Widget _buildTextContent(BuildContext context, {bool isCentered = false}) {
-    // Capture colors
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
     final borderColor = Theme.of(context).dividerColor;
@@ -92,15 +110,13 @@ class HeroSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-        
-        // 1. TYPEWRITER HEADLINE
         DefaultTextStyle(
           textAlign: isCentered ? TextAlign.center : TextAlign.start,
           style: TextStyle(
             fontSize: 48,
             height: 1.1,
             fontWeight: FontWeight.w800,
-            color: textColor, // Preserves Dynamic Theme
+            color: textColor,
             letterSpacing: -1.5,
             fontFamily: 'Inter',
           ),
@@ -108,42 +124,24 @@ class HeroSection extends StatelessWidget {
             repeatForever: true,
             pause: const Duration(seconds: 3),
             animatedTexts: [
-              TypewriterAnimatedText(
-                'Software that\nmeans business.',
-                speed: const Duration(milliseconds: 100),
-                cursor: '|',
-              ),
-              TypewriterAnimatedText(
-                'Software that\nscales effortlessly.',
-                speed: const Duration(milliseconds: 100),
-                cursor: '|',
-              ),
-              TypewriterAnimatedText(
-                'Software that\nis secure.',
-                speed: const Duration(milliseconds: 100),
-                cursor: '|',
-              ),
+              TypewriterAnimatedText('Software that\nmeans business.', speed: const Duration(milliseconds: 100), cursor: '|'),
+              TypewriterAnimatedText('Software that\nscales effortlessly.', speed: const Duration(milliseconds: 100), cursor: '|'),
+              TypewriterAnimatedText('Software that\nis secure.', speed: const Duration(milliseconds: 100), cursor: '|'),
             ],
             onTap: () {},
           ),
-        ).animate() // Entrance
-         .fade(duration: 600.ms)
-         .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+        ).animate().fade(duration: 600.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
 
         const SizedBox(height: 24),
         
-        // 2. SUBTITLE (Staggered)
         Text(
           "Don't hire an expensive agency. Automate your workflow with CissyTech.",
           textAlign: isCentered ? TextAlign.center : TextAlign.start,
           style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5),
-        ).animate()
-         .fade(delay: 200.ms, duration: 600.ms)
-         .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+        ).animate().fade(delay: 200.ms, duration: 600.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
 
         const SizedBox(height: 40),
         
-        // 3. BUTTONS (Staggered + Shimmer)
         Wrap(
           spacing: 16,
           runSpacing: 16,
@@ -158,11 +156,9 @@ class HeroSection extends StatelessWidget {
               ),
               child: const Text("Start Free Trial", style: TextStyle(color: Colors.white, fontSize: 16)),
             )
-            .animate(onPlay: (c) => c.repeat()) // Loop the shimmer
-            .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3)) // The Shine Effect
-            .animate() // Reset for entrance
-            .fade(delay: 400.ms, duration: 600.ms)
-            .slideY(begin: 0.2, end: 0),
+            .animate(onPlay: (c) => c.repeat())
+            .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3))
+            .animate().fade(delay: 400.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
 
             OutlinedButton.icon(
               onPressed: () {},
@@ -173,15 +169,12 @@ class HeroSection extends StatelessWidget {
                 side: BorderSide(color: borderColor),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-            ).animate()
-             .fade(delay: 400.ms, duration: 600.ms)
-             .slideY(begin: 0.2, end: 0),
+            ).animate().fade(delay: 400.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
           ],
         ),
 
         const SizedBox(height: 60),
         
-        // 4. TRUSTED LOGOS (Staggered)
         Wrap(
           alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -192,7 +185,7 @@ class HeroSection extends StatelessWidget {
                children: const [
                 _HoverAvatar(imagePath: "assets/images/bulk_sms.png"),
                 _HoverAvatar(imagePath: "assets/images/cissy_cloud.png"),
-                _HoverAvatar(imagePath: "assets/images/collecto.png"),
+                _HoverAvatar(imagePath: "assets/images/collecto_logo.png"),
                 _HoverAvatar(imagePath: "assets/images/eworker.png"),
                ],
              ),
@@ -201,14 +194,12 @@ class HeroSection extends StatelessWidget {
                style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor),
              ),
           ],
-        ).animate()
-         .fade(delay: 600.ms, duration: 600.ms)
-         .slideY(begin: 0.2, end: 0),
+        ).animate().fade(delay: 600.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
       ],
     );
   }
 
-  // --- (KEEP EXISTING CARD HELPERS BELOW - NO CHANGES NEEDED) ---
+  // --- CARD HELPERS (Unchanged) ---
   Widget _buildImageCard1(BuildContext context) {
     return Container(
       height: 340,
@@ -363,7 +354,6 @@ class HeroSection extends StatelessWidget {
   }
 }
 
-// --- KEEP _HoverAvatar EXACTLY AS IS ---
 class _HoverAvatar extends StatefulWidget {
   final String imagePath;
   const _HoverAvatar({required this.imagePath});
@@ -377,7 +367,6 @@ class _HoverAvatarState extends State<_HoverAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    // Dynamic border to match background for the cutout effect
     final borderColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Align(

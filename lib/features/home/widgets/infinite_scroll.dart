@@ -2,15 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class InfiniteScrollColumn extends StatefulWidget {
-  // We changed this from List<String> images to List<Widget> items
-  // This allows us to scroll Cards, Text, or Images!
   final List<Widget> items; 
   final double speed;
   final bool reverse;
 
   const InfiniteScrollColumn({
     super.key,
-    required this.items, // This was missing in your file
+    required this.items, 
     this.speed = 1.0,
     this.reverse = false,
   });
@@ -58,10 +56,14 @@ class _InfiniteScrollColumnState extends State<InfiniteScrollColumn> {
 
   @override
   Widget build(BuildContext context) {
+    // Capture dynamic background color for the bottom fade
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
     return SizedBox(
       width: double.infinity, 
       child: Stack(
         children: [
+          // 1. The Scrolling List
           ListView.builder(
             controller: _scrollController,
             physics: const NeverScrollableScrollPhysics(),
@@ -74,20 +76,9 @@ class _InfiniteScrollColumnState extends State<InfiniteScrollColumn> {
               );
             },
           ),
-          // Top Fog
-          Positioned(
-            top: 0, left: 0, right: 0, height: 80,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.white, Colors.white.withOpacity(0.0)],
-                ),
-              ),
-            ),
-          ),
-          // Bottom Fog
+          
+          // 2. Bottom Fog (Modified to be dynamic and only at bottom)
+          // We removed the Top Fog so items appear to scroll "into" the navbar area.
           Positioned(
             bottom: 0, left: 0, right: 0, height: 80,
             child: Container(
@@ -95,7 +86,10 @@ class _InfiniteScrollColumnState extends State<InfiniteScrollColumn> {
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [Colors.white, Colors.white.withOpacity(0.0)],
+                  colors: [
+                    bgColor, // Solid Theme Color at bottom
+                    bgColor.withOpacity(0.0), // Transparent going up
+                  ],
                 ),
               ),
             ),

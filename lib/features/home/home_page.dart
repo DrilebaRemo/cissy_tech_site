@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 const HeroSection(),
-                const LogoMarquee(),
                 const AgentsSection(),
                 const BentoGridSection(),
                 const TargetAudienceSection(),
@@ -53,6 +52,7 @@ class _HomePageState extends State<HomePage> {
                 const ProductivitySection(),
                 const PricingSection(),
                 const CallToActionSection(),
+                const LogoMarquee(),
                 const Footer(),
               ],
             ),

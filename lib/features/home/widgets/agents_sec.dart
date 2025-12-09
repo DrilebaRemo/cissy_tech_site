@@ -12,6 +12,7 @@ class AgentsSection extends StatelessWidget {
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
 
+
     return Container(
       width: double.infinity,
       color: bgColor, 

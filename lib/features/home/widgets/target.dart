@@ -189,9 +189,8 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
 
             const Spacer(),
 
-            // The "Floating" Image Mockup (Animated Scale)
             AnimatedScale(
-              scale: isHovered ? 1.05 : 1.0, // Zoom on hover
+              scale: isHovered ? 1.05 : 1.0, 
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutBack,
               child: Container(
@@ -199,7 +198,7 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
                 width: double.infinity,
                 margin: const EdgeInsets.fromLTRB(32, 0, 32, 32), 
                 decoration: BoxDecoration(
-                  color: innerMockupColor, // <--- Dynamic Inner Background
+                  color: innerMockupColor, 
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                      BoxShadow(
@@ -224,12 +223,12 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
             ),
           ],
         ),
-      ).animate() // 4. ENTRANCE POP-IN
+      ).animate()
        .scale(
          delay: Duration(milliseconds: widget.delay), 
          duration: 800.ms, 
          curve: Curves.easeOutBack,
-         begin: const Offset(0.8, 0.8), // Start smaller
+         begin: const Offset(0.8, 0.8),
          end: const Offset(1, 1)
        )
        .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms),

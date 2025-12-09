@@ -95,27 +95,7 @@ class _LogoMarqueeState extends State<LogoMarquee> {
                 },
               ),
             ),
-          ),
-
-          const SizedBox(height: 60),
-
-          // 3. The Tag
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: cardColor, // <--- Dynamic Card Background
-              border: Border.all(color: borderColor), // <--- Dynamic Border
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              "Our Ecosystem",
-              style: TextStyle(
-                fontSize: 14, 
-                fontWeight: FontWeight.bold,
-                color: textColor, // <--- Dynamic Text (Black/White)
-              ),
-            ),
-          ),
+          ),   // 3. The Tag
         ],
       ),
     );

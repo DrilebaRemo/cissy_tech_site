@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui'; // Needed for the blur effect
+import 'dart:ui';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/theme_controller.dart';
 
@@ -13,7 +13,6 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
-  // _isShrunk = true means "Pill Mode", false means "Original Expanded Mode"
   bool _isShrunk = false;
   double _lastOffset = 0.0;
 
@@ -35,11 +34,8 @@ class _NavbarState extends State<Navbar> {
     final currentOffset = widget.scrollController!.offset;
     final maxScroll = widget.scrollController!.position.maxScrollExtent;
 
-    // 1. IGNORE BOUNCE (iOS overscroll at top or bottom)
     if (currentOffset < 0 || currentOffset > maxScroll) return;
 
-    // 2. LOGIC: 
-    // If at the very top (< 50px), ALWAYS expand.
     if (currentOffset < 50) {
       if (_isShrunk) {
         setState(() => _isShrunk = false);
@@ -48,16 +44,12 @@ class _NavbarState extends State<Navbar> {
       return;
     }
 
-    // 3. DIRECTION CHECK:
-    // We add a small "diff" threshold (e.g., 10px) to prevent jitter on tiny movements.
     if ((currentOffset - _lastOffset).abs() > 10) {
       if (currentOffset > _lastOffset) {
-        // SCROLLING DOWN -> Shrink
         if (!_isShrunk) {
           setState(() => _isShrunk = true);
         }
       } else {
-        // SCROLLING UP -> Expand (Go back to original state)
         if (_isShrunk) {
           setState(() => _isShrunk = false);
         }
@@ -71,46 +63,38 @@ class _NavbarState extends State<Navbar> {
     final bool isMobile = MediaQuery.of(context).size.width < 800;
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    // Theme Colors
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    // Background: 
-    // When expanded (scrolling up), we usually want it slightly more solid so it doesn't clash with content behind it,
-    // or keep the blur. Here I keep the blur but adjust opacity.
     final backgroundColor = Theme.of(context).cardColor.withOpacity(0.85);
-    
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     final borderColor = Theme.of(context).dividerColor;
     final iconColor = Theme.of(context).iconTheme.color;
 
-    // --- WIDTH LOGIC ---
-    // If _isShrunk (Scrolling Down): Width is 850 (Pill).
-    // If !_isShrunk (Scrolling Up or Top): Width is 1200 (Original).
-    // Mobile stays full width minus padding.
     final double targetWidth = isMobile 
         ? screenWidth - 32 
         : (_isShrunk ? 850 : 1200); 
+    final Widget themeToggleButton = IconButton(
+      onPressed: () {
+        ThemeController.instance.toggleTheme();
+      },
+      icon: Icon(
+        isDark ? Icons.light_mode : Icons.dark_mode_outlined,
+        color: iconColor,
+      ),
+    );
 
     return Center(
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOut, 
-        
         height: 70,
         width: targetWidth, 
-        
-        // Margin: 20 when shrunk, 20 when expanded (Your original code had 20 top margin).
-        // If you want it to stick to the very top when expanded, change 20 to 0 in the else case.
-        // Assuming original design has floating 20px margin:
         margin: EdgeInsets.only(
           top: 20, 
           left: isMobile ? 0 : 0, 
           right: isMobile ? 0 : 0
         ),
-        
         decoration: BoxDecoration(
           color: backgroundColor,
-          // Round corners: 50 for Pill (Shrunk), 16 for Original (Expanded)
           borderRadius: BorderRadius.circular(_isShrunk ? 50 : 16),
           border: Border.all(color: borderColor),
           boxShadow: [
@@ -121,7 +105,6 @@ class _NavbarState extends State<Navbar> {
             ),
           ],
         ),
-        
         child: ClipRRect(
           borderRadius: BorderRadius.circular(_isShrunk ? 50 : 16),
           child: BackdropFilter(
@@ -141,24 +124,17 @@ class _NavbarState extends State<Navbar> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)
                   ),
 
+                  // --- SPACER ---
                   const Spacer(),
 
-                  // --- THEME TOGGLE ---
-                  if (!isMobile) ...[
-                     IconButton(
-                      onPressed: () {
-                        ThemeController.instance.toggleTheme();
-                      },
-                      icon: Icon(
-                        isDark ? Icons.light_mode : Icons.dark_mode_outlined,
-                        color: iconColor,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-
-                  // --- CENTER & RIGHT CONTENT ---
+                  // --- MOBILE LAYOUT ---
                   if (isMobile) ...[
+                    // 1. Theme Icon (Left of Menu)
+                    themeToggleButton,
+                    
+                    const SizedBox(width: 4),
+
+                    // 2. Menu Icon
                     IconButton(
                       icon: Icon(Icons.menu, color: iconColor),
                       onPressed: () {
@@ -168,28 +144,31 @@ class _NavbarState extends State<Navbar> {
                         );
                       },
                     ),
-                  ] else ...[
-                    _navLink("Features", textColor),
+                  ] 
+                  
+                  // --- DESKTOP LAYOUT ---
+                  else ...[
                     _navLink("Products", textColor),
-                    _navLink("Pricing", textColor),
-                    _navLink("Contact", textColor),
+                    _navLink("Services", textColor),
+                    _navLink("Company info", textColor),
+                    _navLink("Contacts", textColor),
 
                     const SizedBox(width: 20),
 
-                    TextButton(
-                      onPressed: () {}, 
-                      child: Text("Login", style: TextStyle(color: textColor)),
-                    ),
+                    // 1. Theme Icon (Left of Button)
+                    themeToggleButton,
+
                     const SizedBox(width: 10),
+
+                    // 2. Get Started Button
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
                         foregroundColor: Colors.white,
-                        // Animate button radius slightly too if you want, or keep it consistent
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
-                      child: const Text("Get Started"),
+                      child: const Text("Login"),
                     ),
                   ],
                 ],
@@ -209,7 +188,7 @@ class _NavbarState extends State<Navbar> {
   }
 }
 
-// Mobile Menu Dialog (Unchanged)
+// Mobile Menu Dialog
 class _MobileMenuDialog extends StatelessWidget {
   const _MobileMenuDialog();
 
@@ -217,7 +196,7 @@ class _MobileMenuDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final bgColor = Theme.of(context).cardColor;
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
-    final iconColor = Theme.of(context).iconTheme.color;
+    // final iconColor = Theme.of(context).iconTheme.color; // Removed as theme toggle is now on navbar
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -252,16 +231,7 @@ class _MobileMenuDialog extends StatelessWidget {
             
             const SizedBox(height: 20),
             
-            ListTile(
-              leading: Icon(Icons.brightness_6, color: iconColor),
-              title: Text("Switch Theme", style: TextStyle(color: textColor)),
-              onTap: () {
-                ThemeController.instance.toggleTheme();
-                Navigator.pop(context);
-              },
-            ),
-            
-            const SizedBox(height: 10),
+            // Removed "Switch Theme" ListTile from here since it's on the Navbar now
             
             ElevatedButton(
               onPressed: () {},
