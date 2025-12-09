@@ -1,0 +1,3619 @@
+--- File: ./lib/core/constants/assets.dart ---
+
+--- File: ./lib/core/theme/app_colors.dart ---
+import 'package:flutter/material.dart';
+
+class AppColors {
+  // --- BRAND COLORS ---
+  static const Color primary = Color(0xFF0056B3);
+  static const Color accent = Color(0xFFFF9900);
+  
+  // --- FIX: RESTORE MISSING VARIABLES (The Aliases) ---
+  // These map the old names to the new Light Mode colors so your app stops crashing.
+  static const Color background = lightBackground;
+  static const Color border = lightBorder;
+  static const Color textMain = lightTextMain;
+  static const Color textBody = lightTextBody;
+  static const Color primaryLight = Color(0xFFE0F2FE); // Restored this missing color
+
+  // --- LIGHT MODE PALETTE ---
+  static const Color lightBackground = Color(0xFFFFFFFF);
+  static const Color lightSurface = Color(0xFFF9FAFB); 
+  static const Color lightTextMain = Color(0xFF111827); 
+  static const Color lightTextBody = Color(0xFF4B5563); 
+  static const Color lightBorder = Color(0xFFE5E7EB);
+
+  // --- DARK MODE PALETTE ---
+  static const Color darkBackground = Color(0xFF0F1016); 
+  static const Color darkSurface = Color(0xFF1A1D26);    
+  static const Color darkTextMain = Color(0xFFFFFFFF);   
+  static const Color darkTextBody = Color(0xFF9CA3AF);   
+  static const Color darkBorder = Color(0xFF2D303E);     
+}
+--- File: ./lib/core/theme/app_theme.dart ---
+import 'package:flutter/material.dart';
+import 'app_colors.dart';
+
+class AppTheme {
+  // 1. LIGHT THEME CONFIG
+  static ThemeData get lightTheme {
+    return ThemeData(
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.lightBackground,
+      primaryColor: AppColors.primary,
+      
+      // Card Styles
+      cardColor: AppColors.lightSurface,
+      dividerColor: AppColors.lightBorder,
+
+      // Text Styles
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(color: AppColors.lightTextMain), // Headlines
+        bodyLarge: TextStyle(color: AppColors.lightTextBody),    // Paragraphs
+      ),
+      
+      // Icon Theme
+      iconTheme: const IconThemeData(color: AppColors.lightTextMain),
+    );
+  }
+
+  // 2. DARK THEME CONFIG
+  static ThemeData get darkTheme {
+    return ThemeData(
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.darkBackground,
+      primaryColor: AppColors.primary,
+
+      // Card Styles
+      cardColor: AppColors.darkSurface,
+      dividerColor: AppColors.darkBorder,
+
+      // Text Styles
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(color: AppColors.darkTextMain),
+        bodyLarge: TextStyle(color: AppColors.darkTextBody),
+      ),
+
+      // Icon Theme
+      iconTheme: const IconThemeData(color: AppColors.darkTextMain),
+    );
+  }
+}
+--- File: ./lib/core/theme/theme_controller.dart ---
+import 'package:flutter/material.dart';
+
+// A global controller to switch themes
+class ThemeController extends ValueNotifier<ThemeMode> {
+  // Singleton pattern (so we can access it from anywhere easily)
+  static final ThemeController instance = ThemeController._();
+
+  ThemeController._() : super(ThemeMode.light); // Start with Light Mode
+
+  void toggleTheme() {
+    value = value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  }
+}
+--- File: ./lib/features/home/home_page.dart ---
+import 'package:flutter/material.dart';
+import '../../shared/layout/navbar.dart';
+import 'widgets/hero_section.dart';
+import 'widgets/logo_marquee.dart';
+import 'widgets/agents_sec.dart';
+import 'widgets/bento_grid.dart';
+import 'widgets/target.dart';
+import 'widgets/socialtrend.dart';
+import 'widgets/product.dart';
+import 'widgets/packages.dart';
+import '../../shared/layout/footer.dart';
+import 'widgets/cta_section.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          // 1. The Scrolling Content (Behind the Navbar)
+          const SingleChildScrollView(
+            child: Column(
+              children: [
+                const HeroSection(), // Includes the scrolling images
+                const LogoMarquee(),
+                const AgentsSection(),
+                const BentoGridSection(),
+                const TargetAudienceSection(),
+                const SocialTrendSection(),
+                const ProductivitySection(),
+                const PricingSection(),
+                const CallToActionSection(),
+                const Footer(), 
+              ],
+            ),
+          ),
+
+          // 2. The Sticky/Floating Navbar (On Top)
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Navbar(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/agents_sec.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // 1. Import Animate
+import '../../../core/theme/app_colors.dart';
+
+class AgentsSection extends StatelessWidget {
+  const AgentsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Dynamic Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return Container(
+      width: double.infinity,
+      color: bgColor, 
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      child: Column(
+        children: [
+          // 1. HEADLINE (Animated)
+          Text(
+            "CissyTech Solutions ready to go.",
+            style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.w800,
+              color: textColor,
+              letterSpacing: -1.5,
+              fontFamily: 'Inter',
+            ),
+            textAlign: TextAlign.center,
+          ).animate() // Entrance
+           .fade(duration: 600.ms)
+           .slideY(begin: 0.2, end: 0),
+          
+          const SizedBox(height: 16),
+
+          // 2. SUBTITLE (Animated)
+          Text(
+            "Templates designed to automate your workflow, manage data, \nand boost engagement. Or build your own custom solution!",
+            style: TextStyle(
+              fontSize: 18,
+              color: bodyColor,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ).animate() // Entrance
+           .fade(delay: 200.ms, duration: 600.ms)
+           .slideY(begin: 0.2, end: 0),
+
+          const SizedBox(height: 60),
+
+          // 3. THE CARDS (Swapped to Stateful Widget for Hover Animation)
+          Wrap(
+            spacing: 24,
+            runSpacing: 24,
+            alignment: WrapAlignment.center,
+            children: [
+              _HoverFeatureCard(
+                title: "Social Poster",
+                description: "Multi-channel posting with automatic post creation.",
+                image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80",
+                entranceDelay: 0,
+              ),
+              _HoverFeatureCard(
+                title: "DM Chatbot",
+                description: "Smart replies and support through DMs via chatbots.",
+                image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80",
+                entranceDelay: 100, // Staggered
+              ),
+              _HoverFeatureCard(
+                title: "Comment-to-DM",
+                description: "Keyword-based link promotions for discounts or courses.",
+                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80",
+                entranceDelay: 200, // Staggered
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- NEW STATEFUL WIDGET FOR ANIMATION ---
+class _HoverFeatureCard extends StatefulWidget {
+  final String title;
+  final String description;
+  final String image;
+  final int entranceDelay;
+
+  const _HoverFeatureCard({
+    required this.title,
+    required this.description,
+    required this.image,
+    this.entranceDelay = 0,
+  });
+
+  @override
+  State<_HoverFeatureCard> createState() => _HoverFeatureCardState();
+}
+
+class _HoverFeatureCardState extends State<_HoverFeatureCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Capture colors inside the widget (Exact same logic as before)
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        width: 350,
+        height: 480,
+        // 1. LIFT ANIMATION
+        transform: isHovered ? Matrix4.translationValues(0, -10, 0) : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: cardColor, 
+          borderRadius: BorderRadius.circular(24),
+          // 2. GLOW/SHADOW ANIMATION
+          boxShadow: isHovered 
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.15), // Glow on hover
+                  blurRadius: 30, 
+                  offset: const Offset(0, 20)
+                )
+              ]
+            : [
+                // Inherited Shadow logic from your code
+                // Note: I removed the static shadow to keep it clean, or we can add it back lightly
+                BoxShadow(color: Colors.black.withOpacity(0.0), blurRadius: 0), 
+              ],
+          // 3. BORDER ANIMATION (Highlight on hover, Divider color on normal)
+          border: isHovered 
+            ? Border.all(color: AppColors.primary.withOpacity(0.5), width: 1)
+            : Border.all(color: borderColor), 
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
+              child: Column(
+                children: [
+                  Text(
+                    widget.title,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    widget.description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: bodyColor,
+                      fontSize: 16,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // 4. LINK SLIDE ANIMATION
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: EdgeInsets.only(left: isHovered ? 8 : 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "See pricing",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: textColor,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.chevron_right, size: 16, color: bodyColor),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Spacer(),
+
+            // 5. IMAGE SCALE ANIMATION
+            AnimatedScale(
+              scale: isHovered ? 1.05 : 1.0, // Slight zoom
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutBack,
+              child: Container(
+                height: 180, 
+                width: double.infinity,
+                margin: const EdgeInsets.fromLTRB(24, 0, 24, 24), 
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.black : Colors.white, 
+                  borderRadius: BorderRadius.circular(16), 
+                  border: Border.all(color: borderColor),
+                  boxShadow: [
+                     BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                  image: DecorationImage(
+                    image: NetworkImage(widget.image),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter, 
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ).animate() // 6. STAGGERED ENTRANCE
+       .fade(delay: Duration(milliseconds: widget.entranceDelay), duration: 600.ms)
+       .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/bento_grid.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
+import '../../../core/theme/app_colors.dart';
+
+class BentoGridSection extends StatelessWidget {
+  const BentoGridSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Background Color
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
+    return Container(
+      color: bgColor, 
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              bool isMobile = constraints.maxWidth < 900;
+              
+              if (isMobile) {
+                return Column(
+                  children: [
+                    _HoverBentoCard(
+                      height: 380, 
+                      delay: 0,
+                      child: _buildVideoContent(context)
+                    ),
+                    const SizedBox(height: 20),
+                    _HoverBentoCard(
+                      height: 220, 
+                      delay: 100,
+                      child: _buildIntegrationContent(context)
+                    ),
+                    const SizedBox(height: 20),
+                    _HoverBentoCard(
+                      height: 380, 
+                      delay: 200,
+                      child: _buildApprovalContent(context)
+                    ),
+                    const SizedBox(height: 20),
+                    _HoverBentoCard(
+                      height: 220, 
+                      delay: 300,
+                      child: _buildFeatureContent(context, "Powerful Plugins", "Design assets instantly with our built-in tools.", Icons.brush_outlined)
+                    ),
+                  ],
+                );
+              } else {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // COLUMN 1
+                    Expanded(
+                      child: Column(
+                        children: [
+                          _HoverBentoCard(
+                            height: 380, 
+                            delay: 0,
+                            child: _buildVideoContent(context)
+                          ),
+                          const SizedBox(height: 20),
+                          _HoverBentoCard(
+                            height: 220, 
+                            delay: 200, // Staggered
+                            child: _buildFeatureContent(context, "Powerful Plugins", "Design assets instantly with our built-in tools.", Icons.brush_outlined)
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    // COLUMN 2
+                    Expanded(
+                      child: Column(
+                        children: [
+                          _HoverBentoCard(
+                            height: 220, 
+                            delay: 100, // Staggered
+                            child: _buildIntegrationContent(context)
+                          ),
+                          const SizedBox(height: 20),
+                          _HoverBentoCard(
+                            height: 380, 
+                            delay: 300, // Staggered
+                            child: _buildApprovalContent(context)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  // --- CONTENT BUILDERS (Kept exactly identical to your code) ---
+
+  Widget _buildVideoContent(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network("https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80", fit: BoxFit.cover),
+          ),
+        ),
+        Positioned.fill(child: Container(color: Colors.black.withOpacity(0.3))),
+        Center(
+          child: Container(
+            width: 60, height: 60,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 20, offset: const Offset(0, 10))],
+            ),
+            child: const Icon(Icons.play_arrow_rounded, size: 40, color: AppColors.primary),
+          ),
+        ),
+        const Positioned(
+          bottom: 24, left: 24,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("See how it works", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+              SizedBox(height: 4),
+              Text("2 min demo video", style: TextStyle(color: Colors.white70, fontSize: 14)),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildFeatureContent(BuildContext context, String title, String desc, IconData icon) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final iconColor = Theme.of(context).iconTheme.color;
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(color: AppColors.primaryLight, borderRadius: BorderRadius.circular(8)),
+                child: Icon(icon, color: AppColors.primary, size: 24),
+              ),
+              const SizedBox(width: 12),
+              Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(desc, style: TextStyle(color: bodyColor, fontSize: 15, height: 1.4)),
+          const Spacer(),
+          Row(
+            children: [
+              Text("Check all features", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
+              const SizedBox(width: 5),
+              Icon(Icons.arrow_forward, size: 14, color: iconColor?.withOpacity(0.7)),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIntegrationContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Integrations", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+          const SizedBox(height: 8),
+          Text("Connect your favorite tools.", style: TextStyle(color: bodyColor, fontSize: 15)),
+          const Spacer(),
+          Wrap(
+            spacing: 8, runSpacing: 8,
+            children: [
+              _pill(context, "Shopify", Icons.shopping_bag, Colors.green),
+              _pill(context, "Slack", Icons.chat_bubble, Colors.orange),
+              _pill(context, "Stripe", Icons.credit_card, Colors.blue),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildApprovalContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Approvals", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+              const SizedBox(height: 8),
+              Text(
+                "Get feedback from internal teams or clients with one link.",
+                style: TextStyle(color: bodyColor, fontSize: 15, height: 1.4),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 24, right: 24, left: 24,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              _userBubble(context, "Internal approval", "https://i.pravatar.cc/150?img=5"),
+              const SizedBox(height: 10),
+              _userBubble(context, "Client feedback", "https://i.pravatar.cc/150?img=9"),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _pill(BuildContext context, String text, IconData icon, Color color) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final pillBg = isDark ? const Color(0xFF2D303E) : Colors.white;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: pillBg,
+        border: Border.all(color: borderColor),
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 16),
+          const SizedBox(width: 6),
+          Text(text, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: textColor)),
+        ],
+      ),
+    );
+  }
+
+  Widget _userBubble(BuildContext context, String text, String img) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bubbleBg = isDark ? const Color(0xFF2D303E) : Colors.white;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: bubbleBg,
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 4))],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(backgroundImage: NetworkImage(img), radius: 12),
+          const SizedBox(width: 8),
+          Text(text, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: textColor)),
+        ],
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED BENTO CARD ---
+// Replaces the old _BentoCard with added Hover & Entrance effects
+class _HoverBentoCard extends StatefulWidget {
+  final Widget child;
+  final double height;
+  final int delay;
+
+  const _HoverBentoCard({
+    required this.child, 
+    required this.height, 
+    this.delay = 0
+  });
+
+  @override
+  State<_HoverBentoCard> createState() => _HoverBentoCardState();
+}
+
+class _HoverBentoCardState extends State<_HoverBentoCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Preserve exact color logic
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+    
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        height: widget.height,
+        width: double.infinity,
+        // 1. LIFT ANIMATION
+        transform: isHovered ? Matrix4.translationValues(0, -6, 0) : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: cardColor, 
+          borderRadius: BorderRadius.circular(20),
+          // 2. BORDER HIGHLIGHT (Subtle)
+          border: Border.all(
+            color: isHovered ? AppColors.primary.withOpacity(0.3) : borderColor,
+            width: 1
+          ),
+          // 3. GLOW ANIMATION
+          boxShadow: [
+             if (isHovered)
+               BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: widget.child,
+        ),
+      ),
+    ).animate() // 4. ENTRANCE POP-IN
+     .scale(
+        delay: Duration(milliseconds: widget.delay), 
+        duration: 600.ms, 
+        curve: Curves.easeOutBack,
+        begin: const Offset(0.9, 0.9), // Start slightly smaller
+        end: const Offset(1, 1)
+     )
+     .fade(delay: Duration(milliseconds: widget.delay), duration: 400.ms);
+  }
+}
+--- File: ./lib/features/home/widgets/cta_section.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/theme/app_colors.dart';
+
+class CallToActionSection extends StatelessWidget {
+  const CallToActionSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Theme logic
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Background: Dark in both modes for contrast, or dynamic. 
+    // Usually CTAs pop best when they are dark with bright text.
+    final containerColor = isDark ? Colors.black : const Color(0xFF0F1016);
+
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor, // Matches page bg
+      padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 24),
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(32),
+          child: Stack(
+            children: [
+              // 1. ANIMATED AURORA BACKGROUND
+              // We layer multiple containers with gradients and animate their opacity/position
+              Positioned.fill(
+                child: Container(color: containerColor),
+              ),
+              
+              // Gradient Blob 1 (Blue) - Moving Top Left to Bottom Right
+              Positioned(
+                top: -100, left: -100,
+                child: Container(
+                  width: 400, height: 400,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primary.withOpacity(0.4),
+                    backgroundBlendMode: BlendMode.screen, // Cool blending effect
+                  ),
+                ).animate(onPlay: (c) => c.repeat(reverse: true))
+                 .scale(begin: const Offset(1,1), end: const Offset(1.5, 1.5), duration: 4.seconds)
+                 .move(begin: const Offset(0,0), end: const Offset(50, 50), duration: 4.seconds),
+              ),
+
+              // Gradient Blob 2 (Orange) - Moving Bottom Right to Top Left
+              Positioned(
+                bottom: -100, right: -100,
+                child: Container(
+                  width: 300, height: 300,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.accent.withOpacity(0.3),
+                    backgroundBlendMode: BlendMode.screen,
+                  ),
+                ).animate(onPlay: (c) => c.repeat(reverse: true))
+                 .scale(begin: const Offset(1,1), end: const Offset(1.2, 1.2), duration: 3.seconds)
+                 .move(begin: const Offset(0,0), end: const Offset(-30, -30), duration: 5.seconds),
+              ),
+
+              // Gradient Blob 3 (Purple) - Breathing in center
+              Positioned.fill(
+                child: Center(
+                  child: Container(
+                    width: 600, height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.purple.withOpacity(0.2),
+                      backgroundBlendMode: BlendMode.screen,
+                      borderRadius: BorderRadius.circular(100)
+                    ),
+                  ).animate(onPlay: (c) => c.repeat(reverse: true))
+                   .fade(begin: 0.2, end: 0.5, duration: 2.seconds),
+                ),
+              ),
+              
+              // Glassmorphism Overlay (Blur) to smooth out the blobs
+              Positioned.fill(
+                child: Container( // Using a container with backdrop filter
+                   decoration: BoxDecoration(
+                     color: Colors.black.withOpacity(0.1), // Slight tint
+                   ),
+                ),
+              ),
+
+              // 2. CONTENT
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "Ready to scale your business?",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 42,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white, // Always white on this dark background
+                        letterSpacing: -1.0,
+                      ),
+                    ).animate().fade().slideY(begin: 0.3, end: 0),
+                    
+                    const SizedBox(height: 16),
+                    
+                    const Text(
+                      "Join 500+ companies using CissyTech to \nautomate and grow their operations.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white70,
+                        height: 1.5,
+                      ),
+                    ).animate().fade(delay: 200.ms).slideY(begin: 0.3, end: 0),
+
+                    const SizedBox(height: 40),
+
+                    // 3. PULSING BUTTON
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                          elevation: 10,
+                          shadowColor: Colors.white.withOpacity(0.3),
+                        ),
+                        child: const Text(
+                          "Get Started for free",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )
+                    .animate(onPlay: (c) => c.repeat(reverse: true)) // Heartbeat loop
+                    .scale(begin: const Offset(1,1), end: const Offset(1.05, 1.05), duration: 1.seconds) // Pulse
+                    .animate() // Entrance
+                    .fade(delay: 400.ms)
+                    .slideY(begin: 0.3, end: 0),
+                    
+                    const SizedBox(height: 20),
+                    
+                    const Text(
+                      "No credit card required. Cancel anytime.",
+                      style: TextStyle(color: Colors.white30, fontSize: 13),
+                    ).animate().fade(delay: 600.ms),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/hero_section.dart ---
+import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../shared/layout/responsive.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'infinite_scroll.dart'; 
+
+class HeroSection extends StatelessWidget {
+  const HeroSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. CAPTURE THEME COLORS
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    
+    return Responsive(
+      // --- DESKTOP LAYOUT ---
+      desktop: Container(
+        color: bgColor,
+        padding: const EdgeInsets.fromLTRB(60, 185, 60, 0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // LEFT SIDE
+            Expanded(flex: 7, child: _buildTextContent(context)),
+            
+            const SizedBox(width: 40),
+            
+            // RIGHT SIDE (Added Entrance Animation)
+            Expanded(
+              flex: 5, 
+              child: SizedBox(
+                height: 700,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: SizedBox(
+                    width: 450, 
+                    child: _buildScrollingCards(context),
+                  ),
+                ),
+              ).animate()
+               .fade(duration: 800.ms)
+               .slideX(begin: 0.1, end: 0, curve: Curves.easeOut), // Slides in from right
+            ),
+          ],
+        ),
+      ),
+      
+      // --- MOBILE LAYOUT ---
+      mobile: Container(
+        color: bgColor,
+        padding: const EdgeInsets.fromLTRB(20, 180, 20, 60),
+        child: Column(
+          children: [
+            _buildTextContent(context, isCentered: true),
+            const SizedBox(height: 60),
+            SizedBox(
+              height: 300,
+              width: 340, 
+              child: _buildScrollingCards(context),
+            ).animate()
+             .fade(duration: 800.ms)
+             .slideY(begin: 0.1, end: 0), // Slides up on mobile
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- THE SCROLLING CARDS LIST ---
+  Widget _buildScrollingCards(BuildContext context) {
+    return InfiniteScrollColumn(
+      speed: 0.8, 
+      items: [
+        _buildImageCard1(context),
+        _buildTestimonialCard1(context),
+        _buildImageCard2(context),
+        _buildTestimonialCard2(context),
+        _buildStatusCard(context),
+      ],
+    );
+  }
+
+  // --- TEXT CONTENT (ANIMATED) ---
+  Widget _buildTextContent(BuildContext context, {bool isCentered = false}) {
+    // Capture colors
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Column(
+      crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        
+        // 1. TYPEWRITER HEADLINE
+        DefaultTextStyle(
+          textAlign: isCentered ? TextAlign.center : TextAlign.start,
+          style: TextStyle(
+            fontSize: 48,
+            height: 1.1,
+            fontWeight: FontWeight.w800,
+            color: textColor, // Preserves Dynamic Theme
+            letterSpacing: -1.5,
+            fontFamily: 'Inter',
+          ),
+          child: AnimatedTextKit(
+            repeatForever: true,
+            pause: const Duration(seconds: 3),
+            animatedTexts: [
+              TypewriterAnimatedText(
+                'Software that\nmeans business.',
+                speed: const Duration(milliseconds: 100),
+                cursor: '|',
+              ),
+              TypewriterAnimatedText(
+                'Software that\nscales effortlessly.',
+                speed: const Duration(milliseconds: 100),
+                cursor: '|',
+              ),
+              TypewriterAnimatedText(
+                'Software that\nis secure.',
+                speed: const Duration(milliseconds: 100),
+                cursor: '|',
+              ),
+            ],
+            onTap: () {},
+          ),
+        ).animate() // Entrance
+         .fade(duration: 600.ms)
+         .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+
+        const SizedBox(height: 24),
+        
+        // 2. SUBTITLE (Staggered)
+        Text(
+          "Don't hire an expensive agency. Automate your workflow with CissyTech.",
+          textAlign: isCentered ? TextAlign.center : TextAlign.start,
+          style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5),
+        ).animate()
+         .fade(delay: 200.ms, duration: 600.ms)
+         .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+
+        const SizedBox(height: 40),
+        
+        // 3. BUTTONS (Staggered + Shimmer)
+        Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
+          children: [
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isDark ? AppColors.primary : AppColors.textMain,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text("Start Free Trial", style: TextStyle(color: Colors.white, fontSize: 16)),
+            )
+            .animate(onPlay: (c) => c.repeat()) // Loop the shimmer
+            .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3)) // The Shine Effect
+            .animate() // Reset for entrance
+            .fade(delay: 400.ms, duration: 600.ms)
+            .slideY(begin: 0.2, end: 0),
+
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.play_arrow_rounded, color: textColor),
+              label: Text("Watch Demo", style: TextStyle(color: textColor, fontSize: 16)),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+                side: BorderSide(color: borderColor),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ).animate()
+             .fade(delay: 400.ms, duration: 600.ms)
+             .slideY(begin: 0.2, end: 0),
+          ],
+        ),
+
+        const SizedBox(height: 60),
+        
+        // 4. TRUSTED LOGOS (Staggered)
+        Wrap(
+          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 20,
+          children: [
+             Row(
+               mainAxisSize: MainAxisSize.min,
+               children: const [
+                _HoverAvatar(imagePath: "assets/images/bulk_sms.png"),
+                _HoverAvatar(imagePath: "assets/images/cissy_cloud.png"),
+                _HoverAvatar(imagePath: "assets/images/collecto.png"),
+                _HoverAvatar(imagePath: "assets/images/eworker.png"),
+               ],
+             ),
+             Text(
+               "Trusted by 500+\ncompanies",
+               style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor),
+             ),
+          ],
+        ).animate()
+         .fade(delay: 600.ms, duration: 600.ms)
+         .slideY(begin: 0.2, end: 0),
+      ],
+    );
+  }
+
+  // --- (KEEP EXISTING CARD HELPERS BELOW - NO CHANGES NEEDED) ---
+  Widget _buildImageCard1(BuildContext context) {
+    return Container(
+      height: 340,
+      width: double.infinity,
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(24),
+        image: const DecorationImage(
+          image: NetworkImage("https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"), 
+          fit: BoxFit.cover,
+          opacity: 0.6,
+        ),
+      ),
+      alignment: Alignment.bottomLeft,
+      child: const Text(
+        "Transform your company into a digital leader.",
+        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildTestimonialCard1(BuildContext context) {
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: Row(
+        children: [
+          const CircleAvatar(
+            radius: 24,
+            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=11"),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Benjamin Austin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
+                Text("CTO, Stanbic Bank", style: TextStyle(color: bodyColor, fontSize: 13)),
+              ],
+            ),
+          ),
+          const Icon(Icons.star, color: AppColors.accent, size: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImageCard2(BuildContext context) {
+    return Container(
+      height: 320,
+      width: double.infinity,
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E1E2D),
+        borderRadius: BorderRadius.circular(24),
+        image: const DecorationImage(
+          image: NetworkImage("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"),
+          fit: BoxFit.cover,
+          opacity: 0.4,
+        ),
+      ),
+      alignment: Alignment.bottomLeft,
+      child: const Text(
+        "Data-driven decisions made easy.",
+        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildTestimonialCard2(BuildContext context) {
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: Row(
+        children: [
+          const CircleAvatar(
+            radius: 32,
+            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=5"),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Sarah Jenkins", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
+                Text("Marketing Lead, Airtel", style: TextStyle(color: bodyColor, fontSize: 13)),
+              ],
+            ),
+          ),
+          const Icon(Icons.star, color: AppColors.accent, size: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusCard(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    final cardBg = isDark ? Colors.green.withOpacity(0.1) : const Color(0xFFF0FDF4);
+    final borderColor = isDark ? Colors.green.withOpacity(0.3) : Colors.green.shade100;
+    final innerCircleColor = isDark ? const Color(0xFF1E1E2D) : Colors.white;
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardBg, 
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: innerCircleColor, shape: BoxShape.circle),
+            child: const Icon(Icons.check_circle, color: Colors.green, size: 24),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Text(
+              "System Operational\n99.9% Uptime Verified",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.green),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- KEEP _HoverAvatar EXACTLY AS IS ---
+class _HoverAvatar extends StatefulWidget {
+  final String imagePath;
+  const _HoverAvatar({required this.imagePath});
+
+  @override
+  State<_HoverAvatar> createState() => _HoverAvatarState();
+}
+
+class _HoverAvatarState extends State<_HoverAvatar> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Dynamic border to match background for the cutout effect
+    final borderColor = Theme.of(context).scaffoldBackgroundColor;
+
+    return Align(
+      widthFactor: 0.7,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: AnimatedScale(
+          scale: isHovered ? 1.2 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutBack,
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: borderColor, width: 3), 
+              boxShadow: [
+                if (isHovered)
+                  BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 5))
+              ],
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                widget.imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (c, o, s) => Container(color: Colors.grey.shade300),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/infinite_scroll.dart ---
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+class InfiniteScrollColumn extends StatefulWidget {
+  // We changed this from List<String> images to List<Widget> items
+  // This allows us to scroll Cards, Text, or Images!
+  final List<Widget> items; 
+  final double speed;
+  final bool reverse;
+
+  const InfiniteScrollColumn({
+    super.key,
+    required this.items, // This was missing in your file
+    this.speed = 1.0,
+    this.reverse = false,
+  });
+
+  @override
+  State<InfiniteScrollColumn> createState() => _InfiniteScrollColumnState();
+}
+
+class _InfiniteScrollColumnState extends State<InfiniteScrollColumn> {
+  late ScrollController _scrollController;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startScrolling();
+    });
+  }
+
+  void _startScrolling() {
+    _timer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
+      if (!_scrollController.hasClients) return;
+      double maxScroll = _scrollController.position.maxScrollExtent;
+      double currentScroll = _scrollController.offset;
+      double nextScroll = currentScroll + (widget.reverse ? -widget.speed : widget.speed);
+
+      if (nextScroll >= maxScroll) {
+        _scrollController.jumpTo(0);
+      } else if (nextScroll <= 0) {
+        _scrollController.jumpTo(maxScroll);
+      } else {
+        _scrollController.jumpTo(nextScroll);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity, 
+      child: Stack(
+        children: [
+          ListView.builder(
+            controller: _scrollController,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 1000, 
+            itemBuilder: (context, index) {
+              final item = widget.items[index % widget.items.length];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: item,
+              );
+            },
+          ),
+          // Top Fog
+          Positioned(
+            top: 0, left: 0, right: 0, height: 80,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.white, Colors.white.withOpacity(0.0)],
+                ),
+              ),
+            ),
+          ),
+          // Bottom Fog
+          Positioned(
+            bottom: 0, left: 0, right: 0, height: 80,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [Colors.white, Colors.white.withOpacity(0.0)],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/logo_marquee.dart ---
+import 'dart:async';
+import 'package:flutter/material.dart';
+// We don't need app_colors.dart strictly anymore if we use Theme.of(context), 
+// but keeping it for reference is fine.
+
+class LogoMarquee extends StatefulWidget {
+  const LogoMarquee({super.key});
+
+  @override
+  State<LogoMarquee> createState() => _LogoMarqueeState();
+}
+
+class _LogoMarqueeState extends State<LogoMarquee> {
+  late ScrollController _scrollController;
+  late Timer _timer;
+  bool _isHoveringArea = false; 
+
+  final List<String> _partnerLogos = [
+    "assets/images/stanbic.png",
+    "assets/images/flexi.png",
+    "assets/images/airtel.png",
+    "assets/images/partner1.png",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startAutoScroll());
+  }
+
+  void _startAutoScroll() {
+    _timer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
+      if (!_scrollController.hasClients) return;
+      if (_isHoveringArea) return; 
+
+      double maxScroll = _scrollController.position.maxScrollExtent;
+      double currentScroll = _scrollController.offset;
+      double nextScroll = currentScroll + 1.0; 
+
+      if (nextScroll >= maxScroll) {
+        _scrollController.jumpTo(0);
+      } else {
+        _scrollController.jumpTo(nextScroll);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Dynamic Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+
+    return Container(
+      color: bgColor, // <--- Dynamic Background
+      padding: const EdgeInsets.symmetric(vertical: 30),
+      child: Column(
+        children: [
+          // 1. Header Text
+          Text(
+            "Trusted by leading companies in Uganda",
+            style: TextStyle(
+              fontSize: 18,
+              color: bodyColor?.withOpacity(0.7), // <--- Dynamic Text
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          
+          const SizedBox(height: 40),
+
+          // 2. The Interactive Marquee
+          MouseRegion(
+            onEnter: (_) => setState(() => _isHoveringArea = true),
+            onExit: (_) => setState(() => _isHoveringArea = false),
+            child: SizedBox(
+              height: 80, 
+              child: ListView.builder(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                itemCount: 1000, 
+                itemBuilder: (context, index) {
+                  final logoPath = _partnerLogos[index % _partnerLogos.length];
+                  return _MarqueeItem(imagePath: logoPath);
+                },
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 60),
+
+          // 3. The Tag
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: cardColor, // <--- Dynamic Card Background
+              border: Border.all(color: borderColor), // <--- Dynamic Border
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              "Our Ecosystem",
+              style: TextStyle(
+                fontSize: 14, 
+                fontWeight: FontWeight.bold,
+                color: textColor, // <--- Dynamic Text (Black/White)
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- ANIMATED LOGO ITEM ---
+class _MarqueeItem extends StatefulWidget {
+  final String imagePath;
+  const _MarqueeItem({required this.imagePath});
+
+  @override
+  State<_MarqueeItem> createState() => _MarqueeItemState();
+}
+
+class _MarqueeItemState extends State<_MarqueeItem> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Optional: If you want logos to be white in dark mode, you can check brightness here
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final colorFilter = isDark ? ColorFilter.mode(Colors.white, BlendMode.srcIn) : null;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedScale(
+        scale: isHovered ? 1.2 : 1.0, 
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutBack, 
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 40),
+          child: Image.asset(
+            widget.imagePath,
+            height: 50, 
+            fit: BoxFit.contain,
+            // If you want to force white logos in dark mode, uncomment this:
+            // color: isDark ? Colors.white : null, 
+            errorBuilder: (c, o, s) => const Icon(Icons.broken_image, color: Colors.grey),
+          ),
+        ),
+      ),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/packages.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
+import '../../../core/theme/app_colors.dart';
+
+class PricingSection extends StatefulWidget {
+  const PricingSection({super.key});
+
+  @override
+  State<PricingSection> createState() => _PricingSectionState();
+}
+
+class _PricingSectionState extends State<PricingSection> {
+  bool isYearly = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Toggle Background
+    final toggleBg = isDark ? const Color(0xFF1F2937) : Colors.grey.shade100;
+
+    return Container(
+      width: double.infinity,
+      color: bgColor, 
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      child: Column(
+        children: [
+          // 1. HEADLINE (Animated Pop)
+          Text(
+            "Flexible Plans",
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -1.0,
+              color: textColor,
+            ),
+          ).animate()
+           .scale(duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
+           .fade(duration: 600.ms),
+           
+          const SizedBox(height: 16),
+          
+          Text(
+            "Choose a plan that scales with your business needs.",
+            style: TextStyle(fontSize: 18, color: bodyColor),
+            textAlign: TextAlign.center,
+          ).animate()
+           .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
+           .fade(delay: 200.ms, duration: 600.ms),
+          
+          const SizedBox(height: 40),
+
+          // 2. TOGGLE SWITCH (Animated Fade)
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: toggleBg, 
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildOption("Monthly", !isYearly, context),
+                _buildOption("Yearly (save 20%)", isYearly, context),
+              ],
+            ),
+          ).animate().fade(delay: 300.ms),
+
+          const SizedBox(height: 60),
+
+          // 3. PRICING CARDS
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              child: Wrap(
+                spacing: 20,
+                runSpacing: 20,
+                alignment: WrapAlignment.center,
+                children: [
+                  _HoverPricingCard(
+                    title: "Bronze",
+                    price: isYearly ? "12" : "15",
+                    description: "For individuals with scheduling needs.",
+                    features: const {
+                      "Workspaces": "1",
+                      "Users": "1",
+                      "Social profiles": "5",
+                      "AI credits": "100",
+                      "Automation runs": "10",
+                    },
+                    isYearly: isYearly,
+                    delay: 0,
+                  ),
+                  _HoverPricingCard(
+                    title: "Silver",
+                    price: isYearly ? "31" : "39",
+                    description: "For small teams building their brand.",
+                    features: const {
+                      "Workspaces": "5",
+                      "Users": "5",
+                      "Social profiles": "20",
+                      "AI credits": "500",
+                      "Automation runs": "100",
+                    },
+                    isYearly: isYearly,
+                    delay: 100,
+                  ),
+                  _HoverPricingCard(
+                    title: "Gold",
+                    price: isYearly ? "63" : "79",
+                    description: "For bigger teams or solo freelancers.",
+                    isPopular: true,
+                    features: const {
+                      "Workspaces": "20",
+                      "Users": "20",
+                      "Social profiles": "50",
+                      "AI credits": "1,500",
+                      "Automation runs": "1,500",
+                    },
+                    isYearly: isYearly,
+                    delay: 200,
+                  ),
+                  _HoverPricingCard(
+                    title: "Diamond",
+                    price: isYearly ? "127" : "159",
+                    description: "For large teams or marketing agencies.",
+                    features: const {
+                      "Workspaces": "∞",
+                      "Users": "50",
+                      "Social profiles": "150",
+                      "AI credits": "∞",
+                      "Automation runs": "10,000",
+                    },
+                    isYearly: isYearly,
+                    delay: 300,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- HELPER FOR TOGGLE ---
+  Widget _buildOption(String text, bool isSelected, BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Selected Tab Color
+    final selectedColor = isDark ? const Color(0xFF374151) : Colors.white;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final unselectedTextColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return GestureDetector(
+      onTap: () => setState(() => isYearly = text.contains("Yearly")),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? selectedColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(6),
+          boxShadow: isSelected
+              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+              : [],
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: isSelected ? textColor : unselectedTextColor,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED HOVER CARD ---
+class _HoverPricingCard extends StatefulWidget {
+  final String title;
+  final String price;
+  final String description;
+  final Map<String, String> features;
+  final bool isPopular;
+  final bool isYearly;
+  final int delay;
+
+  const _HoverPricingCard({
+    required this.title,
+    required this.price,
+    required this.description,
+    required this.features,
+    this.isPopular = false,
+    required this.isYearly,
+    this.delay = 0,
+  });
+
+  @override
+  State<_HoverPricingCard> createState() => _HoverPricingCardState();
+}
+
+class _HoverPricingCardState extends State<_HoverPricingCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 280,
+        padding: const EdgeInsets.all(32),
+        // 1. LIFT EFFECT
+        transform: isHovered ? Matrix4.translationValues(0, -10, 0) : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: cardColor, 
+          borderRadius: BorderRadius.circular(16),
+          // 2. BORDER HIGHLIGHT
+          border: Border.all(
+            color: isHovered ? AppColors.primary.withOpacity(0.5) : borderColor,
+            width: isHovered ? 2 : 1
+          ),
+          // 3. GLOW EFFECT
+          boxShadow: isHovered
+            ? [BoxShadow(color: AppColors.primary.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 10))]
+            : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10))],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title & Badge
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: borderColor),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    widget.title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor),
+                  ),
+                ),
+                if (widget.isPopular)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF064E3B) : const Color(0xFFDCFCE7),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      "Most popular",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold, 
+                        fontSize: 12, 
+                        color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF166534),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            
+            const SizedBox(height: 20),
+
+            // Price
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  "\$${widget.price}",
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, letterSpacing: -2.0, color: textColor),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  widget.isYearly ? "/month (billed yearly)" : "/month",
+                  style: TextStyle(color: bodyColor, fontSize: 14),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+            
+            // Description
+            Text(widget.description, style: TextStyle(color: bodyColor, height: 1.5)),
+
+            const SizedBox(height: 32),
+            Divider(height: 1, color: borderColor),
+            const SizedBox(height: 32),
+
+            // Features List
+            ...widget.features.entries.map((entry) => _buildFeatureRow(context, entry.key, entry.value)),
+
+            const SizedBox(height: 32),
+
+            // Button (Scales on hover via parent container lift)
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  elevation: isHovered ? 5 : 0, // Button shadow on hover
+                ),
+                child: const Text("Try 7 days free", style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            ),
+          ],
+        ),
+      ).animate() // 4. POP ENTRANCE
+       .scale(
+         delay: Duration(milliseconds: widget.delay), 
+         duration: 800.ms, 
+         curve: Curves.easeOutBack,
+         begin: const Offset(0.9, 0.9), 
+         end: const Offset(1, 1)
+       )
+       .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms),
+    );
+  }
+
+  Widget _buildFeatureRow(BuildContext context, String key, String value) {
+    IconData icon;
+    if (key.contains("Workspace")) icon = Icons.folder_outlined;
+    else if (key.contains("User")) icon = Icons.person_outline;
+    else if (key.contains("Social")) icon = Icons.camera_alt_outlined;
+    else if (key.contains("AI")) icon = Icons.auto_awesome;
+    else icon = Icons.cached;
+
+    final iconColor = Theme.of(context).iconTheme.color;
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final valueColor = Theme.of(context).textTheme.displayLarge?.color;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: iconColor?.withOpacity(0.7)),
+          const SizedBox(width: 12),
+          Text(key, style: TextStyle(color: textColor, fontWeight: FontWeight.w500)),
+          const Spacer(),
+          Text(value, style: TextStyle(fontWeight: FontWeight.bold, color: valueColor)),
+        ],
+      ),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/product.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
+import '../../../core/theme/app_colors.dart';
+import '../../../shared/layout/responsive.dart';
+
+class ProductivitySection extends StatelessWidget {
+  const ProductivitySection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    bool isMobile = Responsive.isMobile(context);
+    
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return Container(
+      color: bgColor,
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: Column(
+            children: [
+              // HEADER (Animated)
+              Text(
+                "Maximum Productivity",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -1.0,
+                  color: textColor,
+                ),
+              ).animate()
+               .scale(duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
+               .fade(duration: 600.ms),
+              
+              const SizedBox(height: 16),
+              
+              Text(
+                "Everything you need to scale your operations without the headache.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, color: bodyColor),
+              ).animate()
+               .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
+               .fade(delay: 200.ms, duration: 600.ms),
+
+              const SizedBox(height: 60),
+
+              // --- ROW 1: Analytics + Status ---
+              if (isMobile)
+                Column(
+                  children: [
+                    _HoverBentoCard(
+                      height: 320,
+                      padding: EdgeInsets.zero,
+                      delay: 0,
+                      child: _buildAnalyticsContent(context),
+                    ),
+                    const SizedBox(height: 20),
+                    _HoverBentoCard(
+                      height: 320,
+                      delay: 100,
+                      child: _buildStatusContent(context),
+                    ),
+                  ],
+                )
+              else
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: _HoverBentoCard(
+                        height: 320,
+                        padding: EdgeInsets.zero,
+                        delay: 0,
+                        child: _buildAnalyticsContent(context),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 1,
+                      child: _HoverBentoCard(
+                        height: 320,
+                        delay: 100,
+                        child: _buildStatusContent(context),
+                      ),
+                    ),
+                  ],
+                ),
+
+              const SizedBox(height: 20),
+
+              // --- ROW 2: Three Small Features ---
+              if (isMobile)
+                Column(
+                  children: [
+                    _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green, 200),
+                    const SizedBox(height: 20),
+                    _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue, 300),
+                    const SizedBox(height: 20),
+                    _buildSmallFeature(context, "Open API", Icons.code, Colors.orange, 400),
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    Expanded(child: _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green, 200)),
+                    const SizedBox(width: 20),
+                    Expanded(child: _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue, 300)),
+                    const SizedBox(width: 20),
+                    Expanded(child: _buildSmallFeature(context, "Open API", Icons.code, Colors.orange, 400)),
+                  ],
+                ),
+
+              const SizedBox(height: 20),
+
+              // --- ROW 3: Task List + Infrastructure ---
+              if (isMobile)
+                Column(
+                  children: [
+                    _HoverBentoCard(
+                      height: 320,
+                      delay: 500,
+                      child: _buildTaskListContent(context),
+                    ),
+                    const SizedBox(height: 20),
+                    _HoverBentoCard(
+                      height: 320,
+                      padding: EdgeInsets.zero,
+                      delay: 600,
+                      child: _buildInfrastructureContent(),
+                    ),
+                  ],
+                )
+              else
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: _HoverBentoCard(
+                        height: 320,
+                        delay: 500,
+                        child: _buildTaskListContent(context),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      flex: 2,
+                      child: _HoverBentoCard(
+                        height: 320,
+                        padding: EdgeInsets.zero,
+                        delay: 600,
+                        child: _buildInfrastructureContent(),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // --- CONTENT BUILDERS ---
+
+  Widget _buildAnalyticsContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Real-time Analytics", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+              const SizedBox(height: 8),
+              Text("Track performance across all nodes.", style: TextStyle(color: bodyColor)),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 0, left: 0, right: 0,
+          height: 200,
+          child: Image.network(
+            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 80, height: 80,
+          decoration: BoxDecoration(
+            color: isDark ? Colors.green.withOpacity(0.2) : Colors.green.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.check_circle, color: Colors.green, size: 40),
+        ),
+        const SizedBox(height: 20),
+        Text("All Systems Operational", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
+        const SizedBox(height: 8),
+        Text("Last check: 2m ago", style: TextStyle(color: bodyColor, fontSize: 14)),
+      ],
+    );
+  }
+
+  Widget _buildSmallFeature(BuildContext context, String title, IconData icon, Color color, int delay) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+
+    return _HoverBentoCard(
+      height: 160,
+      delay: delay,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 32),
+          const SizedBox(height: 12),
+          Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTaskListContent(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Optimization", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+        const SizedBox(height: 20),
+        _checkItem(context, "Cache cleared", true),
+        _checkItem(context, "Database optimized", true),
+        _checkItem(context, "CDN synced", true),
+        _checkItem(context, "Backups completed", false),
+      ],
+    );
+  }
+
+  Widget _checkItem(BuildContext context, String text, bool checked) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final disabledColor = Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(
+            checked ? Icons.check_circle : Icons.circle_outlined, 
+            color: checked ? AppColors.primary : disabledColor, 
+            size: 20
+          ),
+          const SizedBox(width: 10),
+          Text(text, style: TextStyle(
+            color: checked ? textColor : disabledColor, 
+            fontWeight: FontWeight.w500)
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfrastructureContent() {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Opacity(
+            opacity: 0.8,
+            child: Image.network(
+              "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+              ),
+            ),
+          ),
+        ),
+        const Positioned(
+          bottom: 24, left: 24,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Global Infrastructure", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+              SizedBox(height: 4),
+              Text("Servers in 24 regions", style: TextStyle(color: Colors.white70, fontSize: 14)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// --- NEW HOVER BENTO CARD ---
+class _HoverBentoCard extends StatefulWidget {
+  final Widget child;
+  final double height;
+  final EdgeInsetsGeometry? padding;
+  final int delay;
+
+  const _HoverBentoCard({
+    required this.child, 
+    required this.height, 
+    this.padding, 
+    this.delay = 0
+  });
+
+  @override
+  State<_HoverBentoCard> createState() => _HoverBentoCardState();
+}
+
+class _HoverBentoCardState extends State<_HoverBentoCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // 2. Capture Card Colors
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        height: widget.height,
+        padding: widget.padding ?? const EdgeInsets.all(24),
+        // LIFT ANIMATION
+        transform: isHovered ? Matrix4.translationValues(0, -6, 0) : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: cardColor, // Dynamic Background
+          borderRadius: BorderRadius.circular(20),
+          // BORDER HIGHLIGHT
+          border: Border.all(
+            color: isHovered ? AppColors.primary.withOpacity(0.3) : borderColor, 
+            width: 1
+          ),
+          // GLOW
+          boxShadow: [
+             if (isHovered)
+               BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: widget.child,
+        ),
+      ),
+    ).animate() // ENTRANCE POP
+     .scale(
+        delay: Duration(milliseconds: widget.delay), 
+        duration: 800.ms, 
+        curve: Curves.easeOutBack,
+        begin: const Offset(0.9, 0.9), 
+        end: const Offset(1, 1)
+     )
+     .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms);
+  }
+}
+--- File: ./lib/features/home/widgets/socialtrend.dart ---
+import 'dart:async';
+import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+
+class SocialTrendSection extends StatelessWidget {
+  const SocialTrendSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final iconColor = Theme.of(context).iconTheme.color;
+
+    return Container(
+      color: bgColor, // <--- Dynamic Background
+      padding: const EdgeInsets.symmetric(vertical: 80),
+      child: Column(
+        children: [
+          // 1. HEADLINE
+          Text(
+            "Keep your socials on-trend.",
+            style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.w800,
+              color: textColor, // <--- Dynamic Text
+              letterSpacing: -1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          
+          const SizedBox(height: 16),
+
+          // 2. SUBTITLE
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              "Consistency is key. With our intuitive calendar, you'll never\nmiss a chance to stay active and engaging.",
+              style: TextStyle(
+                fontSize: 18,
+                color: bodyColor, // <--- Dynamic Text
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // 3. CTA LINK
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Try calendar",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: textColor, // <--- Dynamic Text
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, size: 18, color: iconColor?.withOpacity(0.7)),
+            ],
+          ),
+
+          const SizedBox(height: 60),
+
+          // 4. THE HORIZONTAL SCROLL AREA
+          const SizedBox(
+            height: 450, 
+            child: _InfiniteHorizontalList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- PART 2: THE SCROLLING ENGINE ---
+class _InfiniteHorizontalList extends StatefulWidget {
+  const _InfiniteHorizontalList();
+
+  @override
+  State<_InfiniteHorizontalList> createState() => _InfiniteHorizontalListState();
+}
+
+class _InfiniteHorizontalListState extends State<_InfiniteHorizontalList> {
+  late ScrollController _scrollController;
+  late Timer _timer;
+  
+  final List<Map<String, dynamic>> _posts = [
+    {
+      "name": "The Modern Gamer",
+      "handle": "X.com",
+      "avatar": "https://i.pravatar.cc/150?img=11",
+      "icon": Icons.close, 
+      "text": "Activision has taken its Call of Duty game down from the Microsoft Store, reportedly due to security concerns.",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&q=80",
+      "iconColor": Colors.black, // Will handle dynamic check later
+    },
+    {
+      "name": "AI News Daily",
+      "handle": "Facebook",
+      "avatar": "https://i.pravatar.cc/150?img=3",
+      "icon": Icons.facebook,
+      "text": "Elon Musk is back in the spotlight with Grok 4, promising a 'ludicrous rate of progress' in AI development.",
+      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=500&q=80",
+      "iconColor": Colors.blue,
+    },
+    {
+      "name": "Bioscience Genius",
+      "handle": "Instagram",
+      "avatar": "https://i.pravatar.cc/150?img=5",
+      "icon": Icons.camera_alt,
+      "text": "Amoebas are BACK in the spotlight - single-celled, shapeshifting, and still ruling the microbial world.",
+      "image": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80",
+      "iconColor": Colors.pink,
+    },
+    {
+      "name": "Tech Insider",
+      "handle": "LinkedIn",
+      "avatar": "https://i.pravatar.cc/150?img=8",
+      "icon": Icons.business,
+      "text": "Market trends show a massive shift towards automated content creation tools in 2025.",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&q=80",
+      "iconColor": Colors.blueAccent,
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+  }
+
+  void _startScrolling() {
+    _timer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
+      if (!_scrollController.hasClients) return;
+      double maxScroll = _scrollController.position.maxScrollExtent;
+      double currentScroll = _scrollController.offset;
+      double nextScroll = currentScroll + 1.0; 
+
+      if (nextScroll >= maxScroll) {
+        _scrollController.jumpTo(0);
+      } else {
+        _scrollController.jumpTo(nextScroll);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Capture the background color for the gradient fade
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+
+    return Stack(
+      children: [
+        // A. The List
+        ListView.builder(
+          controller: _scrollController,
+          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 1000, 
+          itemBuilder: (context, index) {
+            final post = _posts[index % _posts.length];
+            return _SocialCard(post: post);
+          },
+        ),
+
+        // B. Left Gradient (Fade)
+        Positioned(
+          left: 0, top: 0, bottom: 0,
+          width: 150,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  bgColor, // Solid color
+                  bgColor.withOpacity(0.0) // Transparent
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // C. Right Gradient (Fade)
+        Positioned(
+          right: 0, top: 0, bottom: 0,
+          width: 150,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerRight,
+                end: Alignment.centerLeft,
+                colors: [
+                  bgColor, // Solid color
+                  bgColor.withOpacity(0.0) // Transparent
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// --- PART 3: THE INDIVIDUAL CARD DESIGN ---
+class _SocialCard extends StatelessWidget {
+  final Map<String, dynamic> post;
+  const _SocialCard({required this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Theme Colors for the Card
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = Theme.of(context).dividerColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Handle Icon Color: If it's the Black X icon, turn it White in Dark Mode
+    Color iconColor = post['iconColor'];
+    if (iconColor == Colors.black && isDark) {
+      iconColor = Colors.white;
+    }
+
+    return Container(
+      width: 350,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardColor, // <--- Dynamic Card Background
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor), // <--- Dynamic Border
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header: Avatar + Name + Icon
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(post['avatar']),
+                radius: 20,
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(post['name'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
+                  Text(post['handle'], style: TextStyle(color: bodyColor, fontSize: 12)),
+                ],
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  // Slightly lighter/darker circle for the icon
+                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(post['icon'], size: 20, color: iconColor),
+              )
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // Post Text
+          Text(
+            post['text'],
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: bodyColor, fontSize: 15, height: 1.5), // <--- Dynamic Text
+          ),
+
+          const SizedBox(height: 20),
+
+          // Post Image
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(
+                post['image'],
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/target.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
+import '../../../core/theme/app_colors.dart';
+
+class TargetAudienceSection extends StatelessWidget {
+  const TargetAudienceSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Theme Colors
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return Container(
+      color: bgColor, // <--- Dynamic Background
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
+      child: Column(
+        children: [
+          // 1. HEADLINE (Animated)
+          Text(
+            "Built for every stage",
+            style: TextStyle(
+              fontSize: 48,
+              fontWeight: FontWeight.w800,
+              color: textColor, // <--- Dynamic Text
+              letterSpacing: -1.5,
+            ),
+            textAlign: TextAlign.center,
+          ).animate()
+           .scale(duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9)) // Pop
+           .fade(duration: 600.ms),
+          
+          const SizedBox(height: 16),
+
+          // 2. SUBTITLE (Animated)
+          Text(
+            "Create AI agents and automations tailored to run your business.\nCollaborate with teams or clients and plan campaigns together.",
+            style: TextStyle(
+              fontSize: 18,
+              color: bodyColor, // <--- Dynamic Text
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ).animate()
+           .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
+           .fade(delay: 200.ms, duration: 600.ms),
+
+          const SizedBox(height: 60),
+
+          // 3. THE CARDS
+          Wrap(
+            spacing: 24,
+            runSpacing: 24,
+            alignment: WrapAlignment.center,
+            children: [
+              _HoverTargetCard(
+                title: "For Startups",
+                description: "Centralized planning across multiple channels using CissyTech automations.",
+                image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80",
+                delay: 0,
+              ),
+              _HoverTargetCard(
+                title: "For Enterprises",
+                description: "Content creation powered by AI, brand kits and customizable templates.",
+                image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80",
+                delay: 100,
+              ),
+              _HoverTargetCard(
+                title: "For Teams",
+                description: "Comprehensive team management and approval flows with member roles.",
+                image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80",
+                delay: 200,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED CARD WIDGET ---
+class _HoverTargetCard extends StatefulWidget {
+  final String title;
+  final String description;
+  final String image;
+  final int delay;
+
+  const _HoverTargetCard({
+    required this.title,
+    required this.description,
+    required this.image,
+    this.delay = 0,
+  });
+
+  @override
+  State<_HoverTargetCard> createState() => _HoverTargetCardState();
+}
+
+class _HoverTargetCardState extends State<_HoverTargetCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Capture colors for the card context (Exact logic from your code)
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    
+    // For the inner mockup: White in light mode, Black in dark mode
+    final innerMockupColor = Theme.of(context).brightness == Brightness.dark 
+        ? Colors.black 
+        : Colors.white;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        width: 350,
+        height: 480, 
+        // 1. LIFT ANIMATION
+        transform: isHovered ? Matrix4.translationValues(0, -10, 0) : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: cardColor, // <--- Dynamic Card Background
+          borderRadius: BorderRadius.circular(24),
+          // 2. BORDER ANIMATION
+          border: isHovered 
+              ? Border.all(color: AppColors.primary.withOpacity(0.5), width: 1) 
+              : Border.all(color: borderColor),
+          // 3. GLOW/SHADOW ANIMATION
+          boxShadow: isHovered 
+              ? [BoxShadow(color: AppColors.primary.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 20))]
+              : [],
+        ),
+        child: Column(
+          children: [
+            // Text Content
+            Padding(
+              padding: const EdgeInsets.fromLTRB(32, 40, 32, 0),
+              child: Column(
+                children: [
+                  Text(
+                    widget.title,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: textColor, // <--- Dynamic Text
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: bodyColor, // <--- Dynamic Text
+                      fontSize: 16,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  // Animated "See pricing" Link
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: EdgeInsets.only(left: isHovered ? 8 : 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "See pricing",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: textColor, // <--- Dynamic Text
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.chevron_right, size: 16, color: bodyColor?.withOpacity(0.7)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Spacer(),
+
+            // The "Floating" Image Mockup (Animated Scale)
+            AnimatedScale(
+              scale: isHovered ? 1.05 : 1.0, // Zoom on hover
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutBack,
+              child: Container(
+                height: 180, 
+                width: double.infinity,
+                margin: const EdgeInsets.fromLTRB(32, 0, 32, 32), 
+                decoration: BoxDecoration(
+                  color: innerMockupColor, // <--- Dynamic Inner Background
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                     BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                  image: DecorationImage(
+                    image: NetworkImage(widget.image),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: borderColor), // <--- Dynamic Inner Border
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ).animate() // 4. ENTRANCE POP-IN
+       .scale(
+         delay: Duration(milliseconds: widget.delay), 
+         duration: 800.ms, 
+         curve: Curves.easeOutBack,
+         begin: const Offset(0.8, 0.8), // Start smaller
+         end: const Offset(1, 1)
+       )
+       .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms),
+    );
+  }
+}
+--- File: ./lib/features/home/widgets/trusted_by.dart ---
+
+--- File: ./lib/main.dart ---
+import 'package:flutter/material.dart';
+import 'features/home/home_page.dart';
+import 'core/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'core/theme/theme_controller.dart'; 
+
+void main() {
+  runApp(const CissyTechApp());
+}
+
+class CissyTechApp extends StatelessWidget {
+  const CissyTechApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Listen to the ThemeController
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeController.instance,
+      builder: (context, currentMode, child) {
+        return MaterialApp(
+          title: 'Cissy Technologies Limited',
+          debugShowCheckedModeBanner: false,
+
+          // 1. Apply Inter Font to Light Theme
+          theme: AppTheme.lightTheme.copyWith(
+            textTheme: GoogleFonts.interTextTheme(AppTheme.lightTheme.textTheme),
+          ),
+
+          // 2. Apply Inter Font to Dark Theme
+          darkTheme: AppTheme.darkTheme.copyWith(
+            textTheme: GoogleFonts.interTextTheme(AppTheme.darkTheme.textTheme),
+          ),
+          
+          // Use the current mode from the controller
+          themeMode: currentMode, 
+          
+          home: const HomePage(),
+        );
+      },
+    );
+  }
+}
+--- File: ./lib/shared/layout/footer.dart ---
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
+import '../../core/theme/app_colors.dart';
+
+class Footer extends StatelessWidget {
+  const Footer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Capture Theme Colors (Exact preservation of your logic)
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color; 
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;    
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;         
+    final dividerColor = Theme.of(context).dividerColor;
+
+    return Container(
+      color: bgColor,
+      padding: const EdgeInsets.only(top: 80, bottom: 40, left: 40, right: 40),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            children: [
+              // --- TOP SECTION (Links & Logo) ---
+              Wrap(
+                spacing: 40,
+                runSpacing: 40,
+                alignment: WrapAlignment.spaceBetween,
+                children: [
+                  // COLUMN 1: Brand & Socials
+                  SizedBox(
+                    width: 300,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Logo & Brand Name
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/cissy_logo.png', 
+                              height: 32,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "CissyTech",
+                              style: TextStyle(
+                                fontSize: 24, 
+                                fontWeight: FontWeight.bold,
+                                color: textColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Social media management. Using AI.",
+                          style: TextStyle(color: bodyColor, fontSize: 16),
+                        ),
+                        const SizedBox(height: 24),
+                        // Social Icons (Now Animated)
+                        Row(
+                          children: const [
+                            _AnimatedSocialIcon(Icons.facebook),
+                            _AnimatedSocialIcon(Icons.camera_alt),
+                            _AnimatedSocialIcon(Icons.close),
+                            _AnimatedSocialIcon(Icons.business),
+                            _AnimatedSocialIcon(Icons.music_note),
+                            _AnimatedSocialIcon(Icons.play_circle),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // COLUMN 2: Links
+                  const _FooterColumn(
+                    title: "Links",
+                    links: ["Pricing", "Integrations", "Features", "Login"],
+                  ),
+
+                  // COLUMN 3: Support
+                  const _FooterColumn(
+                    title: "Support",
+                    links: ["Help Center", "Service status", "Terms of service", "Privacy policy", "Cookie policy", "GDPR"],
+                  ),
+
+                  // COLUMN 4: Resources
+                  const _FooterColumn(
+                    title: "Resources",
+                    links: ["Blog", "Affiliates", "Roadmap"],
+                  ),
+
+                  // COLUMN 5: Community
+                  SizedBox(
+                    width: 250,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Community", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
+                        const SizedBox(height: 20),
+                        Text(
+                          "Join our community to learn how to use all of our tools faster and better.",
+                          style: TextStyle(color: bodyColor, fontSize: 15, height: 1.5),
+                        ),
+                        const SizedBox(height: 24),
+                        // Animated Button
+                        _AnimatedButton(
+                          isDark: isDark, 
+                          text: "Join Community Group"
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 80),
+              
+              // --- DIVIDER ---
+              Divider(color: dividerColor),
+              
+              const SizedBox(height: 30),
+
+              // --- BOTTOM SECTION (Copyright) ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "© Copyright CissyTech Ltd. All Rights Reserved.",
+                    style: TextStyle(color: bodyColor?.withOpacity(0.7), fontSize: 14),
+                  ),
+                ],
+              ),
+            ],
+          ).animate() // Main Entrance Animation
+           .fade(duration: 800.ms)
+           .slideY(begin: 0.1, end: 0, curve: Curves.easeOut),
+        ),
+      ),
+    );
+  }
+}
+
+// --- HELPER WIDGETS ---
+
+class _FooterColumn extends StatelessWidget {
+  final String title;
+  final List<String> links;
+
+  const _FooterColumn({required this.title, required this.links});
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+
+    return SizedBox(
+      width: 140, 
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
+          const SizedBox(height: 20),
+          ...links.map((link) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            // Replaced static Text with Animated Link Widget
+            child: _HoverLink(text: link, baseColor: bodyColor),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED LINK WIDGET ---
+class _HoverLink extends StatefulWidget {
+  final String text;
+  final Color? baseColor;
+
+  const _HoverLink({required this.text, required this.baseColor});
+
+  @override
+  State<_HoverLink> createState() => _HoverLinkState();
+}
+
+class _HoverLinkState extends State<_HoverLink> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        // Slide right by 5px on hover
+        transform: isHovered ? Matrix4.translationValues(5, 0, 0) : Matrix4.identity(),
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 200),
+          style: TextStyle(
+            // Change color to Primary Blue on hover, otherwise use baseColor
+            color: isHovered ? AppColors.primary : widget.baseColor,
+            fontSize: 15,
+            fontWeight: isHovered ? FontWeight.w500 : FontWeight.normal,
+          ),
+          child: Text(widget.text),
+        ),
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED SOCIAL ICON ---
+class _AnimatedSocialIcon extends StatefulWidget {
+  final IconData icon;
+  const _AnimatedSocialIcon(this.icon);
+
+  @override
+  State<_AnimatedSocialIcon> createState() => _AnimatedSocialIconState();
+}
+
+class _AnimatedSocialIconState extends State<_AnimatedSocialIcon> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final iconColor = Theme.of(context).iconTheme.color;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.only(right: 16),
+        // Lift up by 3px on hover
+        transform: isHovered ? Matrix4.translationValues(0, -3, 0) : Matrix4.identity(),
+        child: Icon(
+          widget.icon, 
+          size: 24, 
+          // Turn Blue on hover
+          color: isHovered ? AppColors.primary : iconColor
+        ),
+      ),
+    );
+  }
+}
+
+// --- NEW ANIMATED BUTTON ---
+class _AnimatedButton extends StatefulWidget {
+  final bool isDark;
+  final String text;
+
+  const _AnimatedButton({required this.isDark, required this.text});
+
+  @override
+  State<_AnimatedButton> createState() => _AnimatedButtonState();
+}
+
+class _AnimatedButtonState extends State<_AnimatedButton> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedScale(
+        scale: isHovered ? 1.05 : 1.0, // Scale up 5% on hover
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: widget.isDark ? AppColors.primary : const Color(0xFF1F2937),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: isHovered ? 5 : 0, // Add shadow on hover
+          ),
+          child: Text(widget.text),
+        ),
+      ),
+    );
+  }
+}
+--- File: ./lib/shared/layout/navbar.dart ---
+import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/theme_controller.dart';
+
+class Navbar extends StatelessWidget {
+  const Navbar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 800;
+    
+    // 1. Get Dynamic Colors
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+    final iconColor = Theme.of(context).iconTheme.color;
+
+    return Center(
+      child: Container(
+        height: 70,
+        margin: EdgeInsets.only(
+          top: 20, 
+          left: isMobile ? 16 : 24, 
+          right: isMobile ? 16 : 24
+        ),
+        constraints: const BoxConstraints(maxWidth: 1200),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            // --- LEFT: LOGO ---
+            Image.asset(
+              'assets/images/cissy_logo.png', // Ensure this matches your file name
+              height: 28, 
+            ),
+            const SizedBox(width: 8),
+            Text(
+              "CissyTech", 
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)
+            ),
+
+            // --- SPACER ---
+            const Spacer(),
+
+            // --- THEME TOGGLE (Visible on Desktop, moved to menu on Mobile) ---
+            if (!isMobile) ...[
+               IconButton(
+                onPressed: () {
+                  ThemeController.instance.toggleTheme();
+                },
+                icon: Icon(
+                  isDark ? Icons.light_mode : Icons.dark_mode_outlined,
+                  color: iconColor,
+                ),
+              ),
+              const SizedBox(width: 10),
+            ],
+
+            // --- CENTER & RIGHT CONTENT ---
+            if (isMobile) ...[
+              // MOBILE LAYOUT
+              IconButton(
+                icon: Icon(Icons.menu, color: iconColor),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const _MobileMenuDialog(),
+                  );
+                },
+              ),
+            ] else ...[
+              // DESKTOP LAYOUT
+              _navLink("Features", textColor),
+              _navLink("Products", textColor),
+              _navLink("Pricing", textColor),
+              _navLink("Contact", textColor),
+
+              const SizedBox(width: 20),
+
+              TextButton(
+                onPressed: () {}, 
+                child: Text("Login", style: TextStyle(color: textColor)),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text("Get Started"),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navLink(String text, Color? color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(text, style: TextStyle(fontWeight: FontWeight.w500, color: color)),
+    );
+  }
+}
+
+class _MobileMenuDialog extends StatelessWidget {
+  const _MobileMenuDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    final bgColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final iconColor = Theme.of(context).iconTheme.color;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(20),
+      alignment: Alignment.topCenter,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Menu", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+                // FIX 1: Removed 'const' because textColor is dynamic
+                IconButton(
+                  onPressed: () => Navigator.pop(context), 
+                  icon: Icon(Icons.close, color: textColor)
+                ),
+              ],
+            ),
+            const Divider(),
+            // Pass the color to the helper function
+            _mobileLink("Features", textColor),
+            _mobileLink("Products", textColor),
+            _mobileLink("Pricing", textColor),
+            _mobileLink("Contact", textColor),
+            
+            const SizedBox(height: 20),
+            
+            ListTile(
+              leading: Icon(Icons.brightness_6, color: iconColor),
+              title: Text("Switch Theme", style: TextStyle(color: textColor)),
+              onTap: () {
+                ThemeController.instance.toggleTheme();
+                Navigator.pop(context);
+              },
+            ),
+            
+            const SizedBox(height: 10),
+            
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary, 
+                foregroundColor: Colors.white
+              ),
+              child: const Text("Get Started"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // FIX 2: Added 'color' parameter here
+  Widget _mobileLink(String text, Color? color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: color)),
+    );
+  }
+}
+--- File: ./lib/shared/layout/responsive.dart ---
+import 'package:flutter/material.dart';
+
+class Responsive extends StatelessWidget {
+  final Widget mobile;
+  final Widget? tablet;
+  final Widget desktop;
+
+  const Responsive({
+    super.key,
+    required this.mobile,
+    this.tablet,
+    required this.desktop,
+  });
+
+  // This static method helps us check screen size anywhere
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 650;
+
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 650 &&
+      MediaQuery.of(context).size.width < 1100;
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1100;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 1100) {
+          return desktop;
+        } else if (constraints.maxWidth >= 650) {
+          return tablet ?? mobile; // Use mobile layout if tablet isn't defined
+        } else {
+          return mobile;
+        }
+      },
+    );
+  }
+}
+--- File: ./lib/shared/layout/web_lay.dart ---
+
+--- File: ./lib/shared/widgets/cissy_button.dart ---
+
+--- File: ./lib/shared/widgets/glass_card.dart ---
+
+--- File: ./pubspec.yaml ---
+name: cissy_site
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.3.2
+  flutter_animate: ^4.5.2
+  flutter_staggered_grid_view: ^0.7.0
+  go_router: ^17.0.0
+  responsive_builder: ^0.7.1
+  url_launcher: ^6.3.2
+  flutter_svg: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^5.0.0
+  flutter_animate: ^4.2.0
+  animated_text_kit: ^4.2.2
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  # assets:
+  #   - images/a_dot_burr.jpeg
+  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
+
+--- File: ./README.md ---
+# cissy_site
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
+
+--- File: ./test/widget_test.dart ---
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility in the flutter_test package. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:cissy_site/main.dart';
+
+void main() {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
+
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+  });
+}
+

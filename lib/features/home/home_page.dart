@@ -11,19 +11,40 @@ import 'widgets/packages.dart';
 import '../../shared/layout/footer.dart';
 import 'widgets/cta_section.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // 1. Create a ScrollController
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // 1. The Scrolling Content (Behind the Navbar)
-          const SingleChildScrollView(
+          // 2. Attach the controller to the SingleChildScrollView
+          SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               children: [
-                const HeroSection(), // Includes the scrolling images
+                const HeroSection(),
                 const LogoMarquee(),
                 const AgentsSection(),
                 const BentoGridSection(),
@@ -32,17 +53,17 @@ class HomePage extends StatelessWidget {
                 const ProductivitySection(),
                 const PricingSection(),
                 const CallToActionSection(),
-                const Footer(), 
+                const Footer(),
               ],
             ),
           ),
 
-          // 2. The Sticky/Floating Navbar (On Top)
-          const Positioned(
+          // 3. Pass the controller to the Navbar
+          Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: Navbar(),
+            child: Navbar(scrollController: _scrollController),
           ),
         ],
       ),

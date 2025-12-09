@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/layout/responsive.dart';
 
@@ -15,14 +16,14 @@ class ProductivitySection extends StatelessWidget {
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
 
     return Container(
-      color: bgColor, // <--- Dynamic Background
+      color: bgColor,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1000),
           child: Column(
             children: [
-              // HEADER
+              // HEADER (Animated)
               Text(
                 "Maximum Productivity",
                 textAlign: TextAlign.center,
@@ -30,29 +31,38 @@ class ProductivitySection extends StatelessWidget {
                   fontSize: 40,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -1.0,
-                  color: textColor, // <--- Dynamic Text
+                  color: textColor,
                 ),
-              ),
+              ).animate()
+               .scale(duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
+               .fade(duration: 600.ms),
+              
               const SizedBox(height: 16),
+              
               Text(
                 "Everything you need to scale your operations without the headache.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: bodyColor), // <--- Dynamic Text
-              ),
+                style: TextStyle(fontSize: 18, color: bodyColor),
+              ).animate()
+               .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
+               .fade(delay: 200.ms, duration: 600.ms),
+
               const SizedBox(height: 60),
 
               // --- ROW 1: Analytics + Status ---
               if (isMobile)
                 Column(
                   children: [
-                    _BentoCard(
+                    _HoverBentoCard(
                       height: 320,
                       padding: EdgeInsets.zero,
+                      delay: 0,
                       child: _buildAnalyticsContent(context),
                     ),
                     const SizedBox(height: 20),
-                    _BentoCard(
+                    _HoverBentoCard(
                       height: 320,
+                      delay: 100,
                       child: _buildStatusContent(context),
                     ),
                   ],
@@ -63,17 +73,19 @@ class ProductivitySection extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 2,
-                      child: _BentoCard(
+                      child: _HoverBentoCard(
                         height: 320,
                         padding: EdgeInsets.zero,
+                        delay: 0,
                         child: _buildAnalyticsContent(context),
                       ),
                     ),
                     const SizedBox(width: 20),
                     Expanded(
                       flex: 1,
-                      child: _BentoCard(
+                      child: _HoverBentoCard(
                         height: 320,
+                        delay: 100,
                         child: _buildStatusContent(context),
                       ),
                     ),
@@ -86,21 +98,21 @@ class ProductivitySection extends StatelessWidget {
               if (isMobile)
                 Column(
                   children: [
-                    _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green),
+                    _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green, 200),
                     const SizedBox(height: 20),
-                    _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue),
+                    _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue, 300),
                     const SizedBox(height: 20),
-                    _buildSmallFeature(context, "Open API", Icons.code, Colors.orange),
+                    _buildSmallFeature(context, "Open API", Icons.code, Colors.orange, 400),
                   ],
                 )
               else
                 Row(
                   children: [
-                    Expanded(child: _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green)),
+                    Expanded(child: _buildSmallFeature(context, "99.9% Uptime", Icons.cloud_done, Colors.green, 200)),
                     const SizedBox(width: 20),
-                    Expanded(child: _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue)),
+                    Expanded(child: _buildSmallFeature(context, "24/7 Support", Icons.headset_mic, Colors.blue, 300)),
                     const SizedBox(width: 20),
-                    Expanded(child: _buildSmallFeature(context, "Open API", Icons.code, Colors.orange)),
+                    Expanded(child: _buildSmallFeature(context, "Open API", Icons.code, Colors.orange, 400)),
                   ],
                 ),
 
@@ -110,14 +122,16 @@ class ProductivitySection extends StatelessWidget {
               if (isMobile)
                 Column(
                   children: [
-                    _BentoCard(
+                    _HoverBentoCard(
                       height: 320,
+                      delay: 500,
                       child: _buildTaskListContent(context),
                     ),
                     const SizedBox(height: 20),
-                    _BentoCard(
+                    _HoverBentoCard(
                       height: 320,
                       padding: EdgeInsets.zero,
+                      delay: 600,
                       child: _buildInfrastructureContent(),
                     ),
                   ],
@@ -128,17 +142,19 @@ class ProductivitySection extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: _BentoCard(
+                      child: _HoverBentoCard(
                         height: 320,
+                        delay: 500,
                         child: _buildTaskListContent(context),
                       ),
                     ),
                     const SizedBox(width: 20),
                     Expanded(
                       flex: 2,
-                      child: _BentoCard(
+                      child: _HoverBentoCard(
                         height: 320,
                         padding: EdgeInsets.zero,
+                        delay: 600,
                         child: _buildInfrastructureContent(),
                       ),
                     ),
@@ -207,11 +223,12 @@ class ProductivitySection extends StatelessWidget {
     );
   }
 
-  Widget _buildSmallFeature(BuildContext context, String title, IconData icon, Color color) {
+  Widget _buildSmallFeature(BuildContext context, String title, IconData icon, Color color, int delay) {
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
 
-    return _BentoCard(
+    return _HoverBentoCard(
       height: 160,
+      delay: delay,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -301,13 +318,26 @@ class ProductivitySection extends StatelessWidget {
   }
 }
 
-// --- HELPER CARD ---
-class _BentoCard extends StatelessWidget {
+// --- NEW HOVER BENTO CARD ---
+class _HoverBentoCard extends StatefulWidget {
   final Widget child;
   final double height;
   final EdgeInsetsGeometry? padding;
+  final int delay;
 
-  const _BentoCard({required this.child, required this.height, this.padding});
+  const _HoverBentoCard({
+    required this.child, 
+    required this.height, 
+    this.padding, 
+    this.delay = 0
+  });
+
+  @override
+  State<_HoverBentoCard> createState() => _HoverBentoCardState();
+}
+
+class _HoverBentoCardState extends State<_HoverBentoCard> {
+  bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -315,18 +345,43 @@ class _BentoCard extends StatelessWidget {
     final cardColor = Theme.of(context).cardColor;
     final borderColor = Theme.of(context).dividerColor;
 
-    return Container(
-      height: height,
-      padding: padding ?? const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: cardColor, // <--- Dynamic Card Background
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor), // <--- Dynamic Border
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        height: widget.height,
+        padding: widget.padding ?? const EdgeInsets.all(24),
+        // LIFT ANIMATION
+        transform: isHovered ? Matrix4.translationValues(0, -6, 0) : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: cardColor, // Dynamic Background
+          borderRadius: BorderRadius.circular(20),
+          // BORDER HIGHLIGHT
+          border: Border.all(
+            color: isHovered ? AppColors.primary.withOpacity(0.3) : borderColor, 
+            width: 1
+          ),
+          // GLOW
+          boxShadow: [
+             if (isHovered)
+               BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: widget.child,
+        ),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: child,
-      ),
-    );
+    ).animate() // ENTRANCE POP
+     .scale(
+        delay: Duration(milliseconds: widget.delay), 
+        duration: 800.ms, 
+        curve: Curves.easeOutBack,
+        begin: const Offset(0.9, 0.9), 
+        end: const Offset(1, 1)
+     )
+     .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms);
   }
 }

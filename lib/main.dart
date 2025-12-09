@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'features/home/home_page.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/theme_controller.dart'; // Import the controller
+import 'package:google_fonts/google_fonts.dart';
+import 'core/theme/theme_controller.dart'; 
 
 void main() {
   runApp(const CissyTechApp());
@@ -19,10 +20,16 @@ class CissyTechApp extends StatelessWidget {
         return MaterialApp(
           title: 'Cissy Technologies Limited',
           debugShowCheckedModeBanner: false,
-          
-          // Define both themes
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+
+          // 1. Apply Inter Font to Light Theme
+          theme: AppTheme.lightTheme.copyWith(
+            textTheme: GoogleFonts.interTextTheme(AppTheme.lightTheme.textTheme),
+          ),
+
+          // 2. Apply Inter Font to Dark Theme
+          darkTheme: AppTheme.darkTheme.copyWith(
+            textTheme: GoogleFonts.interTextTheme(AppTheme.darkTheme.textTheme),
+          ),
           
           // Use the current mode from the controller
           themeMode: currentMode, 
