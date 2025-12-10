@@ -12,6 +12,42 @@ class PricingSection extends StatefulWidget {
 class _PricingSectionState extends State<PricingSection> {
   bool isYearly = false;
 
+  final List<Map<String, dynamic>> _plans = [
+    {
+      "title": "Bronze",
+      "monthly": "15", "yearly": "12",
+      "desc": "For individuals with scheduling needs.",
+      "features": {"Workspaces": "1", "Users": "1", "Social profiles": "5", "AI credits": "100"},
+      "popular": false,
+      "delay": 100
+    },
+    {
+      "title": "Silver",
+      "monthly": "39", "yearly": "31",
+      "desc": "For small teams building their brand.",
+      "features": {"Workspaces": "5", "Users": "5", "Social profiles": "20", "AI credits": "500"},
+      "popular": false,
+      "delay": 250
+    },
+    {
+      "title": "Gold",
+      "monthly": "79", "yearly": "63",
+      "desc": "For bigger teams or solo freelancers.",
+      "features": {"Workspaces": "20", "Users": "20", "Social profiles": "50", "AI credits": "1,500"},
+      "popular": true,
+      "delay": 400
+    },
+    {
+      "title": "Diamond",
+      "monthly": "159", "yearly": "127",
+      "desc": "For large teams or marketing agencies.",
+      "features": {"Workspaces": "∞", "Users": "50", "Social profiles": "150", "AI credits": "∞"},
+      "popular": false,
+      "delay": 550
+    },
+  ];
+
+
   @override
   Widget build(BuildContext context) {
     // 1. Capture Theme Colors
@@ -80,65 +116,17 @@ class _PricingSectionState extends State<PricingSection> {
                 spacing: 20,
                 runSpacing: 20,
                 alignment: WrapAlignment.center,
-                children: [
-                  _HoverPricingCard(
-                    title: "Bronze",
-                    price: isYearly ? "12" : "15",
-                    description: "For individuals with scheduling needs.",
-                    features: const {
-                      "Workspaces": "1",
-                      "Users": "1",
-                      "Social profiles": "5",
-                      "AI credits": "100",
-                      "Automation runs": "10",
-                    },
+                children: _plans.map((plan) {
+                  return _HoverPricingCard(
+                    title: plan['title'],
+                    price: isYearly ? plan['yearly'] : plan['monthly'],
+                    description: plan['desc'],
+                    features: plan['features'],
+                    isPopular: plan['popular'],
                     isYearly: isYearly,
-                    delay: 300,
-                  ),
-                  _HoverPricingCard(
-                    title: "Silver",
-                    price: isYearly ? "31" : "39",
-                    description: "For small teams building their brand.",
-                    features: const {
-                      "Workspaces": "5",
-                      "Users": "5",
-                      "Social profiles": "20",
-                      "AI credits": "500",
-                      "Automation runs": "100",
-                    },
-                    isYearly: isYearly,
-                    delay: 550,
-                  ),
-                  _HoverPricingCard(
-                    title: "Gold",
-                    price: isYearly ? "63" : "79",
-                    description: "For bigger teams or solo freelancers.",
-                    isPopular: true,
-                    features: const {
-                      "Workspaces": "20",
-                      "Users": "20",
-                      "Social profiles": "50",
-                      "AI credits": "1,500",
-                      "Automation runs": "1,500",
-                    },
-                    isYearly: isYearly,
-                    delay: 700,
-                  ),
-                  _HoverPricingCard(
-                    title: "Diamond",
-                    price: isYearly ? "127" : "159",
-                    description: "For large teams or marketing agencies.",
-                    features: const {
-                      "Workspaces": "∞",
-                      "Users": "50",
-                      "Social profiles": "150",
-                      "AI credits": "∞",
-                      "Automation runs": "10,000",
-                    },
-                    isYearly: isYearly,
-                    delay: 950,
-                  ),
-                ],
+                    delay: plan['delay'],
+                  );
+                }).toList(),
               ),
             ),
           ),

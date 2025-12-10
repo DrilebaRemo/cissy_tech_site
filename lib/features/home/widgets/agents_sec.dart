@@ -5,6 +5,27 @@ import '../../../core/theme/app_colors.dart';
 class AgentsSection extends StatelessWidget {
   const AgentsSection({super.key});
 
+  static const List<Map<String, dynamic>> _features = [
+    {
+      "title": "Social Poster",
+      "desc": "Multi-channel posting with automatic post creation.",
+      "image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80",
+      "delay": 100,
+    },
+    {
+      "title": "DM Chatbot",
+      "desc": "Smart replies and support through DMs via chatbots.",
+      "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80",
+      "delay": 300,
+    },
+    {
+      "title": "Comment-to-DM",
+      "desc": "Keyword-based link promotions for discounts or courses.",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80",
+      "delay": 500,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     // 1. Capture Dynamic Colors
@@ -56,26 +77,12 @@ class AgentsSection extends StatelessWidget {
             spacing: 24,
             runSpacing: 24,
             alignment: WrapAlignment.center,
-            children: [
-              _HoverFeatureCard(
-                title: "Social Poster",
-                description: "Multi-channel posting with automatic post creation.",
-                image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80",
-                entranceDelay: 300,
-              ),
-              _HoverFeatureCard(
-                title: "DM Chatbot",
-                description: "Smart replies and support through DMs via chatbots.",
-                image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80",
-                entranceDelay: 500, // Staggered
-              ),
-              _HoverFeatureCard(
-                title: "Comment-to-DM",
-                description: "Keyword-based link promotions for discounts or courses.",
-                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80",
-                entranceDelay: 700, // Staggered
-              ),
-            ],
+            children: _features.map((feature) => _HoverFeatureCard(
+              title: feature["title"],
+              description: feature["desc"],
+              image: feature["image"],
+              entranceDelay: feature["delay"],
+            )).toList(),
           ),
         ],
       ),

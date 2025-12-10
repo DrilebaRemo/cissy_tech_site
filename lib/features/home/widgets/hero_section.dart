@@ -90,12 +90,40 @@ class HeroSection extends StatelessWidget {
   Widget _buildScrollingCards(BuildContext context) {
     return InfiniteScrollColumn(
       speed: 0.8, 
-      items: [
-        _buildImageCard1(context),
-        _buildTestimonialCard1(context),
-        _buildImageCard2(context),
-        _buildTestimonialCard2(context),
-        _buildStatusCard(context),
+      items: const [
+        // 1. Image Card (Dark)
+        _HeroImageCard(
+          text: "Transform your company into a digital leader.",
+          imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop",
+          opacity: 0.6,
+        ),
+        
+        // 2. Testimonial Card
+        _HeroTestimonialCard(
+          name: "Benjamin Austin",
+          role: "CTO, Stanbic Bank",
+          avatarUrl: "https://i.pravatar.cc/150?img=11",
+        ),
+
+        // 3. Image Card (Blue-ish)
+        _HeroImageCard(
+          text: "Data-driven decisions made easy.",
+          imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+          opacity: 0.4,
+          overlayColor: Color(0xFF1E1E2D),
+        ),
+
+        // 4. Testimonial Card
+        _HeroTestimonialCard(
+          name: "Sarah Jenkins",
+          role: "Marketing Lead, Airtel",
+          avatarUrl: "https://i.pravatar.cc/150?img=5",
+        ),
+
+        // 5. Status Card
+        _HeroStatusCard(
+          text: "System Operational\n99.9% Uptime Verified",
+        ),
       ],
     );
   }
@@ -198,160 +226,6 @@ class HeroSection extends StatelessWidget {
       ],
     );
   }
-
-  // --- CARD HELPERS (Unchanged) ---
-  Widget _buildImageCard1(BuildContext context) {
-    return Container(
-      height: 340,
-      width: double.infinity,
-      padding: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(24),
-        image: const DecorationImage(
-          image: NetworkImage("https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"), 
-          fit: BoxFit.cover,
-          opacity: 0.6,
-        ),
-      ),
-      alignment: Alignment.bottomLeft,
-      child: const Text(
-        "Transform your company into a digital leader.",
-        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildTestimonialCard1(BuildContext context) {
-    final cardColor = Theme.of(context).cardColor;
-    final textColor = Theme.of(context).textTheme.displayLarge?.color;
-    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
-    final borderColor = Theme.of(context).dividerColor;
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
-        ],
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 24,
-            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=11"),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Benjamin Austin", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
-                Text("CTO, Stanbic Bank", style: TextStyle(color: bodyColor, fontSize: 13)),
-              ],
-            ),
-          ),
-          const Icon(Icons.star, color: AppColors.accent, size: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImageCard2(BuildContext context) {
-    return Container(
-      height: 320,
-      width: double.infinity,
-      padding: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E2D),
-        borderRadius: BorderRadius.circular(24),
-        image: const DecorationImage(
-          image: NetworkImage("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"),
-          fit: BoxFit.cover,
-          opacity: 0.4,
-        ),
-      ),
-      alignment: Alignment.bottomLeft,
-      child: const Text(
-        "Data-driven decisions made easy.",
-        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildTestimonialCard2(BuildContext context) {
-    final cardColor = Theme.of(context).cardColor;
-    final textColor = Theme.of(context).textTheme.displayLarge?.color;
-    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
-    final borderColor = Theme.of(context).dividerColor;
-
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
-        ],
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 32,
-            backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=5"),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Sarah Jenkins", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
-                Text("Marketing Lead, Airtel", style: TextStyle(color: bodyColor, fontSize: 13)),
-              ],
-            ),
-          ),
-          const Icon(Icons.star, color: AppColors.accent, size: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusCard(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    final cardBg = isDark ? Colors.green.withOpacity(0.1) : const Color(0xFFF0FDF4);
-    final borderColor = isDark ? Colors.green.withOpacity(0.3) : Colors.green.shade100;
-    final innerCircleColor = isDark ? const Color(0xFF1E1E2D) : Colors.white;
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: cardBg, 
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: borderColor),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: innerCircleColor, shape: BoxShape.circle),
-            child: const Icon(Icons.check_circle, color: Colors.green, size: 24),
-          ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Text(
-              "System Operational\n99.9% Uptime Verified",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.green),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _HoverAvatar extends StatefulWidget {
@@ -399,6 +273,137 @@ class _HoverAvatarState extends State<_HoverAvatar> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// --- 1. DYNAMIC IMAGE CARD ---
+class _HeroImageCard extends StatelessWidget {
+  final String text;
+  final String imageUrl;
+  final double opacity;
+  final Color overlayColor;
+
+  const _HeroImageCard({
+    required this.text,
+    required this.imageUrl,
+    this.opacity = 0.6,
+    this.overlayColor = Colors.black,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 340,
+      width: double.infinity,
+      padding: const EdgeInsets.all(40),
+      decoration: BoxDecoration(
+        color: overlayColor,
+        borderRadius: BorderRadius.circular(24),
+        image: DecorationImage(
+          image: NetworkImage(imageUrl),
+          fit: BoxFit.cover,
+          opacity: opacity,
+        ),
+      ),
+      alignment: Alignment.bottomLeft,
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+// --- 2. DYNAMIC TESTIMONIAL CARD ---
+class _HeroTestimonialCard extends StatelessWidget {
+  final String name;
+  final String role;
+  final String avatarUrl;
+
+  const _HeroTestimonialCard({
+    required this.name,
+    required this.role,
+    required this.avatarUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final borderColor = Theme.of(context).dividerColor;
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundImage: NetworkImage(avatarUrl),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: textColor)),
+                Text(role, style: TextStyle(color: bodyColor, fontSize: 13)),
+              ],
+            ),
+          ),
+          const Icon(Icons.star, color: AppColors.accent, size: 20),
+        ],
+      ),
+    );
+  }
+}
+
+// --- 3. DYNAMIC STATUS CARD ---
+class _HeroStatusCard extends StatelessWidget {
+  final String text;
+
+  const _HeroStatusCard({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    final cardBg = isDark ? Colors.green.withOpacity(0.1) : const Color(0xFFF0FDF4);
+    final borderColor = isDark ? Colors.green.withOpacity(0.3) : Colors.green.shade100;
+    final innerCircleColor = isDark ? const Color(0xFF1E1E2D) : Colors.white;
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardBg, 
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: innerCircleColor, shape: BoxShape.circle),
+            child: const Icon(Icons.check_circle, color: Colors.green, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.green),
+            ),
+          ),
+        ],
       ),
     );
   }

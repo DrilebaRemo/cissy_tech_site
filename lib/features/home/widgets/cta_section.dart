@@ -98,7 +98,7 @@ class CallToActionSection extends StatelessWidget {
                         color: Colors.white, // Always white on this dark background
                         letterSpacing: -1.0,
                       ),
-                    ).animate().fade().slideY(begin: 0.3, end: 0),
+                    ).animate().fade(duration: 800.ms).slideY(begin: 0.3, end: 0),
                     
                     const SizedBox(height: 16),
                     
@@ -110,7 +110,7 @@ class CallToActionSection extends StatelessWidget {
                         color: Colors.white70,
                         height: 1.5,
                       ),
-                    ).animate().fade(delay: 200.ms).slideY(begin: 0.3, end: 0),
+                    ).animate().fade(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3, end: 0),
 
                     const SizedBox(height: 40),
 
@@ -136,7 +136,7 @@ class CallToActionSection extends StatelessWidget {
                     .animate(onPlay: (c) => c.repeat(reverse: true)) // Heartbeat loop
                     .scale(begin: const Offset(1,1), end: const Offset(1.05, 1.05), duration: 1.seconds) // Pulse
                     .animate() // Entrance
-                    .fade(delay: 400.ms)
+                    .fade(duration: 800.ms, delay: 400.ms)
                     .slideY(begin: 0.3, end: 0),
                     
                     const SizedBox(height: 20),
@@ -144,7 +144,7 @@ class CallToActionSection extends StatelessWidget {
                     const Text(
                       "No credit card required. Cancel anytime.",
                       style: TextStyle(color: Colors.white30, fontSize: 13),
-                    ).animate().fade(delay: 600.ms),
+                    ).animate().fade(duration: 800.ms, delay: 600.ms),
                   ],
                 ),
               ),

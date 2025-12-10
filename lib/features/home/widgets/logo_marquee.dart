@@ -77,7 +77,7 @@ class _LogoMarqueeState extends State<LogoMarquee> {
               fontWeight: FontWeight.w500,
             ),
           ).animate()
-          .fade(duration: 600.ms)
+          .fade(duration: 800.ms)
           .slideY(begin: 0.3, end: 0, curve: Curves.easeOut),
           
           const SizedBox(height: 40),
@@ -99,7 +99,7 @@ class _LogoMarqueeState extends State<LogoMarquee> {
               ),
             ),
           ).animate()
-          .fade(delay: 200.ms, duration: 600.ms)
+          .fade(delay: 400.ms, duration: 1000.ms)
           .slideY(begin: 0.1, end: 0, curve: Curves.easeOut),  // 3. The Tag
         ],
       ),

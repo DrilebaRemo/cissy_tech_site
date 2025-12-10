@@ -16,7 +16,7 @@ class AppColors {
   static const Color lightBackground = Color(0xFFFFFFFF);
   static const Color lightSurface = Color(0xFFF9FAFB); 
   static const Color lightTextMain = Color(0xFF111827); 
-  static const Color lightTextBody = Color(0xFF4B5563); 
+  static const Color lightTextBody = Color(0xFF6B7280); 
   static const Color lightBorder = Color(0xFFE5E7EB);
 
   // Dark Mode Palette

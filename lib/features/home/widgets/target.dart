@@ -5,6 +5,27 @@ import '../../../core/theme/app_colors.dart';
 class TargetAudienceSection extends StatelessWidget {
   const TargetAudienceSection({super.key});
 
+  static const List<Map<String, dynamic>> _audiences = [
+    {
+      "title": "For Startups",
+      "desc": "Centralized planning across multiple channels using CissyTech automations.",
+      "image": "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80",
+      "delay": 100,
+    },
+    {
+      "title": "For Enterprises",
+      "desc": "Content creation powered by AI, brand kits and customizable templates.",
+      "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80",
+      "delay": 300,
+    },
+    {
+      "title": "For Teams",
+      "desc": "Comprehensive team management and approval flows with member roles.",
+      "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80",
+      "delay": 500,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     // 1. Capture Theme Colors
@@ -13,17 +34,16 @@ class TargetAudienceSection extends StatelessWidget {
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
 
     return Container(
-      color: bgColor, // <--- Dynamic Background
+      color: bgColor,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
       child: Column(
         children: [
-          // 1. HEADLINE (Animated)
           Text(
             "Built for every stage",
             style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.w800,
-              color: textColor, // <--- Dynamic Text
+              color: textColor,
               letterSpacing: -1.5,
             ),
             textAlign: TextAlign.center,
@@ -53,26 +73,14 @@ class TargetAudienceSection extends StatelessWidget {
             spacing: 24,
             runSpacing: 24,
             alignment: WrapAlignment.center,
-            children: [
-              _HoverTargetCard(
-                title: "For Startups",
-                description: "Centralized planning across multiple channels using CissyTech automations.",
-                image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80",
-                delay: 300,
-              ),
-              _HoverTargetCard(
-                title: "For Enterprises",
-                description: "Content creation powered by AI, brand kits and customizable templates.",
-                image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80",
-                delay: 700,
-              ),
-              _HoverTargetCard(
-                title: "For Teams",
-                description: "Comprehensive team management and approval flows with member roles.",
-                image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80",
-                delay: 900,
-              ),
-            ],
+            children: _audiences.map((item){ 
+              return _HoverTargetCard(
+                title: item["title"],
+                description: item["desc"],
+                image: item["image"],
+                delay: item["delay"],
+              );
+            }).toList(),
           ),
         ],
       ),

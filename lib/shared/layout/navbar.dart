@@ -113,7 +113,6 @@ class _NavbarState extends State<Navbar> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  // --- LEFT: LOGO ---
                   Image.asset(
                     'assets/images/cissy_logo.png',
                     height: 28, 
