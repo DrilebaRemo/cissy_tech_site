@@ -76,13 +76,13 @@ class BentoGridSection extends StatelessWidget {
                       child: Column(
                         children: [
                           _HoverBentoCard(
-                            height: 220, 
+                            height: 290, // Increased from 220 to fix overflow
                             delay: 100, // Staggered
                             child: _buildIntegrationContent(context)
                           ),
                           const SizedBox(height: 20),
                           _HoverBentoCard(
-                            height: 380, 
+                            height: 310, // Decreased from 380 to balance column
                             delay: 300, // Staggered
                             child: _buildApprovalContent(context)
                           ),
@@ -176,24 +176,61 @@ class BentoGridSection extends StatelessWidget {
   Widget _buildIntegrationContent(BuildContext context) {
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
+    final iconColor = Theme.of(context).iconTheme.color;
+
+    // List of Logo URLs (using high-quality PNGs/SVGs from reliable sources)
+    final row1 = [
+      "https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/2560px-TikTok_logo.svg.png", // TikTok
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/600px-LinkedIn_logo_initials.png", // LinkedIn
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png", // Facebook
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png", // Instagram
+    ];
+
+    final row2 = [
+      "https://assets-global.website-files.com/6257adef93867e56f84d3092/636e0a6a49cf127bf92de1e2_icon_cmyk_200.png", // Discord
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png", // Telegram
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Slack_icon_2019.svg/2048px-Slack_icon_2019.svg.png", // Slack
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Pinterest-logo.png/600px-Pinterest-logo.png", // Pinterest
+    ];
 
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Integrations", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+          Text("Social integrations", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
           const SizedBox(height: 8),
-          Text("Connect your favorite tools.", style: TextStyle(color: bodyColor, fontSize: 15)),
-          const Spacer(),
-          Wrap(
-            spacing: 8, runSpacing: 8,
-            children: [
-              _pill(context, "Shopify", Icons.shopping_bag, Colors.green),
-              _pill(context, "Slack", Icons.chat_bubble, Colors.orange),
-              _pill(context, "Stripe", Icons.credit_card, Colors.blue),
-            ],
+          Text(
+            "Over 30+ integrations including social, design, ecommerce and even our API.",
+            style: TextStyle(color: bodyColor, fontSize: 13, height: 1.4),
           ),
+          
+          const SizedBox(height: 24),
+          
+          // Row 1 - Scrolling RighttoLeft
+          SizedBox(
+            height: 40,
+            child: _SocialMarquee(icons: row1, reverse: false),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Row 2 - Scrolling LeftToRight (or same direction for consistency, user image shows grid)
+          // The image shows a grid, but "slide" implies movement. Marquee is good. 
+          SizedBox(
+             height: 40,
+             child: _SocialMarquee(icons: row2, reverse: true),
+          ),
+
+          const Spacer(),
+          
+          Row(
+            children: [
+              Text("Check all integrations", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor)),
+              const SizedBox(width: 5),
+              Icon(Icons.chevron_right, size: 16, color: iconColor?.withOpacity(0.7)),
+            ],
+          )
         ],
       ),
     );
@@ -279,6 +316,103 @@ class BentoGridSection extends StatelessWidget {
           Text(text, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: textColor)),
         ],
       ),
+    );
+  }
+}
+
+class _SocialMarquee extends StatefulWidget {
+  final List<String> icons;
+  final bool reverse;
+  const _SocialMarquee({required this.icons, this.reverse = false});
+
+  @override
+  State<_SocialMarquee> createState() => _SocialMarqueeState();
+}
+
+class _SocialMarqueeState extends State<_SocialMarquee> with SingleTickerProviderStateMixin {
+  late final ScrollController _scrollController;
+  late final AnimationController _animationController;
+  
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _animationController = AnimationController(
+      vsync: this, 
+      duration: const Duration(seconds: 10)
+    )..addListener(() {
+      if (_scrollController.hasClients) {
+        final maxScroll = _scrollController.position.maxScrollExtent;
+        final offset = _animationController.value * maxScroll;
+        // _scrollController.jumpTo(offset); // Manual control if needed, but simple ListView loop is better
+      }
+    }); // ..repeat(); 
+    
+    // Simple Auto-Scroll
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+  }
+
+  void _startScrolling() async {
+    await Future.delayed(const Duration(milliseconds: 500)); // Initial delay
+    
+    while (mounted) {
+       if (!_scrollController.hasClients) {
+         await Future.delayed(const Duration(milliseconds: 100));
+         continue;
+       }
+       
+       final maxScroll = _scrollController.position.maxScrollExtent;
+       final current = _scrollController.offset;
+       
+       if (current >= maxScroll) {
+         _scrollController.jumpTo(0);
+       } else {
+         // Calculate duration to maintain constant speed
+         // Target speed: ~50 pixels per second
+         final distance = maxScroll - current;
+         final durationInSeconds = distance / 30.0; // 30 pixels per second is a good slow speed
+         
+         await _scrollController.animateTo(
+           maxScroll, 
+           duration: Duration(seconds: durationInSeconds.round()), 
+           curve: Curves.linear,
+         );
+       }
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      controller: _scrollController,
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 1000, 
+      itemBuilder: (context, index) {
+        final iconUrl = widget.icons[index % widget.icons.length];
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Container(
+            width: 40, height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5, offset: const Offset(0, 2))
+              ]
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Image.network(iconUrl, fit: BoxFit.contain),
+          ),
+        );
+      },
     );
   }
 }
