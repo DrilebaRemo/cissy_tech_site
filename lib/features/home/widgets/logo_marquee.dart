@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// We don't need app_colors.dart strictly anymore if we use Theme.of(context), 
-// but keeping it for reference is fine.
+import 'package:flutter_animate/flutter_animate.dart';
+
 
 class LogoMarquee extends StatefulWidget {
   const LogoMarquee({super.key});
@@ -76,7 +76,9 @@ class _LogoMarqueeState extends State<LogoMarquee> {
               color: bodyColor?.withOpacity(0.7), // <--- Dynamic Text
               fontWeight: FontWeight.w500,
             ),
-          ),
+          ).animate()
+          .fade(duration: 600.ms)
+          .slideY(begin: 0.3, end: 0, curve: Curves.easeOut),
           
           const SizedBox(height: 40),
 
@@ -96,7 +98,9 @@ class _LogoMarqueeState extends State<LogoMarquee> {
                 },
               ),
             ),
-          ),   // 3. The Tag
+          ).animate()
+          .fade(delay: 200.ms, duration: 600.ms)
+          .slideY(begin: 0.1, end: 0, curve: Curves.easeOut),  // 3. The Tag
         ],
       ),
     );

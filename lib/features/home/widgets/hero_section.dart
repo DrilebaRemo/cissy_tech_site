@@ -55,7 +55,7 @@ class HeroSection extends StatelessWidget {
                         ),
                       ),
                     ).animate()
-                     .fade(duration: 800.ms)
+                     .fade(duration: 2000.ms)
                      .slideX(begin: 0.1, end: 0, curve: Curves.easeOut),
                   ),
                 ),
@@ -78,7 +78,7 @@ class HeroSection extends StatelessWidget {
               width: 340, 
               child: _buildScrollingCards(context),
             ).animate()
-             .fade(duration: 800.ms)
+             .fade(duration: 2000.ms)
              .slideY(begin: 0.1, end: 0),
           ],
         ),

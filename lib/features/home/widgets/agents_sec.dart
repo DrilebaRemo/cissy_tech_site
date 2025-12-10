@@ -61,19 +61,19 @@ class AgentsSection extends StatelessWidget {
                 title: "Social Poster",
                 description: "Multi-channel posting with automatic post creation.",
                 image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80",
-                entranceDelay: 0,
+                entranceDelay: 300,
               ),
               _HoverFeatureCard(
                 title: "DM Chatbot",
                 description: "Smart replies and support through DMs via chatbots.",
                 image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80",
-                entranceDelay: 100, // Staggered
+                entranceDelay: 500, // Staggered
               ),
               _HoverFeatureCard(
                 title: "Comment-to-DM",
                 description: "Keyword-based link promotions for discounts or courses.",
                 image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80",
-                entranceDelay: 200, // Staggered
+                entranceDelay: 700, // Staggered
               ),
             ],
           ),

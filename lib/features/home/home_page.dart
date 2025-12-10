@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           // 2. Attach the controller to the SingleChildScrollView
-          SingleChildScrollView(
+          ListView(
             controller: _scrollController,
-            child: Column(
-              children: [
+            cacheExtent: 100,
+            children: [
                 const HeroSection(),
                 const AgentsSection(),
                 const BentoGridSection(),
@@ -54,8 +54,7 @@ class _HomePageState extends State<HomePage> {
                 const CallToActionSection(),
                 const LogoMarquee(),
                 const Footer(),
-              ],
-            ),
+            ],
           ),
 
           // 3. Pass the controller to the Navbar

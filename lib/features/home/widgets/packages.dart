@@ -93,7 +93,7 @@ class _PricingSectionState extends State<PricingSection> {
                       "Automation runs": "10",
                     },
                     isYearly: isYearly,
-                    delay: 0,
+                    delay: 300,
                   ),
                   _HoverPricingCard(
                     title: "Silver",
@@ -107,7 +107,7 @@ class _PricingSectionState extends State<PricingSection> {
                       "Automation runs": "100",
                     },
                     isYearly: isYearly,
-                    delay: 100,
+                    delay: 550,
                   ),
                   _HoverPricingCard(
                     title: "Gold",
@@ -122,7 +122,7 @@ class _PricingSectionState extends State<PricingSection> {
                       "Automation runs": "1,500",
                     },
                     isYearly: isYearly,
-                    delay: 200,
+                    delay: 700,
                   ),
                   _HoverPricingCard(
                     title: "Diamond",
@@ -136,7 +136,7 @@ class _PricingSectionState extends State<PricingSection> {
                       "Automation runs": "10,000",
                     },
                     isYearly: isYearly,
-                    delay: 300,
+                    delay: 950,
                   ),
                 ],
               ),
