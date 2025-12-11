@@ -11,6 +11,8 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+.env/
+
 
 # IntelliJ related
 *.iml
@@ -45,3 +47,11 @@ app.*.map.json
 /android/app/release
 
 .firebase/hosting.YnVpbGRcd2Vi.cache
+# Firebase - Admin Secrets (Critical)
+service-account.json
+firebase-debug.log
+
+# Firebase - Client Configs (Optional protection for Public Repos)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+lib/firebase_options.dart

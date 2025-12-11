@@ -16,7 +16,7 @@ class _LogoMarqueeState extends State<LogoMarquee> {
   bool _isHoveringArea = false; 
 
   final List<String> _partnerLogos = [
-    "assets/images/stanbic1.png",
+    "assets/images/stanbic.png",
     "assets/images/flexi.png",
     "assets/images/airtel.png",
     "assets/images/partner1.png",
