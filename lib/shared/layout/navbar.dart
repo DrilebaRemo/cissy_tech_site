@@ -99,7 +99,11 @@ class _NavbarState extends State<Navbar> {
           border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+
+              // Use brandGray for shadow to integrate brand color into depth
+              color: isDark 
+                  ? Colors.black.withOpacity(0.2) 
+                  : AppColors.brandGray.withOpacity(0.1), 
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -123,7 +127,6 @@ class _NavbarState extends State<Navbar> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? Colors.white : AppColors.brandGray)
                   ),
 
-                  // --- SPACER ---
                   const Spacer(),
 
                   // --- MOBILE LAYOUT ---
@@ -147,10 +150,10 @@ class _NavbarState extends State<Navbar> {
                   
                   // --- DESKTOP LAYOUT ---
                   else ...[
-                      _HoverNavLink(text: "Products", color: textColor),
-                      _HoverNavLink(text: "Services", color: textColor),
-                      _HoverNavLink(text: "Company info", color: textColor),
-                      _HoverNavLink(text: "Contacts", color: textColor),
+                      _HoverNavLink(text: "Products", color: isDark ? Colors.white : AppColors.brandGray),
+                      _HoverNavLink(text: "Services", color: isDark ? Colors.white : AppColors.brandGray),
+                      _HoverNavLink(text: "Company info", color: isDark ? Colors.white : AppColors.brandGray),
+                      _HoverNavLink(text: "Contacts", color: isDark ? Colors.white : AppColors.brandGray),
 
                     const SizedBox(width: 20),
 

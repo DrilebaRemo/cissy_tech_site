@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 
 class SocialTrendSection extends StatelessWidget {
   const SocialTrendSection({super.key});
@@ -59,68 +60,72 @@ class SocialTrendSection extends StatelessWidget {
       child: Column(
         children: [
           // 1. HEADLINE
-          Text(
-            "Keep your socials on-trend.",
-            style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.w800,
-              color: textColor, // <--- Dynamic Text
-              letterSpacing: -1.5,
+          FadeInScroll(
+            child: Text(
+              "Keep your socials on-trend.",
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.w800,
+                color: textColor, // <--- Dynamic Text
+                letterSpacing: -1.5,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ).animate()
-           .fade(duration: 800.ms)
-           .slideY(begin: 0.3, end: 0, curve: Curves.easeOut),
+          ),
           
           const SizedBox(height: 16),
 
           // 2. SUBTITLE
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              "Consistency is key. With our intuitive calendar, you'll never\nmiss a chance to stay active and engaging.",
-              style: TextStyle(
-                fontSize: 18,
-                color: bodyColor, // <--- Dynamic Text
-                height: 1.5,
+          FadeInScroll(
+            delay: const Duration(milliseconds: 100),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "Consistency is key. With our intuitive calendar, you'll never\nmiss a chance to stay active and engaging.",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: bodyColor, // <--- Dynamic Text
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
-          ).animate()
-           .fade(delay: 200.ms, duration: 800.ms)
-           .slideY(begin: 0.3, end: 0, curve: Curves.easeOut),
+          ),
 
 
           const SizedBox(height: 24),
 
           // 3. CTA LINK
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Try calendar",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: textColor, // <--- Dynamic Text
-                  fontSize: 16,
+          FadeInScroll(
+            delay: const Duration(milliseconds: 200),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Try calendar",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: textColor, // <--- Dynamic Text
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 4),
-              Icon(Icons.chevron_right, size: 18, color: iconColor?.withOpacity(0.7)),
-            ],
-          ).animate()
-           .fade(delay: 400.ms, duration: 800.ms)
-           .slideY(begin: 0.3, end: 0, curve: Curves.easeOut),
+                const SizedBox(width: 4),
+                Icon(Icons.chevron_right, size: 18, color: iconColor?.withOpacity(0.7)),
+              ],
+            ),
+          ),
 
           const SizedBox(height: 60),
 
           // 4. THE HORIZONTAL SCROLL AREA
-          SizedBox(
-            height: 450, 
-            child: _InfiniteHorizontalList(posts: _posts),
-          ).animate()
-           .fade(delay: 400.ms, duration: 800.ms)
-           .slideY(begin: 0.1, end: 0, curve: Curves.easeOut),
+          FadeInScroll(
+            delay: const Duration(milliseconds: 300),
+            slideOffset: const Offset(0, 0.1), // SlideY
+            child: SizedBox(
+              height: 450, 
+              child: _InfiniteHorizontalList(posts: _posts),
+            ),
+          ),
         ],
       ),
     );

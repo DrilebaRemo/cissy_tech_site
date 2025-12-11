@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart'; // 1. Import Animate
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 
 class AgentsSection extends StatelessWidget {
   const AgentsSection({super.key});
@@ -16,13 +17,13 @@ class AgentsSection extends StatelessWidget {
       "title": "DM Chatbot",
       "desc": "Smart replies and support through DMs via chatbots.",
       "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80",
-      "delay": 300,
+      "delay": 200,
     },
     {
       "title": "Comment-to-DM",
       "desc": "Keyword-based link promotions for discounts or courses.",
       "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80",
-      "delay": 500,
+      "delay": 300,
     },
   ];
 
@@ -41,34 +42,35 @@ class AgentsSection extends StatelessWidget {
       child: Column(
         children: [
           // 1. HEADLINE (Animated)
-          Text(
-            "CissyTech Solutions ready to go.",
-            style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.w800,
-              color: textColor,
-              letterSpacing: -1.5,
-              fontFamily: 'Inter',
+          FadeInScroll(
+            child: Text(
+              "CissyTech Solutions ready to go.",
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.w800,
+                color: textColor,
+                letterSpacing: -1.5,
+                fontFamily: 'Inter',
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ).animate() // Entrance
-           .fade(duration: 600.ms)
-           .slideY(begin: 0.2, end: 0),
+          ),
           
           const SizedBox(height: 16),
 
           // 2. SUBTITLE (Animated)
-          Text(
-            "Templates designed to automate your workflow, manage data, \nand boost engagement. Or build your own custom solution!",
-            style: TextStyle(
-              fontSize: 18,
-              color: bodyColor,
-              height: 1.5,
+          FadeInScroll(
+            delay: const Duration(milliseconds: 200),
+            child: Text(
+              "Templates designed to automate your workflow, manage data, \nand boost engagement. Or build your own custom solution!",
+              style: TextStyle(
+                fontSize: 18,
+                color: bodyColor,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ).animate() // Entrance
-           .fade(delay: 200.ms, duration: 600.ms)
-           .slideY(begin: 0.2, end: 0),
+          ),
 
           const SizedBox(height: 60),
 
@@ -120,7 +122,9 @@ class _HoverFeatureCardState extends State<_HoverFeatureCard> {
     final borderColor = Theme.of(context).dividerColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return MouseRegion(
+    return FadeInScroll(
+      delay: Duration(milliseconds: widget.entranceDelay),
+      child: MouseRegion(
       onEnter: (_) => setState(() => isHovered = true),
       onExit: (_) => setState(() => isHovered = false),
       child: AnimatedContainer(
@@ -233,10 +237,9 @@ class _HoverFeatureCardState extends State<_HoverFeatureCard> {
               ),
             ),
           ],
-        ),
-      ).animate() // 6. STAGGERED ENTRANCE
-       .fade(delay: Duration(milliseconds: widget.entranceDelay), duration: 600.ms)
-       .slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
-    );
+        ), // Column
+      ), // AnimatedContainer
+    ), // MouseRegion
+    ); // FadeInScroll
   }
 }

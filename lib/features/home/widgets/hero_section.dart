@@ -3,6 +3,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../shared/layout/responsive.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 import 'infinite_scroll.dart'; 
 
 class HeroSection extends StatelessWidget {
@@ -47,16 +48,18 @@ class HeroSection extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 90),
                     child: SizedBox(
                       height: 700,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: SizedBox(
-                          width: 450, 
-                          child: _buildScrollingCards(context),
+                      child: FadeInScroll(
+                        duration: const Duration(milliseconds: 800),
+                        slideOffset: const Offset(0.1, 0), // slideX equivalent
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: SizedBox(
+                            width: 450, 
+                            child: _buildScrollingCards(context),
+                          ),
                         ),
                       ),
-                    ).animate()
-                     .fade(duration: 2000.ms)
-                     .slideX(begin: 0.1, end: 0, curve: Curves.easeOut),
+                    ),
                   ),
                 ),
               ],
@@ -73,13 +76,14 @@ class HeroSection extends StatelessWidget {
           children: [
             _buildTextContent(context, isCentered: true),
             const SizedBox(height: 60),
-            SizedBox(
-              height: 300,
-              width: 340, 
-              child: _buildScrollingCards(context),
-            ).animate()
-             .fade(duration: 2000.ms)
-             .slideY(begin: 0.1, end: 0),
+            FadeInScroll(
+              duration: const Duration(milliseconds: 2000),
+              child: SizedBox(
+                height: 300,
+                width: 340, 
+                child: _buildScrollingCards(context),
+              ),
+            ),
           ],
         ),
       ),
@@ -138,35 +142,43 @@ class HeroSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-        DefaultTextStyle(
-          textAlign: isCentered ? TextAlign.center : TextAlign.start,
-          style: TextStyle(
-            fontSize: 48,
-            height: 1.1,
-            fontWeight: FontWeight.w800,
-            color: textColor,
-            letterSpacing: -1.5,
-            fontFamily: 'Inter',
+
+        FadeInScroll(
+          duration: const Duration(milliseconds: 400),
+          child: DefaultTextStyle(
+            textAlign: isCentered ? TextAlign.center : TextAlign.start,
+            style: TextStyle(
+              fontSize: 48,
+              height: 1.1,
+              fontWeight: FontWeight.w800,
+              color: textColor,
+              letterSpacing: -1.5,
+              fontFamily: 'Inter',
+            ),
+            child: AnimatedTextKit(
+              repeatForever: true,
+              pause: const Duration(seconds: 3),
+              animatedTexts: [
+                TypewriterAnimatedText('Software that\nmeans business.', speed: const Duration(milliseconds: 100), cursor: '|'),
+                TypewriterAnimatedText('Software that\nscales effortlessly.', speed: const Duration(milliseconds: 100), cursor: '|'),
+                TypewriterAnimatedText('Software that\nis secure.', speed: const Duration(milliseconds: 100), cursor: '|'),
+              ],
+              onTap: () {},
+            ),
           ),
-          child: AnimatedTextKit(
-            repeatForever: true,
-            pause: const Duration(seconds: 3),
-            animatedTexts: [
-              TypewriterAnimatedText('Software that\nmeans business.', speed: const Duration(milliseconds: 100), cursor: '|'),
-              TypewriterAnimatedText('Software that\nscales effortlessly.', speed: const Duration(milliseconds: 100), cursor: '|'),
-              TypewriterAnimatedText('Software that\nis secure.', speed: const Duration(milliseconds: 100), cursor: '|'),
-            ],
-            onTap: () {},
-          ),
-        ).animate().fade(duration: 600.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+        ),
 
         const SizedBox(height: 24),
         
-        Text(
-          "Don't hire an expensive agency. Automate your workflow with CissyTech.",
-          textAlign: isCentered ? TextAlign.center : TextAlign.start,
-          style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5),
-        ).animate().fade(delay: 200.ms, duration: 600.ms).slideY(begin: 0.2, end: 0, curve: Curves.easeOut),
+        FadeInScroll(
+          delay: const Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 400),
+          child: Text(
+            "Don't hire an expensive agency. Automate your workflow with CissyTech.",
+            textAlign: isCentered ? TextAlign.center : TextAlign.start,
+            style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5),
+          ),
+        ),
 
         const SizedBox(height: 40),
         
@@ -175,55 +187,63 @@ class HeroSection extends StatelessWidget {
           runSpacing: 16,
           alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text("Start Free Trial", style: TextStyle(fontSize: 16)),
-            )
-            .animate(onPlay: (c) => c.repeat())
-            .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3))
-            .animate().fade(delay: 400.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
+            FadeInScroll(
+              delay: const Duration(milliseconds: 200),
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text("Start Free Trial", style: TextStyle(fontSize: 16)),
+              )
+              .animate(onPlay: (c) => c.repeat())
+              .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3)),
+            ),
 
-            OutlinedButton.icon(
-              onPressed: () {},
-              icon: Icon(Icons.play_arrow_rounded, color: textColor),
-              label: Text("Watch Demo", style: TextStyle(color: isDark ? Colors.white : AppColors.brandGray, fontSize: 16)),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
-                side: BorderSide(color: isDark ? Colors.white.withOpacity(0.3) : AppColors.brandGray.withOpacity(0.5)),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            FadeInScroll(
+              delay: const Duration(milliseconds: 400),
+              child: OutlinedButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.play_arrow_rounded, color: textColor),
+                label: Text("Watch Demo", style: TextStyle(color: isDark ? Colors.white : AppColors.brandGray, fontSize: 16)),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+                  side: BorderSide(color: isDark ? Colors.white.withOpacity(0.3) : AppColors.brandGray.withOpacity(0.5)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
               ),
-            ).animate().fade(delay: 400.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
+            ),
           ],
         ),
 
         const SizedBox(height: 60),
         
-        Wrap(
-          alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 20,
-          children: [
-             Row(
-               mainAxisSize: MainAxisSize.min,
-               children: const [
-                _HoverAvatar(imagePath: "assets/images/bulk_sms.png"),
-                _HoverAvatar(imagePath: "assets/images/cissy_cloud.png"),
-                _HoverAvatar(imagePath: "assets/images/collecto_logo.png"),
-                _HoverAvatar(imagePath: "assets/images/eworker.png"),
-               ],
-             ),
-             Text(
-               "Trusted by 500+\ncompanies",
-               style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor),
-             ),
-          ],
-        ).animate().fade(delay: 600.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
+        FadeInScroll(
+          delay: const Duration(milliseconds: 600),
+          child: Wrap(
+            alignment: isCentered ? WrapAlignment.center : WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 20,
+            children: [
+               Row(
+                 mainAxisSize: MainAxisSize.min,
+                 children: const [
+                  _HoverAvatar(imagePath: "assets/images/bulk_sms.png"),
+                  _HoverAvatar(imagePath: "assets/images/cissy_cloud.png"),
+                  _HoverAvatar(imagePath: "assets/images/collecto_logo.png"),
+                  _HoverAvatar(imagePath: "assets/images/eworker.png"),
+                 ],
+               ),
+               Text(
+                 "Trusted by 500+\ncompanies",
+                 style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor),
+               ),
+            ],
+          ),
+        ),
       ],
     );
   }

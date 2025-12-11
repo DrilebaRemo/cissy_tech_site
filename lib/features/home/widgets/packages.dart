@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 
 class PricingSection extends StatefulWidget {
   const PricingSection({super.key});
@@ -27,7 +28,7 @@ class _PricingSectionState extends State<PricingSection> {
       "desc": "For small teams building their brand.",
       "features": {"Workspaces": "5", "Users": "5", "Social profiles": "20", "AI credits": "500"},
       "popular": false,
-      "delay": 250
+      "delay": 200
     },
     {
       "title": "Gold",
@@ -35,7 +36,7 @@ class _PricingSectionState extends State<PricingSection> {
       "desc": "For bigger teams or solo freelancers.",
       "features": {"Workspaces": "20", "Users": "20", "Social profiles": "50", "AI credits": "1,500"},
       "popular": true,
-      "delay": 400
+      "delay": 300
     },
     {
       "title": "Diamond",
@@ -43,7 +44,7 @@ class _PricingSectionState extends State<PricingSection> {
       "desc": "For large teams or marketing agencies.",
       "features": {"Workspaces": "∞", "Users": "50", "Social profiles": "150", "AI credits": "∞"},
       "popular": false,
-      "delay": 550
+      "delay": 400
     },
   ];
 
@@ -66,45 +67,49 @@ class _PricingSectionState extends State<PricingSection> {
       child: Column(
         children: [
           // 1. HEADLINE (Animated Pop)
-          Text(
-            "Flexible Plans",
-            style: TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -1.0,
-              color: textColor,
+          FadeInScroll(
+            child: Text(
+              "Flexible Plans",
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -1.0,
+                color: textColor,
+              ),
             ),
-          ).animate()
-           .scale(duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
-           .fade(duration: 600.ms),
+          ),
            
           const SizedBox(height: 16),
           
-          Text(
-            "Choose a plan that scales with your business needs.",
-            style: TextStyle(fontSize: 18, color: bodyColor),
-            textAlign: TextAlign.center,
-          ).animate()
-           .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
-           .fade(delay: 200.ms, duration: 600.ms),
+          FadeInScroll(
+            delay: const Duration(milliseconds: 100),
+            child: Text(
+              "Choose a plan that scales with your business needs.",
+              style: TextStyle(fontSize: 18, color: bodyColor),
+              textAlign: TextAlign.center,
+            ),
+          ),
           
           const SizedBox(height: 40),
 
           // 2. TOGGLE SWITCH (Animated Fade)
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: toggleBg, 
-              borderRadius: BorderRadius.circular(8),
+          FadeInScroll(
+            delay: const Duration(milliseconds: 200),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: toggleBg, 
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildOption("Monthly", !isYearly, context),
+                  _buildOption("Yearly (save 20%)", isYearly, context),
+                ],
+              ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildOption("Monthly", !isYearly, context),
-                _buildOption("Yearly (save 20%)", isYearly, context),
-              ],
-            ),
-          ).animate().fade(delay: 300.ms),
+          ),
 
           const SizedBox(height: 60),
 
@@ -203,124 +208,119 @@ class _HoverPricingCardState extends State<_HoverPricingCard> {
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: 280,
-        padding: const EdgeInsets.all(32),
-        // 1. LIFT EFFECT
-        transform: isHovered ? Matrix4.translationValues(0, -10, 0) : Matrix4.identity(),
-        decoration: BoxDecoration(
-          color: cardColor, 
-          borderRadius: BorderRadius.circular(16),
-          // 2. BORDER HIGHLIGHT
-          border: Border.all(
-            color: isHovered ? AppColors.primary.withOpacity(0.5) : borderColor,
-            width: isHovered ? 2 : 1
+    return FadeInScroll(
+      delay: Duration(milliseconds: widget.delay),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 280,
+          padding: const EdgeInsets.all(32),
+          // 1. LIFT EFFECT
+          transform: isHovered ? Matrix4.translationValues(0, -10, 0) : Matrix4.identity(),
+          decoration: BoxDecoration(
+            color: cardColor, 
+            borderRadius: BorderRadius.circular(16),
+            // 2. BORDER HIGHLIGHT
+            border: Border.all(
+              color: isHovered ? AppColors.primary.withOpacity(0.5) : borderColor,
+              width: isHovered ? 2 : 1
+            ),
+            // 3. GLOW EFFECT
+            boxShadow: isHovered
+              ? [BoxShadow(color: AppColors.primary.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 10))]
+              : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10))],
           ),
-          // 3. GLOW EFFECT
-          boxShadow: isHovered
-            ? [BoxShadow(color: AppColors.primary.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 10))]
-            : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10))],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title & Badge
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: borderColor),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    widget.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor),
-                  ),
-                ),
-                if (widget.isPopular)
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Title & Badge
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF064E3B) : const Color(0xFFDCFCE7),
+                      border: Border.all(color: borderColor),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      "Most popular",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold, 
-                        fontSize: 12, 
-                        color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF166534),
-                      ),
+                      widget.title,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: textColor),
                     ),
                   ),
-              ],
-            ),
-            
-            const SizedBox(height: 20),
-
-            // Price
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  "\$${widget.price}",
-                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, letterSpacing: -2.0, color: textColor),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  widget.isYearly ? "/month (billed yearly)" : "/month",
-                  style: TextStyle(color: bodyColor, fontSize: 14),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            
-            // Description
-            Text(widget.description, style: TextStyle(color: bodyColor, height: 1.5)),
-
-            const SizedBox(height: 32),
-            Divider(height: 1, color: borderColor),
-            const SizedBox(height: 32),
-
-            // Features List
-            ...widget.features.entries.map((entry) => _buildFeatureRow(context, entry.key, entry.value)),
-
-            const SizedBox(height: 32),
-
-            // Button (Scales on hover via parent container lift)
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: isHovered ? 5 : 0, // Button shadow on hover
-                ),
-                child: const Text("Try 7 days free", style: TextStyle(fontWeight: FontWeight.w600)),
+                  if (widget.isPopular)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF064E3B) : const Color(0xFFDCFCE7),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        "Most popular",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, 
+                          fontSize: 12, 
+                          color: isDark ? const Color(0xFF6EE7B7) : const Color(0xFF166534),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            ),
-          ],
+              
+              const SizedBox(height: 20),
+
+              // Price
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    "\$${widget.price}",
+                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, letterSpacing: -2.0, color: textColor),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    widget.isYearly ? "/month (billed yearly)" : "/month",
+                    style: TextStyle(color: bodyColor, fontSize: 14),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+              
+              // Description
+              Text(widget.description, style: TextStyle(color: bodyColor, height: 1.5)),
+
+              const SizedBox(height: 32),
+              Divider(height: 1, color: borderColor),
+              const SizedBox(height: 32),
+
+              // Features List
+              ...widget.features.entries.map((entry) => _buildFeatureRow(context, entry.key, entry.value)),
+
+              const SizedBox(height: 32),
+
+              // Button (Scales on hover via parent container lift)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    elevation: isHovered ? 5 : 0, // Button shadow on hover
+                  ),
+                  child: const Text("Try 7 days free", style: TextStyle(fontWeight: FontWeight.w600)),
+                ),
+              ),
+            ],
+          ),
         ),
-      ).animate() // 4. POP ENTRANCE
-       .scale(
-         delay: Duration(milliseconds: widget.delay), 
-         duration: 800.ms, 
-         curve: Curves.easeOutBack,
-         begin: const Offset(0.9, 0.9), 
-         end: const Offset(1, 1)
-       )
-       .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms),
+      ),
     );
   }
 

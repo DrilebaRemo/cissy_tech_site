@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 
 class BentoGridSection extends StatelessWidget {
   const BentoGridSection({super.key});
@@ -31,19 +32,19 @@ class BentoGridSection extends StatelessWidget {
                     const SizedBox(height: 20),
                     _HoverBentoCard(
                       height: 220, 
-                      delay: 400,
+                      delay: 300,
                       child: _BentoIntegrationsItem()
                     ),
                     const SizedBox(height: 20),
                     _HoverBentoCard(
                       height: 380, 
-                      delay: 600,
+                      delay: 400,
                       child: _BentoApprovalsItem()
                     ),
                     const SizedBox(height: 20),
                     _HoverBentoCard(
                       height: 220, 
-                      delay: 800,
+                      delay: 600,
                       child: _BentoFeatureItem(title: "Powerful Plugins", desc: "Design assets instantly with our built-in tools.", icon: Icons.brush_outlined)
                     ),
                   ],
@@ -58,13 +59,13 @@ class BentoGridSection extends StatelessWidget {
                         children: const[
                           _HoverBentoCard(
                             height: 380, 
-                            delay: 200,
+                            delay: 100,
                             child: _BentoVideoItem()
                           ),
                           const SizedBox(height: 20),
                           _HoverBentoCard(
                             height: 220, 
-                            delay: 400, // Staggered
+                            delay: 200, // Staggered
                             child: _BentoFeatureItem(title: "Powerful Plugins", desc: "Design assets instantly with our built-in tools.", icon: Icons.brush_outlined)
                           ),
                         ],
@@ -77,13 +78,13 @@ class BentoGridSection extends StatelessWidget {
                         children: const[
                           _HoverBentoCard(
                             height: 290, // Increased from 220 to fix overflow
-                            delay: 600, // Staggered
+                            delay: 300, // Staggered
                             child: _BentoIntegrationsItem()
                           ),
                           const SizedBox(height: 20),
                           _HoverBentoCard(
                             height: 310, // Decreased from 380 to balance column
-                            delay: 800, // Staggered
+                            delay: 400, // Staggered
                             child: _BentoApprovalsItem()
                           ),
                         ],
@@ -105,11 +106,13 @@ class BentoGridSection extends StatelessWidget {
 class _HoverBentoCard extends StatefulWidget {
   final Widget child;
   final double height;
+  final EdgeInsetsGeometry? padding;
   final int delay;
 
   const _HoverBentoCard({
     required this.child, 
     required this.height, 
+    this.padding,
     this.delay = 0
   });
 
@@ -126,44 +129,40 @@ class _HoverBentoCardState extends State<_HoverBentoCard> {
     final cardColor = Theme.of(context).cardColor;
     final borderColor = Theme.of(context).dividerColor;
     
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-        height: widget.height,
-        width: double.infinity,
-        // 1. LIFT ANIMATION
-        transform: isHovered ? Matrix4.translationValues(0, -6, 0) : Matrix4.identity(),
-        decoration: BoxDecoration(
-          color: cardColor, 
-          borderRadius: BorderRadius.circular(20),
-          // 2. BORDER HIGHLIGHT (Subtle)
-          border: Border.all(
-            color: isHovered ? AppColors.primary.withOpacity(0.3) : borderColor,
-            width: 1
+    return FadeInScroll(
+      delay: Duration(milliseconds: widget.delay),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          height: widget.height,
+          width: double.infinity,
+          padding: widget.padding ?? const EdgeInsets.all(24),
+          // 1. LIFT ANIMATION
+          transform: isHovered ? Matrix4.translationValues(0, -6, 0) : Matrix4.identity(),
+          decoration: BoxDecoration(
+            color: cardColor, 
+            borderRadius: BorderRadius.circular(20),
+            // 2. BORDER HIGHLIGHT (Subtle)
+            border: Border.all(
+              color: isHovered ? AppColors.primary.withOpacity(0.3) : borderColor,
+              width: 1
+            ),
+            // 3. GLOW ANIMATION
+            boxShadow: [
+               if (isHovered)
+                 BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+            ],
           ),
-          // 3. GLOW ANIMATION
-          boxShadow: [
-             if (isHovered)
-               BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: widget.child,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: widget.child,
+          ),
         ),
       ),
-    ).animate() // 4. ENTRANCE POP-IN
-     .scale(
-        delay: Duration(milliseconds: widget.delay), 
-        duration: 600.ms, 
-        curve: Curves.easeOutBack,
-        begin: const Offset(0.9, 0.9), // Start slightly smaller
-        end: const Offset(1, 1)
-     )
-     .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms);
+    );
   }
 }
 

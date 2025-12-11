@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 
 class CallToActionSection extends StatelessWidget {
   const CallToActionSection({super.key});
@@ -89,62 +90,70 @@ class CallToActionSection extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "Ready to scale your business?",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white, // Always white on this dark background
-                        letterSpacing: -1.0,
+                    FadeInScroll(
+                      child: const Text(
+                        "Ready to scale your business?",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 42,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white, // Always white on this dark background
+                          letterSpacing: -1.0,
+                        ),
                       ),
-                    ).animate().fade(duration: 800.ms).slideY(begin: 0.3, end: 0),
+                    ),
                     
                     const SizedBox(height: 16),
                     
-                    const Text(
-                      "Join 500+ companies using CissyTech to \nautomate and grow their operations.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white70,
-                        height: 1.5,
+                    FadeInScroll(
+                      delay: const Duration(milliseconds: 100),
+                      child: const Text(
+                        "Join 500+ companies using CissyTech to \nautomate and grow their operations.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white70,
+                          height: 1.5,
+                        ),
                       ),
-                    ).animate().fade(duration: 800.ms, delay: 200.ms).slideY(begin: 0.3, end: 0),
+                    ),
 
                     const SizedBox(height: 40),
 
                     // 3. PULSING BUTTON
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-                          elevation: 10,
-                          shadowColor: Colors.white.withOpacity(0.3),
+                    FadeInScroll(
+                      delay: const Duration(milliseconds: 200),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                            elevation: 10,
+                            shadowColor: Colors.white.withOpacity(0.3),
+                          ),
+                          child: const Text(
+                            "Get Started for free",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        child: const Text(
-                          "Get Started for free",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    )
-                    .animate(onPlay: (c) => c.repeat(reverse: true)) // Heartbeat loop
-                    .scale(begin: const Offset(1,1), end: const Offset(1.05, 1.05), duration: 1.seconds) // Pulse
-                    .animate() // Entrance
-                    .fade(duration: 800.ms, delay: 400.ms)
-                    .slideY(begin: 0.3, end: 0),
+                      )
+                      .animate(onPlay: (c) => c.repeat(reverse: true)) // Heartbeat loop
+                      .scale(begin: const Offset(1,1), end: const Offset(1.05, 1.05), duration: 1.seconds),
+                    ),
                     
                     const SizedBox(height: 20),
                     
-                    const Text(
-                      "No credit card required. Cancel anytime.",
-                      style: TextStyle(color: Colors.white30, fontSize: 13),
-                    ).animate().fade(duration: 800.ms, delay: 600.ms),
+                    FadeInScroll(
+                      delay: const Duration(milliseconds: 300),
+                      child: const Text(
+                        "No credit card required. Cancel anytime.",
+                        style: TextStyle(color: Colors.white30, fontSize: 13),
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 
 
 class LogoMarquee extends StatefulWidget {
@@ -69,38 +71,39 @@ class _LogoMarqueeState extends State<LogoMarquee> {
       child: Column(
         children: [
           // 1. Header Text
-          Text(
-            "Trusted by leading companies in Uganda",
-            style: TextStyle(
-              fontSize: 18,
-              color: bodyColor?.withOpacity(0.7), // <--- Dynamic Text
-              fontWeight: FontWeight.w500,
+          FadeInScroll(
+            child: Text(
+              "Trusted by leading companies in Uganda",
+              style: TextStyle(
+                fontSize: 18,
+                color: bodyColor?.withOpacity(0.7), // <--- Dynamic Text
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ).animate()
-          .fade(duration: 800.ms)
-          .slideY(begin: 0.3, end: 0, curve: Curves.easeOut),
+          ),
           
           const SizedBox(height: 40),
 
           // 2. The Interactive Marquee
-          MouseRegion(
-            onEnter: (_) => setState(() => _isHoveringArea = true),
-            onExit: (_) => setState(() => _isHoveringArea = false),
-            child: SizedBox(
-              height: 80, 
-              child: ListView.builder(
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                itemCount: 1000, 
-                itemBuilder: (context, index) {
-                  final logoPath = _partnerLogos[index % _partnerLogos.length];
-                  return _MarqueeItem(imagePath: logoPath);
-                },
+          FadeInScroll(
+            delay: const Duration(milliseconds: 100),
+            child: MouseRegion(
+              onEnter: (_) => setState(() => _isHoveringArea = true),
+              onExit: (_) => setState(() => _isHoveringArea = false),
+              child: SizedBox(
+                height: 80, 
+                child: ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 1000, 
+                  itemBuilder: (context, index) {
+                    final logoPath = _partnerLogos[index % _partnerLogos.length];
+                    return _MarqueeItem(imagePath: logoPath);
+                  },
+                ),
               ),
             ),
-          ).animate()
-          .fade(delay: 400.ms, duration: 1000.ms)
-          .slideY(begin: 0.1, end: 0, curve: Curves.easeOut),  // 3. The Tag
+          ),
         ],
       ),
     );
@@ -151,7 +154,11 @@ class _MarqueeItemState extends State<_MarqueeItem> {
             fit: BoxFit.contain,
             // If you want to force white logos in dark mode, uncomment this:
             // color: isDark ? Colors.white : null,
-            color: isDark ? Colors.white : null,
+            // Light Mode: Gray (Brand) -> Color (Hover)
+            // Dark Mode: White -> Color (Hover)
+            color: isDark 
+                ? (isHovered ? null : Colors.white) 
+                : (isHovered ? null : AppColors.brandGray.withOpacity(0.6)),
             errorBuilder: (c, o, s) => const Icon(Icons.broken_image, color: Colors.grey),
           ),
         ),

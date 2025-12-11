@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/fade_in_scroll.dart';
 import '../../../shared/layout/responsive.dart';
 
 class ProductivitySection extends StatelessWidget {
@@ -24,28 +25,29 @@ class ProductivitySection extends StatelessWidget {
           child: Column(
             children: [
               // HEADER (Animated)
-              Text(
-                "Maximum Productivity",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -1.0,
-                  color: textColor,
+              FadeInScroll(
+                child: Text(
+                  "Maximum Productivity",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -1.0,
+                    color: textColor,
+                  ),
                 ),
-              ).animate()
-               .scale(duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
-               .fade(duration: 600.ms),
+              ),
               
               const SizedBox(height: 16),
               
-              Text(
-                "Everything you need to scale your operations without the headache.",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: bodyColor),
-              ).animate()
-               .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack, begin: const Offset(0.9, 0.9))
-               .fade(delay: 200.ms, duration: 600.ms),
+              FadeInScroll(
+                delay: const Duration(milliseconds: 100),
+                child: Text(
+                  "Everything you need to scale your operations without the headache.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18, color: bodyColor),
+                ),
+              ),
 
               const SizedBox(height: 60),
 
@@ -169,44 +171,39 @@ class _HoverBentoCardState extends State<_HoverBentoCard> {
     final cardColor = Theme.of(context).cardColor;
     final borderColor = Theme.of(context).dividerColor;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
-        height: widget.height,
-        padding: widget.padding ?? const EdgeInsets.all(24),
-        // LIFT ANIMATION
-        transform: isHovered ? Matrix4.translationValues(0, -6, 0) : Matrix4.identity(),
-        decoration: BoxDecoration(
-          color: cardColor, // Dynamic Background
-          borderRadius: BorderRadius.circular(20),
-          // BORDER HIGHLIGHT
-          border: Border.all(
-            color: isHovered ? AppColors.primary.withOpacity(0.3) : borderColor, 
-            width: 1
+    return FadeInScroll(
+      delay: Duration(milliseconds: widget.delay),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+          height: widget.height,
+          padding: widget.padding ?? const EdgeInsets.all(24),
+          // LIFT ANIMATION
+          transform: isHovered ? Matrix4.translationValues(0, -6, 0) : Matrix4.identity(),
+          decoration: BoxDecoration(
+            color: cardColor, // Dynamic Background
+            borderRadius: BorderRadius.circular(20),
+            // BORDER HIGHLIGHT
+            border: Border.all(
+              color: isHovered ? AppColors.primary.withOpacity(0.3) : borderColor, 
+              width: 1
+            ),
+            // GLOW
+            boxShadow: [
+               if (isHovered)
+                 BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+            ],
           ),
-          // GLOW
-          boxShadow: [
-             if (isHovered)
-               BoxShadow(color: AppColors.primary.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: widget.child,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: widget.child,
+          ),
         ),
       ),
-    ).animate() // ENTRANCE POP
-     .scale(
-        delay: Duration(milliseconds: widget.delay), 
-        duration: 800.ms, 
-        curve: Curves.easeOutBack,
-        begin: const Offset(0.9, 0.9), 
-        end: const Offset(1, 1)
-     )
-     .fade(delay: Duration(milliseconds: widget.delay), duration: 600.ms);
+    );
   }
 }
 

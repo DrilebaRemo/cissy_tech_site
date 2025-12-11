@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
 import '../../core/theme/app_colors.dart';
+import '../widgets/fade_in_scroll.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
@@ -20,7 +21,8 @@ class Footer extends StatelessWidget {
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
+          child: FadeInScroll(
+            child: Column(
             children: [
               // --- TOP SECTION (Links & Logo) ---
               Wrap(
@@ -47,7 +49,7 @@ class Footer extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 24, 
                                 fontWeight: FontWeight.bold,
-                                color: textColor,
+                                color: isDark ? Colors.white : AppColors.brandGray,
                               ),
                             ),
                           ],
@@ -118,7 +120,11 @@ class Footer extends StatelessWidget {
               const SizedBox(height: 80),
               
               // --- DIVIDER ---
-              Divider(color: dividerColor),
+              Divider(
+                color: isDark 
+                    ? dividerColor 
+                    : AppColors.brandGray.withOpacity(0.2)
+              ),
               
               const SizedBox(height: 30),
 
@@ -132,14 +138,13 @@ class Footer extends StatelessWidget {
                   ),
                 ],
               ),
-            ],
-          ).animate() // Main Entrance Animation
-           .fade(duration: 800.ms)
-           .slideY(begin: 0.1, end: 0, curve: Curves.easeOut),
+            ]
+          ),
         ),
       ),
+      ),
     );
-  }
+}
 }
 
 // --- HELPER WIDGETS ---
@@ -226,7 +231,8 @@ class _AnimatedSocialIconState extends State<_AnimatedSocialIcon> {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = Theme.of(context).iconTheme.color;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconColor = isDark ? Colors.white : AppColors.brandGray;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
