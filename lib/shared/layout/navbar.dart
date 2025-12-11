@@ -120,7 +120,7 @@ class _NavbarState extends State<Navbar> {
                   const SizedBox(width: 8),
                   Text(
                     "CissyTech", 
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? Colors.white : AppColors.brandGray)
                   ),
 
                   // --- SPACER ---
@@ -163,7 +163,7 @@ class _NavbarState extends State<Navbar> {
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isDark ? AppColors.primary : const Color(0xFF1F2937),
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                       ),
