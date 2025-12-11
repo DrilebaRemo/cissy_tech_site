@@ -178,11 +178,12 @@ class HeroSection extends StatelessWidget {
             ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: isDark ? AppColors.primary : AppColors.textMain,
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text("Start Free Trial", style: TextStyle(color: Colors.white, fontSize: 16)),
+              child: const Text("Start Free Trial", style: TextStyle(fontSize: 16)),
             )
             .animate(onPlay: (c) => c.repeat())
             .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3))
@@ -191,10 +192,10 @@ class HeroSection extends StatelessWidget {
             OutlinedButton.icon(
               onPressed: () {},
               icon: Icon(Icons.play_arrow_rounded, color: textColor),
-              label: Text("Watch Demo", style: TextStyle(color: textColor, fontSize: 16)),
+              label: Text("Watch Demo", style: TextStyle(color: isDark ? Colors.white : AppColors.brandGray, fontSize: 16)),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
-                side: BorderSide(color: borderColor),
+                side: BorderSide(color: isDark ? Colors.white.withOpacity(0.3) : AppColors.brandGray.withOpacity(0.5)),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ).animate().fade(delay: 400.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),

@@ -339,22 +339,23 @@ class _BentoPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final pillBg = isDark ? const Color(0xFF2D303E) : Colors.white;
-    final textColor = Theme.of(context).textTheme.displayLarge?.color;
+    final pillBg = isDark ? const Color(0xFF2D303E) : AppColors.primary.withOpacity(0.1);
+    final textColor = isDark ? Colors.white : AppColors.brandGray;
     final borderColor = Theme.of(context).dividerColor;
+    final border = isDark ? Border.all(color: borderColor) : null;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: pillBg,
-        border: Border.all(color: borderColor),
+        border: isDark ? Border.all(color: Colors.white12) : null,
         borderRadius: BorderRadius.circular(50),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 16),
+          Icon(icon, color: AppColors.primary, size: 16),
           const SizedBox(width: 6),
           Text(text, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: textColor)),
         ],

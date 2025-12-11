@@ -16,7 +16,7 @@ class _LogoMarqueeState extends State<LogoMarquee> {
   bool _isHoveringArea = false; 
 
   final List<String> _partnerLogos = [
-    "assets/images/stanbic.png",
+    "assets/images/stanbic1.png",
     "assets/images/flexi.png",
     "assets/images/airtel.png",
     "assets/images/partner1.png",
@@ -121,6 +121,12 @@ class _MarqueeItemState extends State<_MarqueeItem> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isFlexiPay = widget.imagePath.contains("flexi");
+    final colorFilter = (isDark && !isFlexiPay) ? Colors.white : null;
+    final containerBg = (isDark && isFlexiPay) ? Colors.white : null;
+    final containerPadding = (isDark && isFlexiPay) ? const EdgeInsets.all(8.0) : EdgeInsets.zero;
+    final containerRadius = (isDark && isFlexiPay) ? BorderRadius.circular(4) : null;
     // Optional: If you want logos to be white in dark mode, you can check brightness here
     // final isDark = Theme.of(context).brightness == Brightness.dark;
     // final colorFilter = isDark ? ColorFilter.mode(Colors.white, BlendMode.srcIn) : null;
@@ -134,12 +140,18 @@ class _MarqueeItemState extends State<_MarqueeItem> {
         curve: Curves.easeOutBack, 
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 40),
+          padding: containerPadding,
+          decoration: BoxDecoration(
+            color: containerBg,
+            borderRadius: containerRadius,
+          ),
           child: Image.asset(
             widget.imagePath,
             height: 50, 
             fit: BoxFit.contain,
             // If you want to force white logos in dark mode, uncomment this:
-            // color: isDark ? Colors.white : null, 
+            // color: isDark ? Colors.white : null,
+            color: isDark ? Colors.white : null,
             errorBuilder: (c, o, s) => const Icon(Icons.broken_image, color: Colors.grey),
           ),
         ),
