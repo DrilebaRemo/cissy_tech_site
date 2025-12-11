@@ -14,8 +14,7 @@ class LogoMarquee extends StatefulWidget {
 
 class _LogoMarqueeState extends State<LogoMarquee> {
   late ScrollController _scrollController;
-  late Timer _timer;
-  bool _isHoveringArea = false; 
+  late Timer _timer; 
 
   final List<String> _partnerLogos = [
     "assets/images/stanbic.png",
@@ -35,7 +34,6 @@ class _LogoMarqueeState extends State<LogoMarquee> {
   void _startAutoScroll() {
     _timer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
       if (!_scrollController.hasClients) return;
-      if (_isHoveringArea) return; 
 
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.offset;
@@ -87,20 +85,16 @@ class _LogoMarqueeState extends State<LogoMarquee> {
           // 2. The Interactive Marquee
           FadeInScroll(
             delay: const Duration(milliseconds: 100),
-            child: MouseRegion(
-              onEnter: (_) => setState(() => _isHoveringArea = true),
-              onExit: (_) => setState(() => _isHoveringArea = false),
-              child: SizedBox(
-                height: 80, 
-                child: ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 1000, 
-                  itemBuilder: (context, index) {
-                    final logoPath = _partnerLogos[index % _partnerLogos.length];
-                    return _MarqueeItem(imagePath: logoPath);
-                  },
-                ),
+            child: SizedBox(
+              height: 80, 
+              child: ListView.builder(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                itemCount: 1000, 
+                itemBuilder: (context, index) {
+                  final logoPath = _partnerLogos[index % _partnerLogos.length];
+                  return _MarqueeItem(imagePath: logoPath);
+                },
               ),
             ),
           ),
@@ -111,57 +105,30 @@ class _LogoMarqueeState extends State<LogoMarquee> {
 }
 
 // --- ANIMATED LOGO ITEM ---
-class _MarqueeItem extends StatefulWidget {
+class _MarqueeItem extends StatelessWidget {
   final String imagePath;
   const _MarqueeItem({required this.imagePath});
 
   @override
-  State<_MarqueeItem> createState() => _MarqueeItemState();
-}
-
-class _MarqueeItemState extends State<_MarqueeItem> {
-  bool isHovered = false;
-
-  @override
   Widget build(BuildContext context) {
+    final isPriority = imagePath.contains("airtel") || imagePath.contains("stanbic");
+    final double height = isPriority ? 60.0 : 20.0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isFlexiPay = widget.imagePath.contains("flexi");
-    final colorFilter = (isDark && !isFlexiPay) ? Colors.white : null;
-    final containerBg = (isDark && isFlexiPay) ? Colors.white : null;
-    final containerPadding = (isDark && isFlexiPay) ? const EdgeInsets.all(8.0) : EdgeInsets.zero;
-    final containerRadius = (isDark && isFlexiPay) ? BorderRadius.circular(4) : null;
-    // Optional: If you want logos to be white in dark mode, you can check brightness here
-    // final isDark = Theme.of(context).brightness == Brightness.dark;
-    // final colorFilter = isDark ? ColorFilter.mode(Colors.white, BlendMode.srcIn) : null;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedScale(
-        scale: isHovered ? 1.2 : 1.0, 
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOutBack, 
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 40),
-          padding: containerPadding,
-          decoration: BoxDecoration(
-            color: containerBg,
-            borderRadius: containerRadius,
-          ),
-          child: Image.asset(
-            widget.imagePath,
-            height: 50, 
-            fit: BoxFit.contain,
-            // If you want to force white logos in dark mode, uncomment this:
-            // color: isDark ? Colors.white : null,
-            // Light Mode: Gray (Brand) -> Color (Hover)
-            // Dark Mode: White -> Color (Hover)
-            color: isDark 
-                ? (isHovered ? null : Colors.white) 
-                : (isHovered ? null : AppColors.brandGray.withOpacity(0.6)),
-            errorBuilder: (c, o, s) => const Icon(Icons.broken_image, color: Colors.grey),
-          ),
-        ),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 30),
+      padding: isDark ? const EdgeInsets.all(8.0) : EdgeInsets.zero,
+      decoration: isDark
+          ? BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            )
+          : null,
+      child: Image.asset(
+        imagePath,
+        height: height,
+        fit: BoxFit.contain,
+        errorBuilder: (c, o, s) => const Icon(Icons.broken_image, color: Colors.grey),
       ),
     );
   }

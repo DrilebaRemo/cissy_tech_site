@@ -41,7 +41,6 @@ class HeroSection extends StatelessWidget {
                 const SizedBox(width: 40),
                 
                 // RIGHT SIDE (Scrolling Cards)
-                // This column now sits nicely under the right side of the Navbar
                 Expanded(
                   flex: 5, 
                   child: Padding(
@@ -68,7 +67,7 @@ class HeroSection extends StatelessWidget {
         ),
       ),
       
-      // --- MOBILE LAYOUT (Unchanged) ---
+      // MOBILE LAYOUT
       mobile: Container(
         color: bgColor,
         padding: const EdgeInsets.fromLTRB(20, 180, 20, 60),
@@ -90,7 +89,7 @@ class HeroSection extends StatelessWidget {
     );
   }
 
-  // --- THE SCROLLING CARDS LIST (Unchanged) ---
+  // SCROLLING CARDS LIST
   Widget _buildScrollingCards(BuildContext context) {
     return InfiniteScrollColumn(
       speed: 0.8, 
