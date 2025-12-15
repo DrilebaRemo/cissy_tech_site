@@ -33,7 +33,7 @@ class HeroSection extends StatelessWidget {
                 Expanded(
                   flex: 7, 
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 185),
+                    padding: const EdgeInsets.only(top: 180),
                     child: _buildTextContent(context),
                   )
                 ),
@@ -44,9 +44,9 @@ class HeroSection extends StatelessWidget {
                 Expanded(
                   flex: 5, 
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 90),
+                    padding: const EdgeInsets.only(top: 60),
                     child: SizedBox(
-                      height: 700,
+                      height: 550,
                       child: FadeInScroll(
                         duration: const Duration(milliseconds: 800),
                         slideOffset: const Offset(0.1, 0), // slideX equivalent
@@ -70,7 +70,7 @@ class HeroSection extends StatelessWidget {
       // MOBILE LAYOUT
       mobile: Container(
         color: bgColor,
-        padding: const EdgeInsets.fromLTRB(20, 180, 20, 60),
+        padding: const EdgeInsets.fromLTRB(20, 120, 20, 60),
         child: Column(
           children: [
             _buildTextContent(context, isCentered: true),
@@ -97,7 +97,7 @@ class HeroSection extends StatelessWidget {
         // 1. Image Card (Dark)
         _HeroImageCard(
           text: "Transform your company into a digital leader.",
-          imageUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop",
+          imageUrl: "assets/images/business2.png",
           opacity: 0.6,
         ),
         
@@ -110,8 +110,8 @@ class HeroSection extends StatelessWidget {
 
         // 3. Image Card (Blue-ish)
         _HeroImageCard(
-          text: "Data-driven decisions made easy.",
-          imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+          text: "Get an all in one solution for your business with our bundle.",
+          imageUrl: "assets/images/bundle1.png",
           opacity: 0.4,
           overlayColor: Color(0xFF1E1E2D),
         ),
@@ -121,11 +121,6 @@ class HeroSection extends StatelessWidget {
           name: "Sarah Jenkins",
           role: "Marketing Lead, Airtel",
           avatarUrl: "https://i.pravatar.cc/150?img=5",
-        ),
-
-        // 5. Status Card
-        _HeroStatusCard(
-          text: "System Operational\n99.9% Uptime Verified",
         ),
       ],
     );
@@ -144,25 +139,27 @@ class HeroSection extends StatelessWidget {
 
         FadeInScroll(
           duration: const Duration(milliseconds: 400),
-          child: DefaultTextStyle(
-            textAlign: isCentered ? TextAlign.center : TextAlign.start,
-            style: TextStyle(
-              fontSize: 48,
-              height: 1.1,
-              fontWeight: FontWeight.w800,
-              color: textColor,
-              letterSpacing: -1.5,
-              fontFamily: 'Inter',
-            ),
-            child: AnimatedTextKit(
-              repeatForever: true,
-              pause: const Duration(seconds: 3),
-              animatedTexts: [
-                TypewriterAnimatedText('Software that\nmeans business.', speed: const Duration(milliseconds: 100), cursor: '|'),
-                TypewriterAnimatedText('Software that\nscales effortlessly.', speed: const Duration(milliseconds: 100), cursor: '|'),
-                TypewriterAnimatedText('Software that\nis secure.', speed: const Duration(milliseconds: 100), cursor: '|'),
-              ],
-              onTap: () {},
+          child: SizedBox(
+            height: 160,
+            child: DefaultTextStyle(
+              textAlign: isCentered ? TextAlign.center : TextAlign.start,
+              style: TextStyle(
+                fontSize: 48,
+                height: 1.1,
+                fontWeight: FontWeight.w800,
+                color: textColor,
+                letterSpacing: -1.5,
+                fontFamily: 'Inter',
+              ),
+              child: AnimatedTextKit(
+                repeatForever: true,
+                pause: const Duration(seconds: 3),
+                animatedTexts: [
+                  TypewriterAnimatedText('We build software\nthat meets your business needs.', speed: const Duration(milliseconds: 100), cursor: '|'),
+                  TypewriterAnimatedText('We build software\n that enhances efficiency and growth.', speed: const Duration(milliseconds: 100), cursor: '|'),
+                ],
+                onTap: () {},
+              ),
             ),
           ),
         ),
@@ -173,7 +170,7 @@ class HeroSection extends StatelessWidget {
           delay: const Duration(milliseconds: 100),
           duration: const Duration(milliseconds: 400),
           child: Text(
-            "Don't hire an expensive agency. Automate your workflow with CissyTech.",
+            "Be part of the CissyTech ecosystem and drive your business forward.",
             textAlign: isCentered ? TextAlign.center : TextAlign.start,
             style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5),
           ),
@@ -218,7 +215,7 @@ class HeroSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 60),
+        const SizedBox(height: 40),
         
         FadeInScroll(
           delay: const Duration(milliseconds: 600),
@@ -237,7 +234,7 @@ class HeroSection extends StatelessWidget {
                  ],
                ),
                Text(
-                 "Trusted by 500+\ncompanies",
+                 "Trusted by 20+\ncompanies",
                  style: TextStyle(fontWeight: FontWeight.w600, color: bodyColor),
                ),
             ],
@@ -388,43 +385,3 @@ class _HeroTestimonialCard extends StatelessWidget {
   }
 }
 
-// --- 3. DYNAMIC STATUS CARD ---
-class _HeroStatusCard extends StatelessWidget {
-  final String text;
-
-  const _HeroStatusCard({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    final cardBg = isDark ? Colors.green.withOpacity(0.1) : const Color(0xFFF0FDF4);
-    final borderColor = isDark ? Colors.green.withOpacity(0.3) : Colors.green.shade100;
-    final innerCircleColor = isDark ? const Color(0xFF1E1E2D) : Colors.white;
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: cardBg, 
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: borderColor),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: innerCircleColor, shape: BoxShape.circle),
-            child: const Icon(Icons.check_circle, color: Colors.green, size: 24),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.green),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

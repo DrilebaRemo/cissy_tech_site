@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart'; // Import Animate
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/app_colors.dart';
 import '../widgets/fade_in_scroll.dart';
 
@@ -18,140 +20,191 @@ class Footer extends StatelessWidget {
     return Container(
       color: bgColor,
       padding: const EdgeInsets.only(top: 80, bottom: 40, left: 40, right: 40),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: FadeInScroll(
-            child: Column(
-            children: [
-              // --- TOP SECTION (Links & Logo) ---
-              Wrap(
-                spacing: 40,
-                runSpacing: 40,
-                alignment: WrapAlignment.spaceBetween,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isMobile = constraints.maxWidth < 800;
+              
+              // Define sections for reuse
+              final brandSection = SizedBox(
+                width: isMobile ? double.infinity : null, 
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Image.asset('assets/images/cissy_logo.png', height: 32),
+                        const SizedBox(width: 10),
+                        Text(
+                          "CissyTech",
+                          style: TextStyle(
+                            fontSize: 24, 
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : AppColors.brandGray,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Check us out on social media.",
+                      style: TextStyle(color: bodyColor, fontSize: 16),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: const [
+                        _AnimatedSocialIcon(FontAwesomeIcons.whatsapp, url: "https://api.whatsapp.com/send?phone=256781776645&text=Hey%20CissyTech"),
+                        _AnimatedSocialIcon(FontAwesomeIcons.instagram, url: "https://www.instagram.com/cissytech?igsh=MXU3YTh4NGx2NWp2bQ=="),
+                        _AnimatedSocialIcon(FontAwesomeIcons.xTwitter, url: "https://x.com/cissytech"),
+                        _AnimatedSocialIcon(FontAwesomeIcons.tiktok, url: "https://vm.tiktok.com/ZMHw9LjdJRAF9-oPRWx/"),
+                        _AnimatedSocialIcon(FontAwesomeIcons.youtube, url: "https://www.youtube.com/@cissytech"),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+
+              final linksSection = const _FooterColumn(
+                title: "Links",
+                links: {
+                  "Services": "/services", 
+                  "Products": "/products", 
+                  "Features": "/features", 
+                },
+              );
+
+              final supportSection = const _FooterColumn(
+                title: "Support",
+                links: {
+                  "Help Center": "/help", 
+                  "Service status": "/status"
+                },
+              );
+
+              final contactSection = Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // COLUMN 1: Brand & Socials
-                  SizedBox(
-                    width: 300,
-                    child: Column(
+                   Text("Contact us", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
+                   const SizedBox(height: 20),
+                   Row(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                       Icon(Icons.location_on_outlined, size: 20, color: bodyColor),
+                       const SizedBox(width: 10),
+                       Expanded(
+                         child: Text(
+                           "Plot 15A,\nNtinda Kampala, Uganda",
+                           style: TextStyle(color: bodyColor, fontSize: 15),
+                         ),
+                       ),
+                     ],
+                   ),
+                   const SizedBox(height: 16),
+                   Row(
+                     children: [
+                       Icon(Icons.email_outlined, size: 20, color: bodyColor),
+                       const SizedBox(width: 10),
+                       _HoverLink(text: "info[@]cissytech.com", baseColor: bodyColor),
+                     ],
+                   ),
+                   const SizedBox(height: 16),
+                   Row(
+                     children: [
+                       Icon(Icons.phone_outlined, size: 20, color: bodyColor),
+                       const SizedBox(width: 10),
+                       _HoverLink(text: "+256 781 776 645", baseColor: bodyColor, url: "tel:+256781776645"),
+                     ],
+                   ),
+                ],
+              );
+
+              return Column(
+                children: [
+                  // --- TOP SECTION ---
+                  if (isMobile) 
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Logo & Brand Name
+                        brandSection,
+                        const SizedBox(height: 40),
+                        linksSection, // Links
+                        const SizedBox(height: 40),
+                        supportSection, // Support
+                        const SizedBox(height: 40),
+                        contactSection
+                      ],
+                    )
+                  else
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(flex: 2, child: brandSection),
+                        Expanded(child: linksSection),
+                        Expanded(child: supportSection),
+                        Expanded(flex: 2, child: contactSection),
+                      ],
+                    ),
+
+                  const SizedBox(height: 80),
+                  
+                  // --- DIVIDER ---
+                  Divider(
+                    color: isDark 
+                        ? dividerColor 
+                        : AppColors.brandGray.withOpacity(0.2)
+                  ),
+                  
+                  const SizedBox(height: 30),
+
+                  // --- BOTTOM SECTION ---
+                  if (isMobile)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "© Copyright CissyTech Ltd. All Rights Reserved.",
+                          style: TextStyle(color: bodyColor?.withOpacity(0.7), fontSize: 14),
+                        ),
+                        const SizedBox(height: 20),
+                        Wrap(
+                          spacing: 20,
+                          runSpacing: 10,
+                          children: [
+                            _HoverLink(text: "Terms of service", baseColor: bodyColor?.withOpacity(0.7), url: "https://cissytech.com/policies/refund-and-cancellation"),
+                            _HoverLink(text: "Privacy policy", baseColor: bodyColor?.withOpacity(0.7), url: "https://cissytech.com/policies/refund-and-cancellation"),
+                          ],
+                        )
+                      ],
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "© Copyright CissyTech Ltd. All Rights Reserved.",
+                          style: TextStyle(color: bodyColor?.withOpacity(0.7), fontSize: 14),
+                        ),
                         Row(
                           children: [
-                            Image.asset(
-                              'assets/images/cissy_logo.png', 
-                              height: 32,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              "CissyTech",
-                              style: TextStyle(
-                                fontSize: 24, 
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : AppColors.brandGray,
-                              ),
-                            ),
+                            _HoverLink(text: "Terms of service", baseColor: bodyColor?.withOpacity(0.7), url: "https://cissytech.com/policies/refund-and-cancellation"),
+                            const SizedBox(width: 20),
+                            _HoverLink(text: "Privacy policy", baseColor: bodyColor?.withOpacity(0.7), url: "https://cissytech.com/policies/refund-and-cancellation"),
                           ],
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Social media management. Using AI.",
-                          style: TextStyle(color: bodyColor, fontSize: 16),
-                        ),
-                        const SizedBox(height: 24),
-                        // Social Icons (Now Animated)
-                        Row(
-                          children: const [
-                            _AnimatedSocialIcon(Icons.facebook),
-                            _AnimatedSocialIcon(Icons.camera_alt),
-                            _AnimatedSocialIcon(Icons.close),
-                            _AnimatedSocialIcon(Icons.business),
-                            _AnimatedSocialIcon(Icons.music_note),
-                            _AnimatedSocialIcon(Icons.play_circle),
-                          ],
-                        ),
+                        )
                       ],
                     ),
-                  ),
-
-                  // COLUMN 2: Links
-                  const _FooterColumn(
-                    title: "Links",
-                    links: ["Pricing", "Integrations", "Features", "Login"],
-                  ),
-
-                  // COLUMN 3: Support
-                  const _FooterColumn(
-                    title: "Support",
-                    links: ["Help Center", "Service status", "Terms of service", "Privacy policy", "Cookie policy", "GDPR"],
-                  ),
-
-                  // COLUMN 4: Resources
-                  const _FooterColumn(
-                    title: "Resources",
-                    links: ["Blog", "Affiliates", "Roadmap"],
-                  ),
-
-                  // COLUMN 5: Community
-                  SizedBox(
-                    width: 250,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Community", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Join our community to learn how to use all of our tools faster and better.",
-                          style: TextStyle(color: bodyColor, fontSize: 15, height: 1.5),
-                        ),
-                        const SizedBox(height: 24),
-                        // Animated Button
-                        _AnimatedButton(
-                          isDark: isDark, 
-                          text: "Join Community Group"
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 80),
-              
-              // --- DIVIDER ---
-              Divider(
-                color: isDark 
-                    ? dividerColor 
-                    : AppColors.brandGray.withOpacity(0.2)
-              ),
-              
-              const SizedBox(height: 30),
-
-              // --- BOTTOM SECTION (Copyright) ---
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "© Copyright CissyTech Ltd. All Rights Reserved.",
-                    style: TextStyle(color: bodyColor?.withOpacity(0.7), fontSize: 14),
-                  ),
-                ],
-              ),
-            ]
+                ]
+              );
+            }
           ),
-        ),
-      ),
-      ),
     );
-}
+  }
 }
 
 // --- HELPER WIDGETS ---
 
 class _FooterColumn extends StatelessWidget {
   final String title;
-  final List<String> links;
+  final Map<String, String> links;
 
   const _FooterColumn({required this.title, required this.links});
 
@@ -167,10 +220,10 @@ class _FooterColumn extends StatelessWidget {
         children: [
           Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: textColor)),
           const SizedBox(height: 20),
-          ...links.map((link) => Padding(
+          ...links.entries.map((entry) => Padding(
             padding: const EdgeInsets.only(bottom: 12),
             // Replaced static Text with Animated Link Widget
-            child: _HoverLink(text: link, baseColor: bodyColor),
+            child: _HoverLink(text: entry.key, baseColor: bodyColor, url: entry.value),
           )),
         ],
       ),
@@ -182,8 +235,9 @@ class _FooterColumn extends StatelessWidget {
 class _HoverLink extends StatefulWidget {
   final String text;
   final Color? baseColor;
+  final String? url;
 
-  const _HoverLink({required this.text, required this.baseColor});
+  const _HoverLink({required this.text, required this.baseColor, this.url});
 
   @override
   State<_HoverLink> createState() => _HoverLinkState();
@@ -192,25 +246,39 @@ class _HoverLink extends StatefulWidget {
 class _HoverLinkState extends State<_HoverLink> {
   bool isHovered = false;
 
+  Future<void> _launchUrl() async {
+    if (widget.url != null) {
+      final Uri uri = Uri.parse(widget.url!);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+        debugPrint('Could not launch ${widget.url}');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        // Slide right by 5px on hover
-        transform: isHovered ? Matrix4.translationValues(5, 0, 0) : Matrix4.identity(),
-        child: AnimatedDefaultTextStyle(
+    return GestureDetector(
+      onTap: _launchUrl,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          style: TextStyle(
-            // Change color to Primary Blue on hover, otherwise use baseColor
-            color: isHovered ? AppColors.primary : widget.baseColor,
-            fontSize: 15,
-            fontWeight: isHovered ? FontWeight.w500 : FontWeight.normal,
+          // Slide right by 5px on hover
+          transform: isHovered ? Matrix4.translationValues(5, 0, 0) : Matrix4.identity(),
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              // Change color to Primary Blue on hover, otherwise use baseColor
+              color: isHovered ? AppColors.primary : widget.baseColor,
+              fontSize: 15,
+              fontWeight: isHovered ? FontWeight.w500 : FontWeight.normal,
+            ),
+            child: Text(widget.text),
           ),
-          child: Text(widget.text),
         ),
       ),
     );
@@ -220,7 +288,8 @@ class _HoverLinkState extends State<_HoverLink> {
 // --- NEW ANIMATED SOCIAL ICON ---
 class _AnimatedSocialIcon extends StatefulWidget {
   final IconData icon;
-  const _AnimatedSocialIcon(this.icon);
+  final String? url;
+  const _AnimatedSocialIcon(this.icon, {this.url});
 
   @override
   State<_AnimatedSocialIcon> createState() => _AnimatedSocialIconState();
@@ -229,25 +298,39 @@ class _AnimatedSocialIcon extends StatefulWidget {
 class _AnimatedSocialIconState extends State<_AnimatedSocialIcon> {
   bool isHovered = false;
 
+  Future<void> _launchUrl() async {
+    if (widget.url != null) {
+      final Uri uri = Uri.parse(widget.url!);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
+      } else {
+         debugPrint('Could not launch ${widget.url}');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final iconColor = isDark ? Colors.white : AppColors.brandGray;
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.only(right: 16),
-        // Lift up by 3px on hover
-        transform: isHovered ? Matrix4.translationValues(0, -3, 0) : Matrix4.identity(),
-        child: Icon(
-          widget.icon, 
-          size: 24, 
-          // Turn Blue on hover
-          color: isHovered ? AppColors.primary : iconColor
+    return GestureDetector(
+      onTap: _launchUrl,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.only(right: 16),
+          // Lift up by 3px on hover
+          transform: isHovered ? Matrix4.translationValues(0, -3, 0) : Matrix4.identity(),
+          child: Icon(
+            widget.icon, 
+            size: 24, 
+            // Turn Blue on hover
+            color: isHovered ? AppColors.primary : iconColor
+          ),
         ),
       ),
     );

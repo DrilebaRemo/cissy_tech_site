@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/fade_in_scroll.dart';
@@ -51,7 +53,7 @@ class ProductivitySection extends StatelessWidget {
 
               const SizedBox(height: 60),
 
-              // --- ROW 1: Analytics + Status ---
+
               if (isMobile)
                 Column(
                   children: const[
@@ -59,7 +61,7 @@ class ProductivitySection extends StatelessWidget {
                       height: 320,
                       padding: EdgeInsets.zero,
                       delay: 0,
-                      child: _AnalyticsCard(),
+                      child: _IntegrationsScrollingCard(),
                     ),
                     const SizedBox(height: 20),
                     _HoverBentoCard(
@@ -79,7 +81,7 @@ class ProductivitySection extends StatelessWidget {
                         height: 320,
                         padding: EdgeInsets.zero,
                         delay: 0,
-                        child: _AnalyticsCard(),
+                        child: _IntegrationsScrollingCard(),
                       ),
                     ),
                     const SizedBox(width: 20),
@@ -144,7 +146,7 @@ class ProductivitySection extends StatelessWidget {
 
 }
 
-// --- NEW HOVER BENTO CARD ---
+ 
 class _HoverBentoCard extends StatefulWidget {
   final Widget child;
   final double height;
@@ -207,31 +209,130 @@ class _HoverBentoCardState extends State<_HoverBentoCard> {
   }
 }
 
-// --- 1. ANALYTICS CARD ---
-class _AnalyticsCard extends StatelessWidget {
-  const _AnalyticsCard();
+// --- 1. INTEGRATIONS SCROLLING CARD ---
+class _IntegrationsScrollingCard extends StatefulWidget {
+  const _IntegrationsScrollingCard();
+
+  @override
+  State<_IntegrationsScrollingCard> createState() => _IntegrationsScrollingCardState();
+}
+
+class _IntegrationsScrollingCardState extends State<_IntegrationsScrollingCard> {
+  late ScrollController _scrollController;
+  late Timer _timer;
+  
+  // List of Social Icons from FontAwesome
+  final List<IconData> _icons = [
+    FontAwesomeIcons.xTwitter,
+    FontAwesomeIcons.linkedinIn,
+    FontAwesomeIcons.tiktok,
+    FontAwesomeIcons.threads,
+    FontAwesomeIcons.facebook,
+    FontAwesomeIcons.telegram,
+    FontAwesomeIcons.slack,
+    FontAwesomeIcons.pinterest,
+    FontAwesomeIcons.youtube,
+    FontAwesomeIcons.google,
+    FontAwesomeIcons.instagram,
+    FontAwesomeIcons.discord,
+    FontAwesomeIcons.whatsapp,
+    FontAwesomeIcons.spotify,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startScrolling());
+  }
+
+  void _startScrolling() {
+    // Smooth auto-scroll logic
+    _timer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
+      if (!_scrollController.hasClients) return;
+      double maxScroll = _scrollController.position.maxScrollExtent;
+      double currentScroll = _scrollController.offset;
+      double nextScroll = currentScroll + 1.0; 
+
+      if (nextScroll >= maxScroll) {
+        _scrollController.jumpTo(0);
+      } else {
+        _scrollController.jumpTo(nextScroll);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     final bodyColor = Theme.of(context).textTheme.bodyLarge?.color;
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Real-time Analytics", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
-              const SizedBox(height: 8),
-              Text("Track performance across all nodes.", style: TextStyle(color: bodyColor)),
-            ],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Social integrations", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+          const SizedBox(height: 8),
+          Text(
+            "Over 30+ integrations including social, design, ecommerce and even our API.", 
+            style: TextStyle(color: bodyColor, fontSize: 15, height: 1.5)
           ),
-        ),
-        Positioned(
-          bottom: 0, left: 0, right: 0, height: 200,
-          child: Image.network("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80", fit: BoxFit.cover, alignment: Alignment.topCenter),
-        ),
-      ],
+          
+          const Spacer(),
+
+          // Scrolling Icons Row
+          SizedBox(
+            height: 80,
+            child: ListView.builder(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(), // User can't manually scroll effectively since timer overrides, but standard pattern is disabling physics or allowing handle
+              itemCount: 1000, // Infinite illusion
+              itemBuilder: (context, index) {
+                final icon = _icons[index % _icons.length];
+                return Container(
+                  width: 60,
+                  height: 60,
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade100,
+                    boxShadow: [
+                       BoxShadow(
+                         color: Colors.black.withOpacity(0.05),
+                         blurRadius: 10,
+                         offset: const Offset(0, 4),
+                       )
+                    ]
+                  ),
+                  alignment: Alignment.center,
+                  child: FaIcon(icon, size: 24, color: isDark ? Colors.white : Colors.black87),
+                );
+              },
+            ),
+          ),
+          
+          const Spacer(),
+
+          // Bottom Link
+          Row(
+            children: [
+              Text("Check all integrations", style: TextStyle(fontWeight: FontWeight.w600, color: textColor)),
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, size: 16, color: textColor),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

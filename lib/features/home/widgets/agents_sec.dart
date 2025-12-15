@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart'; // 1. Import Animate
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/fade_in_scroll.dart';
 
@@ -8,22 +8,35 @@ class AgentsSection extends StatelessWidget {
 
   static const List<Map<String, dynamic>> _features = [
     {
-      "title": "Social Poster",
-      "desc": "Multi-channel posting with automatic post creation.",
-      "image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80",
+      "titleImage": "assets/images/collecto_logo2.png",
+      "desc": "A modular service that automates payments, tracks staff performance and gives real time clarity to your business.",
+      "image": "assets/images/im1.png",
       "delay": 100,
     },
     {
-      "title": "DM Chatbot",
-      "desc": "Smart replies and support through DMs via chatbots.",
-      "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80",
+      "titleImage": "assets/images/eworker.png",
+      "desc": "Track payments in real-time with eWorker ID.",
+      "image": "assets/images/biometric.webp",
       "delay": 200,
     },
     {
-      "title": "Comment-to-DM",
-      "desc": "Keyword-based link promotions for discounts or courses.",
-      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=80",
+      
+      "titleImage": "assets/images/bulk_logo.png",
+      "desc": "Allow us to handle your bulk payments saving you time and resources you would take doing manual transfers.",
+      "image": "assets/images/money1.gif",
       "delay": 300,
+    },
+     {
+      "titleImage": "assets/images/cissy_cloud.png",
+      "desc": "Secure cloud storage and computing solutions.",
+      "image": "assets/images/cloud3.gif",
+      "delay": 400,
+    },
+     {
+      "titleImage": "assets/images/cissydrive.png", 
+      "desc": "Backup and manage your files with CissyDrive to ensure they are protected and safe online.",
+      "image": "assets/images/drive3.gif",
+      "delay": 500,
     },
   ];
 
@@ -44,7 +57,7 @@ class AgentsSection extends StatelessWidget {
           // 1. HEADLINE (Animated)
           FadeInScroll(
             child: Text(
-              "CissyTech Solutions ready to go.",
+              "Our Core products.",
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
@@ -62,7 +75,7 @@ class AgentsSection extends StatelessWidget {
           FadeInScroll(
             delay: const Duration(milliseconds: 200),
             child: Text(
-              "Templates designed to automate your workflow, manage data, \nand boost engagement. Or build your own custom solution!",
+              "Tailored modules designed to automate workflows, \nmanage cash flow, and boost engagement.",
               style: TextStyle(
                 fontSize: 18,
                 color: bodyColor,
@@ -80,7 +93,7 @@ class AgentsSection extends StatelessWidget {
             runSpacing: 24,
             alignment: WrapAlignment.center,
             children: _features.map((feature) => _HoverFeatureCard(
-              title: feature["title"],
+              titleImage: feature["titleImage"],
               description: feature["desc"],
               image: feature["image"],
               entranceDelay: feature["delay"],
@@ -94,13 +107,13 @@ class AgentsSection extends StatelessWidget {
 
 // --- NEW STATEFUL WIDGET FOR ANIMATION ---
 class _HoverFeatureCard extends StatefulWidget {
-  final String title;
+  final String titleImage;
   final String description;
   final String image;
   final int entranceDelay;
 
   const _HoverFeatureCard({
-    required this.title,
+    required this.titleImage,
     required this.description,
     required this.image,
     this.entranceDelay = 0,
@@ -162,15 +175,7 @@ class _HoverFeatureCardState extends State<_HoverFeatureCard> {
               padding: const EdgeInsets.fromLTRB(32, 32, 32, 0),
               child: Column(
                 children: [
-                  Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
+                  Image.asset(widget.titleImage, height: 40),
                   const SizedBox(height: 12),
                   Text(
                     widget.description,
@@ -179,27 +184,6 @@ class _HoverFeatureCardState extends State<_HoverFeatureCard> {
                       color: bodyColor,
                       fontSize: 16,
                       height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  
-                  // 4. LINK SLIDE ANIMATION
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: EdgeInsets.only(left: isHovered ? 8 : 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "See pricing",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: textColor,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(Icons.chevron_right, size: 16, color: bodyColor),
-                      ],
                     ),
                   ),
                 ],
@@ -214,7 +198,7 @@ class _HoverFeatureCardState extends State<_HoverFeatureCard> {
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutBack,
               child: Container(
-                height: 180, 
+                height: 240, 
                 width: double.infinity,
                 margin: const EdgeInsets.fromLTRB(24, 0, 24, 24), 
                 decoration: BoxDecoration(
@@ -229,7 +213,9 @@ class _HoverFeatureCardState extends State<_HoverFeatureCard> {
                     ),
                   ],
                   image: DecorationImage(
-                    image: NetworkImage(widget.image),
+                     image: widget.image.startsWith('http') 
+                        ? NetworkImage(widget.image)
+                        : AssetImage(widget.image) as ImageProvider,
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter, 
                   ),

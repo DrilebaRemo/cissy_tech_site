@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
                 const TargetAudienceSection(),
                 const SocialTrendSection(),
                 const ProductivitySection(),
-                const PricingSection(),
                 const CallToActionSection(),
                 const LogoMarquee(),
                 const Footer(),

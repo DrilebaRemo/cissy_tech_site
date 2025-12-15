@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/home/home_page.dart';
+import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'core/theme/theme_controller.dart'; 
@@ -17,7 +17,7 @@ class CissyTechApp extends StatelessWidget {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: ThemeController.instance,
       builder: (context, currentMode, child) {
-        return MaterialApp(
+        return MaterialApp.router(
           title: 'Cissy Technologies Limited',
           debugShowCheckedModeBanner: false,
 
@@ -34,7 +34,7 @@ class CissyTechApp extends StatelessWidget {
           // Use the current mode from the controller
           themeMode: currentMode, 
           
-          home: const HomePage(),
+          routerConfig: appRouter,
         );
       },
     );

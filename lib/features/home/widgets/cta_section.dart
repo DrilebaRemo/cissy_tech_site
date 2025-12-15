@@ -108,7 +108,7 @@ class CallToActionSection extends StatelessWidget {
                     FadeInScroll(
                       delay: const Duration(milliseconds: 100),
                       child: const Text(
-                        "Join 500+ companies using CissyTech to \nautomate and grow their operations.",
+                        "Join the network of innovators using CissyTech to \noptimize operations and drive revenue.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -136,23 +136,13 @@ class CallToActionSection extends StatelessWidget {
                             shadowColor: Colors.white.withOpacity(0.3),
                           ),
                           child: const Text(
-                            "Get Started for free",
+                            "Get Started",
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
                       )
                       .animate(onPlay: (c) => c.repeat(reverse: true)) // Heartbeat loop
                       .scale(begin: const Offset(1,1), end: const Offset(1.05, 1.05), duration: 1.seconds),
-                    ),
-                    
-                    const SizedBox(height: 20),
-                    
-                    FadeInScroll(
-                      delay: const Duration(milliseconds: 300),
-                      child: const Text(
-                        "No credit card required. Cancel anytime.",
-                        style: TextStyle(color: Colors.white30, fontSize: 13),
-                      ),
                     ),
                   ],
                 ),

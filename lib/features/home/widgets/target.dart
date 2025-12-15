@@ -8,21 +8,21 @@ class TargetAudienceSection extends StatelessWidget {
 
   static const List<Map<String, dynamic>> _audiences = [
     {
-      "title": "For Startups",
-      "desc": "Centralized planning across multiple channels using CissyTech automations.",
-      "image": "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80",
+      "title": "Domain Name\nRegistration",
+      "desc": "Secure a unique online identity by registering with us and let us manage your domain name.",
+      "image": "assets/images/web.gif",
       "delay": 100,
     },
     {
-      "title": "For Enterprises",
-      "desc": "Content creation powered by AI, brand kits and customizable templates.",
-      "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500&q=80",
+      "title": "Software Development",
+      "desc": "We design, build and deploy custom solutions including websites, web and mobile apps building them to meet your business needs.",
+      "image": "assets/images/sofware.gif",
       "delay": 200,
     },
     {
-      "title": "For Teams",
-      "desc": "Comprehensive team management and approval flows with member roles.",
-      "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&q=80",
+      "title": "Cloud and Email hosting",
+      "desc": "We provide digital space and infrastructure for your business to thrive online.",
+      "image": "assets/images/email.gif",
       "delay": 300,
     },
   ];
@@ -41,7 +41,7 @@ class TargetAudienceSection extends StatelessWidget {
         children: [
           FadeInScroll(
             child: Text(
-              "Built for every stage",
+              "Our digital services",
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
@@ -58,7 +58,7 @@ class TargetAudienceSection extends StatelessWidget {
           FadeInScroll(
             delay: const Duration(milliseconds: 100),
             child: Text(
-              "Create AI agents and automations tailored to run your business.\nCollaborate with teams or clients and plan campaigns together.",
+              "We also offer a variety of didgital services that help you run business online.",
               style: TextStyle(
                 fontSize: 18,
                 color: bodyColor, // <--- Dynamic Text
@@ -139,11 +139,9 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
           decoration: BoxDecoration(
             color: cardColor, // <--- Dynamic Card Background
             borderRadius: BorderRadius.circular(24),
-            // 2. BORDER ANIMATION
             border: isHovered 
                 ? Border.all(color: AppColors.primary.withOpacity(0.5), width: 1) 
                 : Border.all(color: borderColor),
-            // 3. GLOW/SHADOW ANIMATION
             boxShadow: isHovered 
                 ? [BoxShadow(color: AppColors.primary.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 20))]
                 : [],
@@ -174,27 +172,6 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
                         height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    
-                    // Animated "See pricing" Link
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: EdgeInsets.only(left: isHovered ? 8 : 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "See pricing",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: textColor, // <--- Dynamic Text
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Icon(Icons.chevron_right, size: 16, color: bodyColor?.withOpacity(0.7)),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -206,7 +183,7 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOutBack,
                 child: Container(
-                  height: 180, 
+                  height: 240, 
                   width: double.infinity,
                   margin: const EdgeInsets.fromLTRB(32, 0, 32, 32), 
                   decoration: BoxDecoration(
@@ -220,7 +197,9 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
                       ),
                     ],
                     image: DecorationImage(
-                      image: NetworkImage(widget.image),
+                      image: widget.image.startsWith('http') 
+                        ? NetworkImage(widget.image)
+                        : AssetImage(widget.image) as ImageProvider,
                       fit: BoxFit.cover,
                       alignment: Alignment.topCenter,
                     ),
