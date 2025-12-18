@@ -8,20 +8,20 @@ class TargetAudienceSection extends StatelessWidget {
 
   static const List<Map<String, dynamic>> _audiences = [
     {
-      "title": "Domain Name\nRegistration",
-      "desc": "Secure a unique online identity by registering with us and let us manage your domain name.",
+      "title": "Custom Software Development",
+      "desc": "We design and deiver custom enterprise sofftware from web platforms to mobile apps supported by secure hosting services.",
       "image": "assets/images/web.gif",
       "delay": 100,
     },
     {
-      "title": "Software Development",
-      "desc": "We design, build and deploy custom solutions including websites, web and mobile apps building them to meet your business needs.",
+      "title": "ICT Infrastructure & Managed Services",
+      "desc": "Management of ICT and utility infrastructure including surveillance,biometric systems and enterprise hardware.",
       "image": "assets/images/sofware.gif",
       "delay": 200,
     },
     {
-      "title": "Cloud and Email hosting",
-      "desc": "We provide digital space and infrastructure for your business to thrive online.",
+      "title": "Brand Strategy & Corporate Communications",
+      "desc": ".",
       "image": "assets/images/email.gif",
       "delay": 300,
     },
@@ -41,7 +41,7 @@ class TargetAudienceSection extends StatelessWidget {
         children: [
           FadeInScroll(
             child: Text(
-              "Our digital services",
+              "Professional & ManagedServices",
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.w800,
@@ -132,8 +132,8 @@ class _HoverTargetCardState extends State<_HoverTargetCard> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOut,
-          width: 350,
-          height: 480, 
+          width: 400,
+          height: 500, 
           // 1. LIFT ANIMATION
           transform: isHovered ? Matrix4.translationValues(0, -10, 0) : Matrix4.identity(),
           decoration: BoxDecoration(

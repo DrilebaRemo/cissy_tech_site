@@ -47,22 +47,6 @@ class AboutHero extends StatelessWidget {
               ),
             ),
           ),
-
-          const SizedBox(height: 40),
-
-          FadeInScroll(
-            delay: const Duration(milliseconds: 200),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-              ),
-              child: const Text("Start Your Journey", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-          ),
         ],
       ),
     );

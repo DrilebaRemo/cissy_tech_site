@@ -101,7 +101,7 @@ class BentoGridSection extends StatelessWidget {
                           child: Column(
                             children: [
                                _HoverBentoCard(
-                                height: 380, 
+                                height: 430, 
                                 delay: 100,
                                 padding: EdgeInsets.zero,
                                 child: const VideoThumbnail(
@@ -111,11 +111,11 @@ class BentoGridSection extends StatelessWidget {
                               ),
                               const SizedBox(height: 20),
                               const _HoverBentoCard(
-                                height: 420, 
+                                height: 460, 
                                 delay: 200, 
                                 child: _BentoImageCard(
                                    title: "Track payments in real-time",
-                                   imagePath: "assets/images/collect_ad3.png",
+                                   imagePath: "assets/images/collecto_ad.png",
                                 ),
                               ),
                             ],
@@ -127,22 +127,21 @@ class BentoGridSection extends StatelessWidget {
                           child: Column(
                             children: [
                               const _HoverBentoCard(
-                                height: 430, 
+                                height: 450, 
                                 delay: 300, 
                                 child: _BentoImageCard(
                                   title: "Fast and seamless biometric tracking", 
-                                  imagePath: "assets/images/bulk_ad3.png",
+                                  imagePath: "assets/images/bulk_logo2.png",
                                   height: 290,
                                 ),
                               ),
                               const SizedBox(height: 20),
                               _HoverBentoCard(
-                                height: 400, 
+                                height: 450, 
                                 delay: 400, 
-                                padding: EdgeInsets.zero, 
                                 child: _BentoImageCard(
                                   title: "Fast and seamless biometric tracking", 
-                                  imagePath: "assets/images/collecto_ad2.png",
+                                  imagePath: "assets/images/bulk_ad.png",
                                   height: 290,
                                 ),
                               ),

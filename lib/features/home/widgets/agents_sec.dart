@@ -9,18 +9,17 @@ class AgentsSection extends StatelessWidget {
   static const List<Map<String, dynamic>> _features = [
     {
       "titleImage": "assets/images/collecto_logo2.png",
-      "desc": "A modular service that automates payments, tracks staff performance and gives real time clarity to your business.",
+      "desc": "A secure SaaS platform integrating business management, value-added services, and digital payments.",
       "image": "assets/images/im1.png",
       "delay": 100,
     },
     {
       "titleImage": "assets/images/eworker.png",
-      "desc": "Track payments in real-time with eWorker ID.",
+      "desc": "An enterprise workforce platform optimized for casual and large-scale labor environments using biometrics to automate payroll and attendance tracking.",
       "image": "assets/images/biometric.webp",
       "delay": 200,
     },
     {
-      
       "titleImage": "assets/images/bulk_logo.png",
       "desc": "Allow us to handle your bulk payments saving you time and resources you would take doing manual transfers.",
       "image": "assets/images/money1.gif",
@@ -28,15 +27,21 @@ class AgentsSection extends StatelessWidget {
     },
      {
       "titleImage": "assets/images/cissy_cloud.png",
-      "desc": "Secure cloud storage and computing solutions.",
+      "desc": "A suite of AI-powered tools for Business, Education, Leisure, and Commerce, built for emerging markets.",
       "image": "assets/images/cloud3.gif",
       "delay": 400,
     },
      {
       "titleImage": "assets/images/cissydrive.png", 
-      "desc": "Backup and manage your files with CissyDrive to ensure they are protected and safe online.",
+      "desc": "A scalable multivendor commerce platform enabling enterprises and institutions to operate and grow digital marketplaces.",
       "image": "assets/images/drive3.gif",
       "delay": 500,
+    },
+    {
+      "titleImage": "assets/images/cissydrive.png", 
+      "desc": "An enterprise property and asset management system designed to support landlords, real estate firms, and asset managers operating across multiple markets.",
+      "image": "assets/images/drive3.gif",
+      "delay": 600,
     },
   ];
 
@@ -57,7 +62,7 @@ class AgentsSection extends StatelessWidget {
           // 1. HEADLINE (Animated)
           FadeInScroll(
             child: Text(
-              "Our Core products.",
+              "Enterprise Platforms.",
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.w800,

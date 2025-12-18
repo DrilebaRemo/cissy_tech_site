@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../shared/layout/navbar.dart';
 import '../../shared/layout/footer.dart';
-import 'widgets/about_hero.dart';
-import 'widgets/vision_mission.dart';
-import 'widgets/core_values.dart';
-import 'widgets/faq_section.dart';
+import 'widgets/company_image_strip.dart';
+import 'widgets/mission_headline.dart';
+import 'widgets/info_card_grid.dart';
+import 'widgets/innovation_section.dart';
+import 'widgets/ceo_section.dart';
+import 'widgets/purpose_section.dart';
+import 'widgets/grow_section.dart';
+
 
 class CompanyInfoPage extends StatefulWidget {
   const CompanyInfoPage({super.key});
@@ -38,10 +42,14 @@ class _CompanyInfoPageState extends State<CompanyInfoPage> {
             controller: _scrollController,
             child: const Column(
               children: [
-                AboutHero(),
-                VisionMissionSection(),
-                CoreValuesSection(),
-                FaqSection(),
+                SizedBox(height: 140),
+                CompanyImageStrip(),
+                MissionHeadline(),
+                InfoCardGrid(),
+                InnovationSection(),
+                CeoSection(),
+                PurposeSection(),
+                GrowSection(),
                 Footer(),
               ],
             ),

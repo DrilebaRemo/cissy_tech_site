@@ -166,12 +166,17 @@ class _NavbarState extends State<Navbar> {
                   // --- DESKTOP LAYOUT ---
                   else ...[
                       _HoverNavLink(
+                        text: "Home", 
+                        color: isDark ? Colors.white : AppColors.brandGray,
+                        onTap: () => context.go('/'),
+                      ),
+                      _HoverNavLink(
                         text: "Products", 
                         color: isDark ? Colors.white : AppColors.brandGray,
                         dropdownItems: [
                           DropdownItem(
                             label: "Collecto",
-                            onTap: () => context.go('https://collecto.cissytech.com/'),
+                            onTap: () => context.go('/'),
                           ),
                           DropdownItem(
                             label: "Bulk",
@@ -182,11 +187,15 @@ class _NavbarState extends State<Navbar> {
                             onTap: () => context.go('/'),
                           ),
                           DropdownItem(
-                            label: "Cissy Cloud",
+                            label: "Cissy AI",
                             onTap: () => context.go('/'),
                           ),
                           DropdownItem(
-                            label: "Cissy Drive",
+                            label: "GnG",
+                            onTap: () => context.go('/'),
+                          ),
+                          DropdownItem(
+                            label: "Rent Pay",
                             onTap: () => context.go('/'),
                           ),
                         ],
@@ -196,16 +205,16 @@ class _NavbarState extends State<Navbar> {
                         color: isDark ? Colors.white : AppColors.brandGray,
                         dropdownItems: [
                           DropdownItem(
-                            label: "Web Development",
+                            label: "Custom Web and App Development",
                           ),
                           DropdownItem(
-                            label: "Domain Name Registration",
+                            label: "ICT Infrastructure & Managed Services",
                           ),
                           DropdownItem(
-                            label: "Cloud and Email Hosting",
+                            label: "Brand Strategy & Corporate Communications",
                           ),
                           DropdownItem(
-                            label: "Consulting",
+                            label: "ICT Consultancy & Capacity Building",
                           ),
                         ],
                       ),
@@ -218,11 +227,11 @@ class _NavbarState extends State<Navbar> {
                             onTap: () => context.go('/company'),
                           ),
                           DropdownItem(
-                            label: "Team",
+                            label: "Contact Us",
                             onTap: () => context.go('/'),
                           ),
                           DropdownItem(
-                            label: "Careers",
+                            label: "Our Partnerships",
                             onTap: () => context.go('/'),
                           ),
                           DropdownItem(
@@ -231,42 +240,10 @@ class _NavbarState extends State<Navbar> {
                           ),
                         ],
                       ),
-                      _HoverNavLink(
-                        text: "Contact", 
-                        color: isDark ? Colors.white : AppColors.brandGray,
-                        dropdownItems: [
-                          DropdownItem(
-                            label: "Get in Touch",
-                            icon: Icons.mail,
-                          ),
-                          DropdownItem(
-                            label: "Support",
-                            icon: Icons.support_agent,
-                          ),
-                          DropdownItem(
-                            label: "Locations",
-                            icon: Icons.location_on,
-                          ),
-                        ],
-                      ),
-
                     const SizedBox(width: 20),
 
                     // 1. Theme Icon (Left of Button)
                     themeToggleButton,
-
-                    const SizedBox(width: 10),
-
-                    // 2. Get Started Button
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                      ),
-                      child: const Text("Login"),
-                    ),
                   ],
                 ],
               ),

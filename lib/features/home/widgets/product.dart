@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/animated_counter.dart';
 import '../../../shared/widgets/fade_in_scroll.dart';
 import '../../../shared/layout/responsive.dart';
 
@@ -98,29 +99,55 @@ class ProductivitySection extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-               Builder(builder: (context) {
-                final features = [
-                  {"title": "99.9% Uptime", "icon": Icons.cloud_done, "color": Colors.green, "delay": 300},
-                  {"title": "24/7 Support", "icon": Icons.headset_mic, "color": Colors.blue, "delay": 400},
-                  {"title": "Open API", "icon": Icons.code, "color": Colors.orange, "delay": 500},
-                ];
-                
-                final widgets = features.map((f) => _HoverBentoCard(
-                  height: 160,
-                  delay: f['delay'] as int,
-                  child: _FeatureIconCard(title: f['title'] as String, icon: f['icon'] as IconData, color: f['color'] as Color),
-                )).toList();
-
-                if (isMobile) return Column(children: widgets.map((w) => Padding(padding: const EdgeInsets.only(bottom: 20), child: w)).toList());
-                
-                return Row(children: [
-                  Expanded(child: widgets[0]),
+               Row(
+                children: [
+                  Expanded(
+                    child: _HoverBentoCard(
+                      height: 160,
+                      delay: 300,
+                      // STAT 1: Scale
+                      child: const AnimatedCounter(
+                        targetValue: 5,
+                        label: "Transactions Processed",
+                        color: Colors.blue,
+                        suffix: "M+",
+                        isInt: true,
+                      ),
+                    ),
+                  ),
                   const SizedBox(width: 20),
-                  Expanded(child: widgets[1]),
+                  Expanded(
+                    child: _HoverBentoCard(
+                      height: 160,
+                      delay: 400,
+                      // STAT 2: Reliability
+                      child: const AnimatedCounter(
+                        targetValue: 99.9,
+                        label: "System Uptime",
+                        color: Colors.green,
+                        suffix: "%",
+                        isInt: false, // This allows decimals
+                      ),
+                    ),
+                  ),
                   const SizedBox(width: 20),
-                  Expanded(child: widgets[2]),
-                ]);
-              }),
+                  Expanded(
+                    child: _HoverBentoCard(
+                      height: 160,
+                      delay: 500,
+                      // STAT 3: Speed/Support
+                      child: const AnimatedCounter(
+                        targetValue: 15,
+                        label: "Avg. Response Time",
+                        color: Colors.orange,
+                        prefix: "< ",
+                        suffix: " min",
+                        isInt: true,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 20),
 
@@ -383,6 +410,7 @@ class _FeatureIconCard extends StatelessWidget {
 }
 
 // --- 4. TASK LIST CARD ---
+// --- 4. TASK LIST CARD (Security & Compliance) ---
 class _TaskListCard extends StatelessWidget {
   const _TaskListCard();
   @override
@@ -390,13 +418,14 @@ class _TaskListCard extends StatelessWidget {
     final textColor = Theme.of(context).textTheme.displayLarge?.color;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center, // Center vertically
       children: [
-        Text("Optimization", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
+        Text("Enterprise Security", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textColor)),
         const SizedBox(height: 20),
-        const _CheckItem(text: "Cache cleared", checked: true),
-        const _CheckItem(text: "Database optimized", checked: true),
-        const _CheckItem(text: "CDN synced", checked: true),
-        const _CheckItem(text: "Backups completed", checked: false),
+        const _CheckItem(text: "End-to-End Encryption", checked: true),
+        const _CheckItem(text: "Automated Fraud Detection", checked: true),
+        const _CheckItem(text: "Daily Cloud Backups", checked: true),
+        const _CheckItem(text: "GDPR Compliant", checked: true),
       ],
     );
   }
@@ -425,21 +454,33 @@ class _CheckItem extends StatelessWidget {
 }
 
 // --- 5. INFRASTRUCTURE CARD ---
+// --- 5. INFRASTRUCTURE CARD (Global Reach) ---
 class _InfrastructureCard extends StatelessWidget {
   const _InfrastructureCard();
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // Background Image
         Positioned.fill(
           child: Opacity(
             opacity: 0.8,
-            child: Image.network("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80", fit: BoxFit.cover),
+            child: Image.network(
+              "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+              fit: BoxFit.cover,
+            ),
           ),
         ),
+        // Gradient
         Positioned.fill(
-          child: Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.bottomCenter, end: Alignment.topCenter, colors: [Colors.black.withOpacity(0.8), Colors.transparent]))),
+          child: Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.bottomCenter, end: Alignment.topCenter, colors: [Colors.black.withOpacity(0.9), Colors.transparent]))),
         ),
+        // Pulsing Dots (Fake Server Nodes)
+        const Positioned(top: 100, left: 80, child: _PulseDot()),
+        const Positioned(top: 150, right: 100, child: _PulseDot()),
+        const Positioned(bottom: 120, left: 150, child: _PulseDot()),
+
+        // Text
         const Positioned(
           bottom: 24, left: 24,
           child: Column(
@@ -447,11 +488,31 @@ class _InfrastructureCard extends StatelessWidget {
             children: [
               Text("Global Infrastructure", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
               SizedBox(height: 4),
-              Text("Servers in 24 regions", style: TextStyle(color: Colors.white70, fontSize: 14)),
+              Text("Low-latency servers across East Africa", style: TextStyle(color: Colors.white70, fontSize: 14)),
             ],
           ),
         ),
       ],
     );
+  }
+}
+
+// Simple pulsing dot widget
+class _PulseDot extends StatelessWidget {
+  const _PulseDot();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 12, height: 12,
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(color: AppColors.primary.withOpacity(0.6), blurRadius: 10, spreadRadius: 5)
+        ]
+      ),
+    ).animate(onPlay: (c) => c.repeat(reverse: true))
+     .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2), duration: 1.seconds)
+     .fade(begin: 0.5, end: 1.0);
   }
 }

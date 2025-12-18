@@ -165,19 +165,6 @@ class HeroSection extends StatelessWidget {
         ),
 
         const SizedBox(height: 24),
-        
-        FadeInScroll(
-          delay: const Duration(milliseconds: 100),
-          duration: const Duration(milliseconds: 400),
-          child: Text(
-            "Be part of the CissyTech ecosystem and drive your business forward.",
-            textAlign: isCentered ? TextAlign.center : TextAlign.start,
-            style: TextStyle(fontSize: 18, color: bodyColor, height: 1.5),
-          ),
-        ),
-
-        const SizedBox(height: 40),
-        
         Wrap(
           spacing: 16,
           runSpacing: 16,
@@ -193,7 +180,7 @@ class HeroSection extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text("Start Free Trial", style: TextStyle(fontSize: 16)),
+                child: const Text("Join Us", style: TextStyle(fontSize: 16)),
               )
               .animate(onPlay: (c) => c.repeat())
               .shimmer(delay: 4000.ms, duration: 1800.ms, color: Colors.white.withOpacity(0.3)),
@@ -204,7 +191,7 @@ class HeroSection extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () {},
                 icon: Icon(Icons.play_arrow_rounded, color: textColor),
-                label: Text("Watch Demo", style: TextStyle(color: isDark ? Colors.white : AppColors.brandGray, fontSize: 16)),
+                label: Text("Our channel", style: TextStyle(color: isDark ? Colors.white : AppColors.brandGray, fontSize: 16)),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
                   side: BorderSide(color: isDark ? Colors.white.withOpacity(0.3) : AppColors.brandGray.withOpacity(0.5)),
